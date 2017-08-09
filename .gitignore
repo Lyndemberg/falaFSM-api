@@ -1,0 +1,5 @@
+/target/
+/src/main/resources/.vagrant/
+/.idea/
+discente-vivo.iml
+nb-configuration.xml
