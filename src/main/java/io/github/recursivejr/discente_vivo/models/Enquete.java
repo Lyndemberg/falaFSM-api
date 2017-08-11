@@ -11,8 +11,9 @@ public class Enquete {
     private List<String> comentarios;
     private List<String> opcoes;
     private List<Resposta> respostas;
+    private String emailAdmin;
 
-    public Enquete(String nome, String descricao, String foto, int id, List<String> comentarios, List<String> opcoes, List<Resposta> respostas) {
+    public Enquete(String nome, String descricao, String foto, int id, List<String> comentarios, List<String> opcoes, List<Resposta> respostas, String emailAdmin) {
         this.nome = nome;
         this.descricao = descricao;
         this.foto = foto;
@@ -20,6 +21,7 @@ public class Enquete {
         this.comentarios = comentarios;
         this.opcoes = opcoes;
         this.respostas = respostas;
+        this.emailAdmin = emailAdmin;
     }
 
     public Enquete() {
@@ -82,6 +84,14 @@ public class Enquete {
         this.respostas = respostas;
     }
 
+    public String getEmailAdmin() {
+        return emailAdmin;
+    }
+
+    public void setEmailAdmin(String emailAdmin) {
+        this.emailAdmin = emailAdmin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -92,21 +102,23 @@ public class Enquete {
         if (id != enquete.id) return false;
         if (!nome.equals(enquete.nome)) return false;
         if (!descricao.equals(enquete.descricao)) return false;
-        if (!foto.equals(enquete.foto)) return false;
-        if (!comentarios.equals(enquete.comentarios)) return false;
-        if (!opcoes.equals(enquete.opcoes)) return false;
-        return respostas.equals(enquete.respostas);
+        if (foto != null ? !foto.equals(enquete.foto) : enquete.foto != null) return false;
+        if (comentarios != null ? !comentarios.equals(enquete.comentarios) : enquete.comentarios != null) return false;
+        if (opcoes != null ? !opcoes.equals(enquete.opcoes) : enquete.opcoes != null) return false;
+        if (respostas != null ? !respostas.equals(enquete.respostas) : enquete.respostas != null) return false;
+        return emailAdmin.equals(enquete.emailAdmin);
     }
 
     @Override
     public int hashCode() {
         int result = nome.hashCode();
         result = 31 * result + descricao.hashCode();
-        result = 31 * result + foto.hashCode();
+        result = 31 * result + (foto != null ? foto.hashCode() : 0);
         result = 31 * result + id;
-        result = 31 * result + comentarios.hashCode();
-        result = 31 * result + opcoes.hashCode();
-        result = 31 * result + respostas.hashCode();
+        result = 31 * result + (comentarios != null ? comentarios.hashCode() : 0);
+        result = 31 * result + (opcoes != null ? opcoes.hashCode() : 0);
+        result = 31 * result + (respostas != null ? respostas.hashCode() : 0);
+        result = 31 * result + emailAdmin.hashCode();
         return result;
     }
 
@@ -120,6 +132,7 @@ public class Enquete {
                 ", comentarios=" + comentarios +
                 ", opcoes=" + opcoes +
                 ", respostas=" + respostas +
+                ", emailAdmin='" + emailAdmin + '\'' +
                 '}';
     }
 }
