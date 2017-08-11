@@ -6,4 +6,6 @@ public class Administrador extends Usuario {
         super(nome, email, login, senha, endereco);
     }
 
+    public Administrador() {
+    }
 }

@@ -10,6 +10,10 @@ public class Sugestao {
         this.texto = texto;
     }
 
+    public Sugestao() {
+
+    }
+
     public String getAssunto() {
         return assunto;
     }

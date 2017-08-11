@@ -13,6 +13,10 @@ public class Aluno extends Usuario {
         this.sugestoes = sugestoes;
     }
 
+    public Aluno() {
+
+    }
+
     public String getMatricula() {
         return matricula;
     }

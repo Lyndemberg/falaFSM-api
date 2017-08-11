@@ -14,6 +14,10 @@ public class Setor {
         this.enquetes = enquetes;
     }
 
+    public Setor() {
+
+    }
+
     public String getNome() {
         return nome;
     }

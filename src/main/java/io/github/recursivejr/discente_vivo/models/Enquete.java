@@ -22,6 +22,10 @@ public class Enquete {
         this.respostas = respostas;
     }
 
+    public Enquete() {
+
+    }
+
     public String getNome() {
         return nome;
     }

@@ -10,6 +10,10 @@ public class Resposta {
         this.aluno = aluno;
     }
 
+    public Resposta() {
+
+    }
+
     public String getResposta() {
         return resposta;
     }

@@ -14,6 +14,10 @@ public class Curso {
         this.enquetes = enquetes;
     }
 
+    public Curso() {
+
+    }
+
     public String getNome() {
         return nome;
     }

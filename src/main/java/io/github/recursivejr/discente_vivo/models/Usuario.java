@@ -16,6 +16,9 @@ public abstract class Usuario {
         this.endereco = endereco;
     }
 
+    public Usuario() {
+    }
+
     public String getNome() {
         return nome;
     }
