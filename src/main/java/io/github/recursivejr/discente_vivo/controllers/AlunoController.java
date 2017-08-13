@@ -24,8 +24,8 @@ public class AlunoController{
 
 	//public boolean alterarSenha(){}
 
-	@GET
-    @Produces(MediaType.APPLICATION_JSON)
+	@POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("resonder/{idEnquete}/{idAluno}")
 	public boolean responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("idAluno") int idAluno, String resposta){
 
