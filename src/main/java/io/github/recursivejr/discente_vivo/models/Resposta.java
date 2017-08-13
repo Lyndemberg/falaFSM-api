@@ -2,16 +2,26 @@ package io.github.recursivejr.discente_vivo.models;
 
 public class Resposta {
 
+    private int idResposta;
     private String resposta;
-    private Aluno aluno;
+    private int alunoId;
 
-    public Resposta(String resposta, Aluno aluno) {
+    public Resposta(int idResposta, String resposta, int alunoId) {
+        this.idResposta = idResposta
         this.resposta = resposta;
-        this.aluno = aluno;
+        this.alunoId = alunoId;
     }
 
     public Resposta() {
 
+    }
+
+    public int getIdResposta(){
+        return idResposta;
+    }
+
+    public void setIdResposta(){
+        this.idResposta = idResposta;
     }
 
     public String getResposta() {
@@ -22,12 +32,12 @@ public class Resposta {
         this.resposta = resposta;
     }
 
-    public Aluno getAluno() {
+    public int setAlunoId() {
         return aluno;
     }
 
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
+    public void setAlunoId(int alunoId) {
+        this.alunoId = alunoId;
     }
 
     @Override
@@ -38,13 +48,14 @@ public class Resposta {
         Resposta resposta1 = (Resposta) o;
 
         if (!resposta.equals(resposta1.resposta)) return false;
-        return aluno.equals(resposta1.aluno);
+        return alunoId.equals(resposta1.alunoId);
     }
 
     @Override
     public int hashCode() {
         int result = resposta.hashCode();
-        result = 31 * result + aluno.hashCode();
+        result = 31 * result + alunoId.hashCode();
+        result = 31 * result + idResposta.hashCode();
         return result;
     }
 
@@ -52,7 +63,8 @@ public class Resposta {
     public String toString() {
         return "Resposta{" +
                 "resposta='" + resposta + '\'' +
-                ", aluno=" + aluno +
+                ", alunoId=" + alunoId +
+                ", idResposta=" + idResposta +
                 '}';
     }
 }
