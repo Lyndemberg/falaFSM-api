@@ -232,4 +232,24 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
         return aux;
     }
 
+    public void adicionarResposta(int IDEnquete, int IDALUNO, String resposta){
+        sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);"
+                   
+        try {
+            Statement  stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, null);
+            stmt.setString(2,IDENQUETE);
+            stmt.setString(3, IDALUNO);
+            stmt.setString(4, resposta);
+            stmt.executeUpdate();
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return aux;
+    }
+
 }
