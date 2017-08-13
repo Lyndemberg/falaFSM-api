@@ -64,24 +64,24 @@ public class Enquete {
         return comentarios;
     }
 
-    public void setComentarios(List<String> comentarios) {
-        this.comentarios = comentarios;
+    public void setComentarios(String comentario) {
+        this.comentarios.add(comentario);
     }
 
     public List<String> getOpcoes() {
         return opcoes;
     }
 
-    public void setOpcoes(List<String> opcoes) {
-        this.opcoes = opcoes;
+    public void setOpcoes(String opcao) {
+        this.opcoes.add(opcao);
     }
 
     public List<Resposta> getRespostas() {
         return respostas;
     }
 
-    public void setRespostas(List<Resposta> respostas) {
-        this.respostas = respostas;
+    public void setRespostas(Resposta resposta) {
+        this.respostas.add(resposta);
     }
 
     public String getEmailAdmin() {
