@@ -14,8 +14,8 @@ public class AlunoController{
 	//public boolean alterarSenha(){}
 	@POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("resonder/{idEnquete}/{idAluno}")
-	public boolean responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("idAluno") int idAluno, String resposta){
+    @Path("responder/{idEnquete}/{idAluno}/{resposta}")
+	public boolean responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("idAluno") int idAluno, @PathParam("resposta") String resposta){
 
 		try{
 			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
