@@ -5,16 +5,17 @@ import java.util.List;
 public class Curso {
 
     private String nome;
-    private Aluno aluno;
+    private List<Aluno> alunos;
     private List<Enquete> enquetes;
 
-    public Curso(String nome, Aluno aluno, List<Enquete> enquetes) {
-        this.nome = nome;
-        this.aluno = aluno;
-        this.enquetes = enquetes;
-    }
+    public Curso(String nome, List<Aluno> alunos, List<Enquete> enquetes) {
+		super();
+		this.nome = nome;
+		this.alunos = alunos;
+		this.enquetes = enquetes;
+	}
 
-    public Curso() {
+	public Curso() {
 
     }
 
@@ -26,14 +27,6 @@ public class Curso {
         this.nome = nome;
     }
 
-    public Aluno getAluno() {
-        return aluno;
-    }
-
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
-    }
-
     public List<Enquete> getEnquetes() {
         return enquetes;
     }
@@ -41,33 +34,62 @@ public class Curso {
     public void setEnquetes(List<Enquete> enquetes) {
         this.enquetes = enquetes;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Curso curso = (Curso) o;
-
-        if (!nome.equals(curso.nome)) return false;
-        if (!aluno.equals(curso.aluno)) return false;
-        return enquetes.equals(curso.enquetes);
+    
+    public void setEnquete(Enquete enquete) {
+        enquetes.add(enquete);
     }
 
-    @Override
-    public int hashCode() {
-        int result = nome.hashCode();
-        result = 31 * result + aluno.hashCode();
-        result = 31 * result + enquetes.hashCode();
-        return result;
-    }
+    public List<Aluno> getAlunos() {
+		return alunos;
+	}
 
-    @Override
-    public String toString() {
-        return "Curso{" +
-                "nome='" + nome + '\'' +
-                ", aluno=" + aluno +
-                ", enquetes=" + enquetes +
-                '}';
-    }
+	public void setAluno(Aluno aluno) {
+		alunos.add(aluno);
+	}
+	
+	public void setAlunos(List<Aluno> alunos) {
+		this.alunos = alunos;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((alunos == null) ? 0 : alunos.hashCode());
+		result = prime * result + ((enquetes == null) ? 0 : enquetes.hashCode());
+		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Curso other = (Curso) obj;
+		if (alunos == null) {
+			if (other.alunos != null)
+				return false;
+		} else if (!alunos.equals(other.alunos))
+			return false;
+		if (enquetes == null) {
+			if (other.enquetes != null)
+				return false;
+		} else if (!enquetes.equals(other.enquetes))
+			return false;
+		if (nome == null) {
+			if (other.nome != null)
+				return false;
+		} else if (!nome.equals(other.nome))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Curso [nome=" + nome + ", alunos=" + alunos + ", enquetes=" + enquetes + "]";
+	}
 }

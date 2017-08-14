@@ -1,22 +1,15 @@
 package io.github.recursivejr.discente_vivo.controllers;
 
-import io.github.recursivejr.discente_vivo.dao.AdministradorDaoPostgres;
-import io.github.recursivejr.discente_vivo.dao.AlunoDaoPostgres;
 import io.github.recursivejr.discente_vivo.dao.EnqueteDaoPostgres;
-import io.github.recursivejr.discente_vivo.dao.CursoDaoPostgres;
-import io.github.recursivejr.discente_vivo.models.Aluno;
+import io.github.recursivejr.discente_vivo.models.Enquete;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
+import java.util.List;
+
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 public class EnqueteController{
 
@@ -25,8 +18,13 @@ public class EnqueteController{
 	@Produces(MediaType.APPLICATION_JSON)
     @Path("enquetes/")
     public List<Enquete> listarEnquetes(){
-    	EnqueteDaoPostgres enquetesDao = new EnqueteDaoPostgres();
-    	return enquetesDao.listar():
+		EnqueteDaoPostgres enquetesDao = null;
+    	try {
+    		enquetesDao = new EnqueteDaoPostgres();
+    	} catch (Exception e) {
+			// TODO: handle exception
+		}
+    	return enquetesDao.listar();
     }
 
     @GET
@@ -34,7 +32,13 @@ public class EnqueteController{
     @Path("enquete/{id}")
     public Enquete getEnquete(@PathParam("id") String id){
 
-    	EnqueteDaoPostgres enquetesDao = new EnqueteDaoPostgres();
+    	EnqueteDaoPostgres enquetesDao = null;
+    	try {
+    		enquetesDao = new EnqueteDaoPostgres();
+    	} catch (Exception e) {
+			// TODO: handle exception
+    		return null;
+		}
 
     	Enquete enquete = enquetesDao.buscar(id);
 

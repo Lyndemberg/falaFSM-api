@@ -1,32 +1,35 @@
 package io.github.recursivejr.discente_vivo.factories;
 
-import io.github.miolivc.dao.*;
+import io.github.recursivejr.discente_vivo.dao.AdministradorDaoPostgres;
+import io.github.recursivejr.discente_vivo.dao.AlunoDaoPostgres;
+import io.github.recursivejr.discente_vivo.dao.CursoDaoPostgres;
+import io.github.recursivejr.discente_vivo.dao.EnqueteDaoPostgres;
 
 import java.sql.SQLException;
 
 public class FabricaDaoPostgres implements FabricaDaoInterface {
 
     @Override
-    public AlunoDAO criarAlunoDao() throws SQLException, ClassNotFoundException {
+    public AlunoDaoPostgres criarAlunoDao() throws SQLException, ClassNotFoundException {
         return null;
     }
 
     @Override
-    public AdministradorDAO criarAdministradorDao() throws SQLException, ClassNotFoundException {
+    public AdministradorDaoPostgres criarAdministradorDao() throws SQLException, ClassNotFoundException {
         return null;
     }
 
     @Override
-    public CursoDAO criarCursoDao() throws SQLException, ClassNotFoundException {
+    public CursoDaoPostgres criarCursoDao() throws SQLException, ClassNotFoundException {
         return null;
     }
 
     @Override
-    public EnqueteDAO criarEnqueteDao() throws SQLException, ClassNotFoundException {
+    public EnqueteDaoPostgres criarEnqueteDao() throws SQLException, ClassNotFoundException {
         return null;
     }
 
-    @Override
+    /*@Override
     public ComentarioDAO criarComentarioDao() throws SQLException, ClassNotFoundException {
         return null;
     }
@@ -44,5 +47,5 @@ public class FabricaDaoPostgres implements FabricaDaoInterface {
     @Override
     public RespostaDAO criarRespostaDao() throws SQLException, ClassNotFoundException {
         return null;
-    }
+    }*/
 }

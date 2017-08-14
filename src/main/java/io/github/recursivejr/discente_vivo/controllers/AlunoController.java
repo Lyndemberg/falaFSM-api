@@ -33,8 +33,8 @@ public class AlunoController{
 			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
 			enqueteDao.adicionarResposta(idEnquete, idAluno, resposta);
 
-			return true
-		} cath(Exception ex){
+			return true;
+		} catch (Exception ex){
 			//Jogar no log
 			return false;
 		}

@@ -71,7 +71,7 @@ public class CursoDaoPostgres implements CursoDaoInterface{
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
-                curso = new curso();
+                curso = new Curso();
                 curso.setNome(rs.getString("nome"));
                 stmt.close();
                 conn.close();

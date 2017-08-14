@@ -13,14 +13,6 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     public AlunoDaoPostgres() throws SQLException, ClassNotFoundException {
         conn = Conexao.getConnection();
     }
-
-    public(){}
-
-    //So pra ficar marcado como errado msm
-    asdasd
-    asd
-            a
-    sd
     
     @Override
     public boolean adicionar(Aluno aluno) {

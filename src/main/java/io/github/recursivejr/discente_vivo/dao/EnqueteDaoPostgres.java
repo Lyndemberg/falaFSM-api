@@ -5,6 +5,7 @@ import io.github.recursivejr.discente_vivo.models.Enquete;
 import io.github.recursivejr.discente_vivo.models.Resposta;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EnqueteDaoPostgres implements EnqueteDaoInterface{
@@ -27,23 +28,24 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
 
             stmt.executeUpdate();
 
-            int IDENQUETE = buscarId(enquete.getNome);
+            int IDENQUETE = buscarId(enquete.getNome());
 
-            List<String> comentarios = new ArrayList<>();            
-            List<String> opcoes = new ArrayList<>();
-            List<Resposta> respostas = new ArrayList<>();
+            List<String> comentarios = new ArrayList();            
+            List<String> opcoes = new ArrayList();
+            List<Resposta> respostas = new ArrayList();
 
             comentarios.addAll(enquete.getComentarios());
-            if (comentarios.size > 0) {
+            if (comentarios.size() > 0) {
                 int aux = 0;
-                while(rs.next()){
+                while(aux <= comentarios.size()){
 
-                    sql = "INSERT INTO Comentarios (ID, IDENQUETE, COMENTARIO) VALUES (?,?,?);"
+                    sql = "INSERT INTO Comentarios (ID, IDENQUETE, COMENTARIO) VALUES (?,?,?);";
                     stmt = conn.prepareStatement(sql);
 
                     stmt.setString(1, null);
-                    stmt.setString(2,IDENQUETE);
-                    stmt.setString(3, comentarios.getAt(aux));
+                    stmt.setInt(2,IDENQUETE);
+                    stmt.setString(3, comentarios.get(aux));
+                    stmt = conn.prepareStatement(sql);
                     stmt.executeUpdate();
 
                     ++aux;
@@ -51,16 +53,17 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
             }
 
             opcoes.addAll(enquete.getOpcoes());
-            if (opcoes.size > 0) {
+            if (opcoes.size() > 0) {
                 int aux = 0;
-                while(rs.next()){
+                while(aux <= opcoes.size()){
 
-                    sql = "INSERT INTO Opcoes (ID, IDENQUETE, Opcao) VALUES (?,?,?);"
+                    sql = "INSERT INTO Opcoes (ID, IDENQUETE, Opcao) VALUES (?,?,?);";
                     stmt = conn.prepareStatement(sql);
 
                     stmt.setString(1, null);
-                    stmt.setString(2,IDENQUETE);
-                    stmt.setString(3, opcoes.getAt(aux));
+                    stmt.setInt(2,IDENQUETE);
+                    stmt.setString(3, opcoes.get(aux));
+                    stmt = conn.prepareStatement(sql);
                     stmt.executeUpdate();
 
                     ++aux;
@@ -68,17 +71,18 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
             }
 
             respostas.addAll(enquete.getRespostas());
-            if (comentarios.size > 0) {
-                int aux = 0;
-                while(rs.next()){
+            if (respostas.size() > 0) {
+            	int aux = 0;
+                while(aux <= respostas.size()){
 
-                    sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);"
+                    sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);";
                     stmt = conn.prepareStatement(sql);
 
                     stmt.setString(1, null);
-                    stmt.setString(2,IDENQUETE);
-                    stmt.setString(3, respostas.getAt(aux).getIdAluno());
-                    stmt.setString(3, respostas.getAt(aux).getResposta());
+                    stmt.setInt(2,IDENQUETE);
+                    stmt.setInt(3, respostas.get(aux).getAlunoId());
+                    stmt.setString(3, respostas.get(aux).getResposta());
+                    stmt = conn.prepareStatement(sql);
                     stmt.executeUpdate();
 
                     ++aux;
@@ -137,7 +141,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
                 while (rsListas.next()){
                     comentarios.add(rs.getString("comentario"));
                 }
-                enquete.setOpcoes(comentarios);
+                enquete.setComentarios(comentarios);
 
                 String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete ILIKE " + enquete.getId();
                 rsListas = stmt.executeQuery(sqlOpcoes);
@@ -149,19 +153,19 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
                 String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete ILIKE " + enquete.getId();
                 rsListas = stmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
-                    Resposta resp = new Resposta();
-                    resp.setResposta(rs.getString("resposta"));
-                    resp.setAlunoId(rs.getString("aluno"));
+                    Resposta resposta = new Resposta();
+                    resposta.setResposta(rs.getString("resposta"));
+                    resposta.setAlunoId(rs.getInt("aluno"));
                 }
                 enquete.setRespostas(respostas);
 
                 
-                administradores.add(administrador);
+                enquetes.add(enquete);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return administradores;
+        return enquetes;
     }
 
     @Override
@@ -202,7 +206,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
                 while (rsListas.next()){
                     Resposta resp = new Resposta();
                     resp.setResposta(rs.getString("resposta"));
-                    resp.setAlunoId(rs.getString("aluno"));
+                    resp.setAlunoId(rs.getInt("aluno"));
                 }
                 enquete.setRespostas(respostas);
                 stmt.close();
@@ -214,7 +218,6 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
         return enquete;
     }
 
-    @Override
     public int buscarId(String nome) {
         String sql = "SELECT * FROM Enquete WHERE nome ILIKE" + nome;
         int aux = -1;
@@ -232,15 +235,15 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
         return aux;
     }
 
-    public void adicionarResposta(int IDEnquete, int IDALUNO, String resposta){
-        sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);"
+    public void adicionarResposta(int IdEnquete, int IdAluno, String resposta){
+        String sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);";
                    
         try {
-            Statement  stmt = conn.prepareStatement(sql);
+        	PreparedStatement stmt = conn.prepareStatement(sql);
 
-            stmt.setString(1, null);
-            stmt.setString(2,IDENQUETE);
-            stmt.setString(3, IDALUNO);
+            //stmt.setString(1, null);
+            stmt.setInt(2,IdEnquete);
+            stmt.setInt(3, IdAluno);
             stmt.setString(4, resposta);
             stmt.executeUpdate();
 
@@ -249,7 +252,6 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return aux;
     }
 
 }
