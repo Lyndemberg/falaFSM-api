@@ -17,7 +17,7 @@ public class AdministradorController {
 
 
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("cadastrarAluno/")
 	public boolean cadastrarAluno(Aluno aluno){
 		
@@ -34,7 +34,7 @@ public class AdministradorController {
 	}
 
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Path("cadastrarAdmin/")
 	public boolean cadastrarAdministrador(Administrador admin){
 
@@ -51,7 +51,7 @@ public class AdministradorController {
 	}
 
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Path("cadastrarEnquete/")
 	public boolean cadastrarEnquete( Enquete enquete){
 
