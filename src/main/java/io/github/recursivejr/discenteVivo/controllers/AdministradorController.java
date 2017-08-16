@@ -1,9 +1,12 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
+import java.util.logging.Logger;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
@@ -12,58 +15,59 @@ import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Aluno;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 
-@Path("Administrador")
+@Path("administrador")
 public class AdministradorController {
 
 
 	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Consumes(MediaType.APPLICATION_JSON)
     @Path("cadastrarAluno/")
-	public boolean cadastrarAluno(Aluno aluno){
+	public Response cadastrarAluno(Aluno aluno){
 		
 		try {
 			AlunoDaoPostgres alunoDao = new AlunoDaoPostgres();
 
-			//alunoDao.adicionar(aluno);
+			alunoDao.adicionar(aluno);
 
-			return true;
-		} catch (Exception ex){
-			//guardar exeption num log ou retornar no console
-			return false;
+			return Response.status(Response.Status.OK).build();
+		} catch (Exception ex) {
+			Logger.getLogger(ex.getMessage());
+			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
+		
 	}
 
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Path("cadastrarAdmin/")
-	public boolean cadastrarAdministrador(Administrador admin){
+	public Response cadastrarAdministrador(Administrador admin) {
 
 		try{
 			AdministradorDaoPostgres adminDao = new AdministradorDaoPostgres();
 
 			adminDao.adicionar(admin);
 
-			return true;
-		} catch (Exception e) {
-			//guardar exeption num log ou retornar no console
-			return false;
+			return Response.status(Response.Status.OK).build();
+		} catch (Exception ex) {
+			Logger.getLogger(ex.getMessage());
+			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}
 
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Path("cadastrarEnquete/")
-	public boolean cadastrarEnquete( Enquete enquete){
+	public Response cadastrarEnquete(Enquete enquete) {
 
 		try{
 			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
 
 			enqueteDao.adicionar(enquete);
 
-			return true;
-		}  catch (Exception e) {
-			//guardar exeption num log ou retornar no console
-			return false;
+			return Response.status(Response.Status.OK).build();
+		} catch (Exception ex) {
+			Logger.getLogger(ex.getMessage());
+			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}
 }

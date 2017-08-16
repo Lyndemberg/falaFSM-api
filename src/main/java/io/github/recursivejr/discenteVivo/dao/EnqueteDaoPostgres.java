@@ -3,6 +3,7 @@ package io.github.recursivejr.discenteVivo.dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Enquete;
@@ -236,7 +237,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
     }
 
     public void adicionarResposta(int IdEnquete, int IdAluno, String resposta){
-        String sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);";
+        String sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, RESPOSTA) VALUES (?,?,?);";
                    
         try {
         	PreparedStatement stmt = conn.prepareStatement(sql);
@@ -252,6 +253,47 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public String[][] relatorio(String nome) {
+    	String sql = "SELECT Id FROM Enquete WHERE Nome ILIKE " + nome;
+    	
+    	//Matriz de resposta[opçao][numVotos]
+    	String respostas[][] = new String[1][1];
+    	
+    	respostas[0][0] = "Não";
+        respostas[0][1] = "0";
+        respostas[1][1] = "Sim";
+        respostas[1][1] = "0";
+    	
+    	try {
+    		Statement stmt = conn.createStatement();
+    		ResultSet rs = stmt.executeQuery(sql);
+    		
+    		if(rs.next()) {
+    			String idEnquete = rs.getString("id");
+    			
+    			//Recuperanço as Respostas
+    			 String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + idEnquete;
+                 ResultSet rsListas = stmt.executeQuery(sqlRespostas); 
+                 
+                 while (rsListas.next()){
+                	 if (rs.getString("resposta") == "Não") {
+                		 respostas[0][1] = String.valueOf((Integer.parseInt(respostas[0][1]) + 1));
+                	 } else {
+                		 respostas[1][1] = String.valueOf((Integer.parseInt(respostas[1][1]) + 1));
+                	 }
+                	 
+                     Resposta resp = new Resposta();
+                     resp.setResposta(rs.getString("resposta"));
+                     resp.setAlunoId(rs.getInt("aluno"));
+                 }
+    		}
+    		
+		} catch (SQLException ex) {
+			Logger.getLogger(ex.getMessage());
+		}
+    	return respostas;
     }
 
 }
