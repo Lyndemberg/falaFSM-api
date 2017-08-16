@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 
+import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -32,6 +33,25 @@ public class LoginController {
 			AlunoDaoPostgres alunoDao = new AlunoDaoPostgres();
 			
 			alunoDao.login(login, senha);
+			
+			String token = gerarToken(login, 1);
+			
+			return Response.ok(token).build();
+		} catch(Exception ex) {
+			Logger.getLogger(ex.getMessage());
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}	
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("loginAdmin/{login}/{senha}")
+	public Response loginAdmin(@PathParam("login") String login, @PathParam("senha") String senha) {
+		
+		try {
+			AdministradorDaoPostgres adminDao = new AdministradorDaoPostgres();
+			
+			adminDao.login(login, senha);
 			
 			String token = gerarToken(login, 1);
 			

@@ -2,6 +2,7 @@ package io.github.recursivejr.discenteVivo.dao;
 
 import java.sql.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Administrador;
@@ -98,6 +99,26 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
             ex.printStackTrace();
         }
         return administrador;
+    }
+    
+    public void login(String login, String senha) throws Exception {
+    	
+    	senha = Encryption.encrypt(senha);
+    	
+    	String sql = "SELECT * FROM Administrador WHERE login ILIKE " + login + " AND SENHA ILIKE " + senha + ";";
+    	Statement stmt;
+		try {
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			if(!rs.next()) {
+				throw new Exception("Credenciais Inválidas");
+			}
+			
+		} catch (SQLException ex) {
+			Logger.getLogger(ex.getMessage());
+			throw ex;
+		}
     }
 
 }
