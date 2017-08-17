@@ -235,15 +235,14 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     }
 
     public void adicionarResposta(int IdEnquete, int IdAluno, String resposta) {
-        String sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, RESPOSTA) VALUES (?,?,?);";
+        String sql = "INSERT INTO Respostas (IDENQUETE, IDALUNO, RESPOSTA) VALUES (?,?,?);";
                    
         try {
         	PreparedStatement stmt = conn.prepareStatement(sql);
-
-            //stmt.setString(1, null);
-            stmt.setInt(2,IdEnquete);
-            stmt.setInt(3, IdAluno);
-            stmt.setString(4, resposta);
+        	
+            stmt.setInt(1,IdEnquete);
+            stmt.setInt(2, IdAluno);
+            stmt.setString(3, resposta);
             stmt.executeUpdate();
 
             stmt.close();

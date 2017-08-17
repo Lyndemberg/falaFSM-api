@@ -20,13 +20,14 @@ public class AlunoController{
     @Path("responder/{idEnquete}/{idAluno}/{resposta}")
 	public Response responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("idAluno") int idAluno, @PathParam("resposta") String resposta){
 
-		try{
+		try {
 			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
 			enqueteDao.adicionarResposta(idEnquete, idAluno, resposta);
 
 			return Response.status(Response.Status.OK).build();
 		} catch (Exception ex) {
-			Logger.getLogger(ex.getMessage());
+			ex.printStackTrace();
+			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}
