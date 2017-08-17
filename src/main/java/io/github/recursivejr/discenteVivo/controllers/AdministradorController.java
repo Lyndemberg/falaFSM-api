@@ -26,47 +26,45 @@ public class AdministradorController {
 		
 		try {
 			AlunoDaoPostgres alunoDao = new AlunoDaoPostgres();
-
 			alunoDao.adicionar(aluno);
 
 			return Response.status(Response.Status.OK).build();
 		} catch (Exception ex) {
-			Logger.getLogger(ex.getMessage());
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 		
 	}
 
 	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("cadastrarAdmin/")
 	public Response cadastrarAdministrador(Administrador admin) {
 
 		try{
 			AdministradorDaoPostgres adminDao = new AdministradorDaoPostgres();
-
 			adminDao.adicionar(admin);
 
 			return Response.status(Response.Status.OK).build();
 		} catch (Exception ex) {
-			Logger.getLogger(ex.getMessage());
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}
 
 	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("cadastrarEnquete/")
 	public Response cadastrarEnquete(Enquete enquete) {
 
 		try{
 			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
-
 			enqueteDao.adicionar(enquete);
 
 			return Response.status(Response.Status.OK).build();
 		} catch (Exception ex) {
-			Logger.getLogger(ex.getMessage());
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}

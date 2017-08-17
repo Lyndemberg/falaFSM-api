@@ -18,34 +18,35 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
 
     @Override
     public boolean adicionar(Enquete enquete) {
-        String sql = "INSERT INTO Enquete (ID, NOME, DESCRICAO, FOTO, EMAILADMIN) VALUES (?,?,?,?);";
+        String sql = "INSERT INTO Enquete (NOME, DESCRICAO, FOTO, EMAILADMIN) VALUES (?,?,?,?);";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs;
-            stmt.setString(2, enquete.getNome());
-            stmt.setString(3, enquete.getDescricao());
-            stmt.setString(4, enquete.getFoto());
-            stmt.setString(5, enquete.getEmailAdmin());
+            ResultSet rs = null;
+            stmt.setString(1, enquete.getNome());
+            stmt.setString(2, enquete.getDescricao());
+            stmt.setString(3, enquete.getFoto());
+            stmt.setString(4, enquete.getEmailAdmin());
 
             stmt.executeUpdate();
 
             int IDENQUETE = buscarId(enquete.getNome());
+            
+            System.out.printf("\n\nPEGUEI O ID : " + IDENQUETE);
 
             List<String> comentarios = new ArrayList();            
             List<String> opcoes = new ArrayList();
             List<Resposta> respostas = new ArrayList();
 
-            comentarios.addAll(enquete.getComentarios());
-            if (comentarios.size() > 0) {
+            if (enquete.getComentarios() != null) {
+            	comentarios.addAll(enquete.getComentarios());
                 int aux = 0;
                 while(aux <= comentarios.size()){
 
-                    sql = "INSERT INTO Comentarios (ID, IDENQUETE, COMENTARIO) VALUES (?,?,?);";
+                    sql = "INSERT INTO Comentarios (IDENQUETE, COMENTARIO) VALUES (?,?);";
                     stmt = conn.prepareStatement(sql);
 
-                    stmt.setString(1, null);
-                    stmt.setInt(2,IDENQUETE);
-                    stmt.setString(3, comentarios.get(aux));
+                    stmt.setInt(1,IDENQUETE);
+                    stmt.setString(2, comentarios.get(aux));
                     stmt = conn.prepareStatement(sql);
                     stmt.executeUpdate();
 
@@ -53,17 +54,16 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
                 }                
             }
 
-            opcoes.addAll(enquete.getOpcoes());
-            if (opcoes.size() > 0) {
+            if (enquete.getOpcoes() != null) {
+            	opcoes.addAll(enquete.getOpcoes());
                 int aux = 0;
                 while(aux <= opcoes.size()){
 
-                    sql = "INSERT INTO Opcoes (ID, IDENQUETE, Opcao) VALUES (?,?,?);";
+                    sql = "INSERT INTO Opcoes (IDENQUETE, Opcao) VALUES (?,?);";
                     stmt = conn.prepareStatement(sql);
 
-                    stmt.setString(1, null);
-                    stmt.setInt(2,IDENQUETE);
-                    stmt.setString(3, opcoes.get(aux));
+                    stmt.setInt(1,IDENQUETE);
+                    stmt.setString(2, opcoes.get(aux));
                     stmt = conn.prepareStatement(sql);
                     stmt.executeUpdate();
 
@@ -71,17 +71,16 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
                 }                
             }
 
-            respostas.addAll(enquete.getRespostas());
-            if (respostas.size() > 0) {
+            if (enquete.getRespostas() != null) {
+                respostas.addAll(enquete.getRespostas());
             	int aux = 0;
                 while(aux <= respostas.size()){
 
-                    sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);";
+                    sql = "INSERT INTO Respostas (IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);";
                     stmt = conn.prepareStatement(sql);
 
-                    stmt.setString(1, null);
-                    stmt.setInt(2,IDENQUETE);
-                    stmt.setInt(3, respostas.get(aux).getAlunoId());
+                    stmt.setInt(1,IDENQUETE);
+                    stmt.setInt(2, respostas.get(aux).getAlunoId());
                     stmt.setString(3, respostas.get(aux).getResposta());
                     stmt = conn.prepareStatement(sql);
                     stmt.executeUpdate();
@@ -220,7 +219,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
     }
 
     public int buscarId(String nome) {
-        String sql = "SELECT * FROM Enquete WHERE nome ILIKE" + nome;
+        String sql = "SELECT * FROM Enquete WHERE nome ILIKE '" + nome + "';";
         int aux = -1;
         try {
             Statement stmt = conn.createStatement();
