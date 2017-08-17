@@ -14,18 +14,17 @@ import io.github.recursivejr.discenteVivo.dao.EnqueteDaoPostgres;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 
 @Path("enquete")
-public class EnqueteController{
-
+public class EnqueteController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
     @Path("enquetes/")
-    public List<Enquete> listarEnquetes(){
+    public List<Enquete> listarEnquetes() {
 		EnqueteDaoPostgres enquetesDao = null;
     	try {
     		enquetesDao = new EnqueteDaoPostgres();
     	} catch (Exception ex) {
-    		Logger.getLogger(ex.getMessage());
+    		Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
 		}
     	return enquetesDao.listar();
     }
@@ -33,24 +32,22 @@ public class EnqueteController{
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("enquete/{id}")
-    public Enquete getEnquete(@PathParam("id") String id){
+    public Enquete getEnquete(@PathParam("id") String id) {
 
     	EnqueteDaoPostgres enquetesDao = null;
     	try {
     		enquetesDao = new EnqueteDaoPostgres();
     	} catch (Exception ex) {
-    		Logger.getLogger(ex.getMessage());
+    		Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
     		return null;
 		}
-
     	Enquete enquete = enquetesDao.buscar(id);
-
     	return enquete;
     }
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("enqueteRelatoria/{nome}")
+    @Path("enqueteRelatorios/{nome}")
     public List<Integer> enqueteRelatorio(@PathParam("nome") String nome) {
     	
     	EnqueteDaoPostgres enquetesDao;
@@ -66,11 +63,9 @@ public class EnqueteController{
     		
     		return relatorio;
     	} catch (Exception ex) {
-    		Logger.getLogger(ex.getMessage());
+    		Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
     		return null;
 		}
-    	
-    	
     }
 
 }

@@ -18,11 +18,10 @@ import io.github.recursivejr.discenteVivo.models.Enquete;
 @Path("administrador")
 public class AdministradorController {
 
-
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
     @Path("cadastrarAluno/")
-	public Response cadastrarAluno(Aluno aluno){
+	public Response cadastrarAluno(Aluno aluno) {
 		
 		try {
 			AlunoDaoPostgres alunoDao = new AlunoDaoPostgres();
@@ -41,7 +40,7 @@ public class AdministradorController {
 	@Path("cadastrarAdmin/")
 	public Response cadastrarAdministrador(Administrador admin) {
 
-		try{
+		try {
 			AdministradorDaoPostgres adminDao = new AdministradorDaoPostgres();
 			adminDao.adicionar(admin);
 
@@ -57,13 +56,12 @@ public class AdministradorController {
 	@Path("cadastrarEnquete/")
 	public Response cadastrarEnquete(Enquete enquete) {
 
-		try{
+		try {
 			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
 			enqueteDao.adicionar(enquete);
 
 			return Response.status(Response.Status.OK).build();
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}

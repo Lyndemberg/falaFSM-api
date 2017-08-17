@@ -9,7 +9,7 @@ import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 import io.github.recursivejr.discenteVivo.models.Resposta;
 
-public class EnqueteDaoPostgres implements EnqueteDaoInterface{
+public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     private final Connection conn;
 
     public EnqueteDaoPostgres() throws SQLException, ClassNotFoundException {
@@ -118,8 +118,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
 
     @Override
     public List<Enquete> listar() {
-        List<Enquete> enquetes = null;
-        //String sql = "SELECT * FROM Enquete JOIN Respostas NATURAL JOIN Opcoes NATURAL JOIN Comentarios WHERE (ID = IDENQUETE);";
+        List<Enquete> enquetes = new ArrayList<>();
         String sql = "SELECT * FROM Enquete;";
         try {
             Statement stmt = conn.createStatement();
@@ -136,21 +135,21 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
                 enquete.setFoto(rs.getString("foto"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
-                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete ILIKE " + enquete.getId();
+                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
                 ResultSet rsListas = stmt.executeQuery(sqlComentarios);
                 while (rsListas.next()){
                     comentarios.add(rs.getString("comentario"));
                 }
                 enquete.setComentarios(comentarios);
 
-                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete ILIKE " + enquete.getId();
+                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = stmt.executeQuery(sqlOpcoes);
                 while (rsListas.next()){
                     opcoes.add(rs.getString("opcao"));
                 }
                 enquete.setOpcoes(opcoes);
 
-                String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete ILIKE " + enquete.getId();
+                String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = stmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
                     Resposta resposta = new Resposta();
@@ -170,7 +169,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
 
     @Override
     public Enquete buscar(String id) {
-        String sql = "SELECT * FROM Enquete WHERE id ILIKE" + id;
+        String sql = "SELECT * FROM Enquete WHERE id = " + id + ";";
         Enquete enquete = null;
         try {
             Statement stmt = conn.createStatement();
@@ -187,21 +186,21 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
                 enquete.setFoto(rs.getString("foto"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
-                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete ILIKE " + enquete.getId();
+                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
                 ResultSet rsListas = stmt.executeQuery(sqlComentarios);
                 while (rsListas.next()){
                     comentarios.add(rs.getString("comentario"));
                 }
                 enquete.setOpcoes(comentarios);
 
-                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete ILIKE " + enquete.getId();
+                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = stmt.executeQuery(sqlOpcoes);
                 while (rsListas.next()){
                     opcoes.add(rs.getString("opcao"));
                 }
                 enquete.setOpcoes(opcoes);
 
-                String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete ILIKE " + enquete.getId();
+                String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = stmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
                     Resposta resp = new Resposta();
@@ -235,7 +234,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
         return aux;
     }
 
-    public void adicionarResposta(int IdEnquete, int IdAluno, String resposta){
+    public void adicionarResposta(int IdEnquete, int IdAluno, String resposta) {
         String sql = "INSERT INTO Respostas (ID, IDENQUETE, IDALUNO, RESPOSTA) VALUES (?,?,?);";
                    
         try {
@@ -255,7 +254,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
     }
     
     public String[][] relatorio(String nome) {
-    	String sql = "SELECT Id FROM Enquete WHERE Nome ILIKE " + nome;
+    	String sql = "SELECT Id FROM Enquete WHERE Nome ILIKE " + nome + ";";
     	
     	//Matriz de resposta[opçao][numVotos]
     	String respostas[][] = new String[1][1];
@@ -273,7 +272,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface{
     			String idEnquete = rs.getString("id");
     			
     			//Recuperanço as Respostas
-    			 String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + idEnquete;
+    			 String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + idEnquete + ";";
                  ResultSet rsListas = stmt.executeQuery(sqlRespostas); 
                  
                  while (rsListas.next()){
