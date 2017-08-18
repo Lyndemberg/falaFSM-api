@@ -101,11 +101,11 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
         return administrador;
     }
     
-    public void login(String login, String senha) throws Exception {
+    public String login(String login, String senha) throws Exception {
     	
     	senha = Encryption.encrypt(senha);
     	
-    	String sql = "SELECT * FROM Administrador WHERE login ILIKE " + login + " AND SENHA ILIKE " + senha + ";";
+    	String sql = "SELECT Email FROM Administrador WHERE login ILIKE '" + login + "' AND SENHA ILIKE '" + senha + "';";
     	Statement stmt;
 		try {
 			stmt = conn.createStatement();
@@ -114,6 +114,8 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 			if(!rs.next()) {
 				throw new Exception("Credenciais Inválidas");
 			}
+			
+			return rs.getString("email");
 			
 		} catch (SQLException ex) {
 			Logger.getLogger(ex.getMessage());

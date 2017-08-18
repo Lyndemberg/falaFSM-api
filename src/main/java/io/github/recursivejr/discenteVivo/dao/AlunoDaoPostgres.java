@@ -104,11 +104,11 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
         return aluno;
     }
     
-    public void login(String login, String senha) throws Exception {
+    public String login(String login, String senha) throws Exception {
     	
     	senha = Encryption.encrypt(senha);
     	
-    	String sql = "SELECT * FROM Aluno WHERE login ILIKE " + login + " AND SENHA ILIKE " + senha + ";";
+    	String sql = "SELECT Matricula FROM Aluno WHERE login ILIKE '" + login + "' AND SENHA ILIKE '" + senha + "';";
     	Statement stmt;
 		try {
 			stmt = conn.createStatement();
@@ -117,6 +117,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 			if(!rs.next()) {
 				throw new Exception("Credenciais Inválidas");
 			}
+			
+			return rs.getString("matricula");
 			
 		} catch (SQLException ex) {
 			Logger.getLogger(ex.getMessage());
