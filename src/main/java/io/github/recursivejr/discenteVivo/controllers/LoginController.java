@@ -15,6 +15,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,12 +33,14 @@ public class LoginController {
 		try {
 			AlunoDaoPostgres alunoDao = new AlunoDaoPostgres();
 			
-			alunoDao.login(login, senha);
+			String matricula = alunoDao.login(login, senha);
 			
-			String token = gerarToken(login, 1);
+			String token = gerarToken(matricula, 1);
 			
 			return Response.ok(token).build();
 		} catch(Exception ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
 			Logger.getLogger(ex.getMessage());
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}	
@@ -51,9 +54,9 @@ public class LoginController {
 		try {
 			AdministradorDaoPostgres adminDao = new AdministradorDaoPostgres();
 			
-			adminDao.login(login, senha);
+			String email = adminDao.login(login, senha);
 			
-			String token = gerarToken(login, 1);
+			String token = gerarToken(email, 1);
 			
 			return Response.ok(token).build();
 		} catch(Exception ex) {
@@ -89,6 +92,19 @@ public class LoginController {
 			ex.printStackTrace();
 			return null;
 		}		
+	}
+	
+	public Claims validaToken(String token) {
+		try {
+		   Claims claims = Jwts.parser()
+			     .setSigningKey(DatatypeConverter.parseBase64Binary(SECRETKEY))
+			     .parseClaimsJws(token).getBody();
+
+		   System.out.println(claims.getIssuer());
+		   return claims;
+		} catch(Exception ex) {
+				throw ex;
+		}
 	}
 
 }

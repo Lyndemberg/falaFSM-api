@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.EnqueteDaoPostgres;
+import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Aluno;
 import io.github.recursivejr.discenteVivo.models.Enquete;
@@ -18,6 +19,7 @@ import io.github.recursivejr.discenteVivo.models.Enquete;
 @Path("administrador")
 public class AdministradorController {
 
+	@Security
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
     @Path("cadastrarAluno/")
