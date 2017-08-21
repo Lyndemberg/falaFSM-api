@@ -21,7 +21,6 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
         String sql = "INSERT INTO Enquete (NOME, DESCRICAO, FOTO, EMAILADMIN) VALUES (?,?,?,?);";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = null;
             stmt.setString(1, enquete.getNome());
             stmt.setString(2, enquete.getDescricao());
             stmt.setString(3, enquete.getFoto());
@@ -234,7 +233,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
         return aux;
     }
 
-    public void adicionarResposta(int IdEnquete, int IdAluno, String resposta) {
+    public boolean adicionarResposta(int IdEnquete, int IdAluno, String resposta) {
         String sql = "INSERT INTO Respostas (IDENQUETE, IDALUNO, RESPOSTA) VALUES (?,?,?);";
                    
         try {
@@ -244,12 +243,14 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             stmt.setInt(2, IdAluno);
             stmt.setString(3, resposta);
             stmt.executeUpdate();
-
+            
             stmt.close();
             conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        
+        return true;
     }
     
     public String[][] relatorio(String nome) {
@@ -270,7 +271,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     		if(rs.next()) {
     			String idEnquete = rs.getString("id");
     			
-    			//Recuperanço as Respostas
+    			//Recuperando as Respostas
     			 String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + idEnquete + ";";
                  ResultSet rsListas = stmt.executeQuery(sqlRespostas); 
                  

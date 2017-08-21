@@ -25,7 +25,6 @@ public class FilterDetect implements ContainerRequestFilter{
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
-		System.out.println("Entrou filter");
 		
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 		
@@ -34,17 +33,12 @@ public class FilterDetect implements ContainerRequestFilter{
 			
 			String token = authorizationHeader.substring("Bearer".length()).trim();
 
-		try {
 			Claims claims = new LoginController().validaToken(token);
 
 			if(claims==null)
-				throw new Exception("Token inválido");
+				throw new IOException("Token inválido");
 
 			modificarRequestContext(requestContext, claims.getId());
-			} catch (Exception e) {
-				e.printStackTrace();
-				requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
-			}
 		}
 
 	private void modificarRequestContext(ContainerRequestContext requestContext,String indentificador){
