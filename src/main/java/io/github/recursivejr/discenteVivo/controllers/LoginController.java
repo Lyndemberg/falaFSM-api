@@ -99,8 +99,6 @@ public class LoginController {
 		   Claims claims = Jwts.parser()
 			     .setSigningKey(DatatypeConverter.parseBase64Binary(SECRETKEY))
 			     .parseClaimsJws(token).getBody();
-
-		   System.out.println(claims.getIssuer());
 		   return claims;
 		} catch(Exception ex) {
 				throw ex;
