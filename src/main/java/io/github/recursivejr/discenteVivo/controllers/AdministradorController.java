@@ -34,6 +34,12 @@ public class AdministradorController {
 		try {			
 			FilterDetect fd = new FilterDetect();
 			fd.filter(requestContext);
+			/*
+				Verifica com base no token se é um administrador, apenas administradores posuem email no token
+					logo a condição de parada é possuir um "@" no token
+			*/
+			if(!requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
+				throw new IOException("Não é Administrador");
 		} catch (IOException ioEx) {
 			ioEx.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ioEx.getStackTrace());
@@ -65,6 +71,12 @@ public class AdministradorController {
 		try {			
 			FilterDetect fd = new FilterDetect();
 			fd.filter(requestContext);
+			/*
+				Verifica com base no token se é um administrador, apenas administradores posuem email no token
+					logo a condição de parada é possuir um "@" no token
+			 */
+			if(!requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
+				throw new IOException("Não é Administrador");
 		} catch (IOException ioEx) {
 			ioEx.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ioEx.getStackTrace());
@@ -95,6 +107,12 @@ public class AdministradorController {
 		try {			
 			FilterDetect fd = new FilterDetect();
 			fd.filter(requestContext);
+			/*
+				Verifica com base no token se é um administrador, apenas administradores posuem email no token
+					logo a condição de parada é possuir um "@" no token
+			 */
+			if(!requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
+				throw new IOException("Não é Administrador");
 		} catch (IOException ioEx) {
 			ioEx.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ioEx.getStackTrace());
