@@ -21,9 +21,9 @@ public class AlunoController{
 	//public boolean alterarSenha(){}
 	@POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("responder/{idEnquete}/{idAluno}/{resposta}")
-	public Response responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("idAluno") int idAluno, 
-			@PathParam("resposta") String resposta, @Context ContainerRequestContext requestContext) {
+    @Path("responder/{idEnquete}/{resposta}")
+	public Response responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("resposta") String resposta,
+			@Context ContainerRequestContext requestContext) {
 		
 		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
 		try {			
@@ -39,8 +39,13 @@ public class AlunoController{
 		try {
 			//Cria um EnqueteDaoPostgres
 			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
+			//Pega a matricula do aluno que esta respondendo a enquete pelo token de acesso
+			String matAluno = requestContext
+					.getSecurityContext()
+						.getUserPrincipal()
+							.getName();			
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
-			if(enqueteDao.adicionarResposta(idEnquete, idAluno, resposta) == false)
+			if(enqueteDao.adicionarResposta(idEnquete, matAluno, resposta) == false)
 				throw new Exception("ERRO DE SQL");
 			//Se tudo certo retorna status 200
 			return Response.status(Response.Status.OK).build();

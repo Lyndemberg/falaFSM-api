@@ -104,6 +104,12 @@ public class AdministradorController {
 		//Caso token seja válido tenta salvar a enquete no BD		
 		try {
 			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
+			//Seta o email do admin que está criando a Enquete com base no token
+			enquete.setEmailAdmin(
+					requestContext
+						.getSecurityContext()
+							.getUserPrincipal()
+								.getName());			
 			//Cria um AdministradorDaoPostgres
 			if(enqueteDao.adicionar(enquete) == false)
 					throw new Exception("ERRO DE SQL");
