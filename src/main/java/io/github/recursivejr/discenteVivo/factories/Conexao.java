@@ -11,7 +11,7 @@ public class Conexao {
     
     public static Connection getConnection() throws SQLException, ClassNotFoundException{
         Class.forName("org.postgresql.Driver");
-        return DriverManager.getConnection(url, usuario, senha);
+        return DriverManager.getConnection(url);
     }
 
 }
