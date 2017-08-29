@@ -5,18 +5,18 @@ import java.util.List;
 public class Aluno extends Usuario {
 
     private String matricula;
-    private List<Curso> cursos;
+    private List<String> cursos;
     
 	public Aluno(String nome, String email, String login, String senha, Endereco endereco, String matricula,
-			List<Curso> cursos) {
+			List<String> cursos) {
 		super(nome, email, login, senha, endereco);
 		this.matricula = matricula;
 		this.cursos = cursos;
 	}
-
-    public Aluno() {
-    	super();
-    }
+    
+	public Aluno() {
+		super();
+	}
 
 	public String getMatricula() {
 		return matricula;
@@ -26,11 +26,11 @@ public class Aluno extends Usuario {
 		this.matricula = matricula;
 	}
 
-	public List<Curso> getCursos() {
+	public List<String> getCursos() {
 		return cursos;
 	}
 
-	public void setCursos(List<Curso> cursos) {
+	public void setCursos(List<String> cursos) {
 		this.cursos = cursos;
 	}
 
@@ -69,5 +69,5 @@ public class Aluno extends Usuario {
 	public String toString() {
 		return "Aluno [matricula=" + matricula + ", cursos=" + cursos + "]";
 	}
-    
+	
 }
