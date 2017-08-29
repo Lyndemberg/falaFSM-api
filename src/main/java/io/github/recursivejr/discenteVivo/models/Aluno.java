@@ -5,59 +5,69 @@ import java.util.List;
 public class Aluno extends Usuario {
 
     private String matricula;
-    private List<Sugestao> sugestoes;
-
-    public Aluno(String nome, String email, String login, String senha, Endereco endereco, String matricula, List<Sugestao> sugestoes) {
-        super(nome, email, login, senha, endereco);
-        this.matricula = matricula;
-        this.sugestoes = sugestoes;
-    }
+    private List<Curso> cursos;
+    
+	public Aluno(String nome, String email, String login, String senha, Endereco endereco, String matricula,
+			List<Curso> cursos) {
+		super(nome, email, login, senha, endereco);
+		this.matricula = matricula;
+		this.cursos = cursos;
+	}
 
     public Aluno() {
-
+    	super();
     }
 
-    public String getMatricula() {
-        return matricula;
-    }
+	public String getMatricula() {
+		return matricula;
+	}
 
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
-    }
+	public void setMatricula(String matricula) {
+		this.matricula = matricula;
+	}
 
-    public List<Sugestao> getSugestoes() {
-        return sugestoes;
-    }
+	public List<Curso> getCursos() {
+		return cursos;
+	}
 
-    public void setSugestoes(List<Sugestao> sugestoes) {
-        this.sugestoes = sugestoes;
-    }
+	public void setCursos(List<Curso> cursos) {
+		this.cursos = cursos;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((cursos == null) ? 0 : cursos.hashCode());
+		result = prime * result + ((matricula == null) ? 0 : matricula.hashCode());
+		return result;
+	}
 
-        Aluno aluno = (Aluno) o;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Aluno other = (Aluno) obj;
+		if (cursos == null) {
+			if (other.cursos != null)
+				return false;
+		} else if (!cursos.equals(other.cursos))
+			return false;
+		if (matricula == null) {
+			if (other.matricula != null)
+				return false;
+		} else if (!matricula.equals(other.matricula))
+			return false;
+		return true;
+	}
 
-        if (!matricula.equals(aluno.matricula)) return false;
-        return sugestoes.equals(aluno.sugestoes);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + matricula.hashCode();
-        result = 31 * result + sugestoes.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Aluno{" +
-                "matricula='" + matricula + '\'' +
-                ", sugestoes=" + sugestoes +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Aluno [matricula=" + matricula + ", cursos=" + cursos + "]";
+	}
+    
 }

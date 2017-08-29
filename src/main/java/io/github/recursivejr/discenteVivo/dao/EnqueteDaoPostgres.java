@@ -88,8 +88,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
                     ++aux;
                 }                
-            }   
-
+            }
             stmt.close();
             conn.close();
 
