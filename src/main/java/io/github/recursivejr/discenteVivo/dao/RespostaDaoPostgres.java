@@ -7,11 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Resposta;
-import io.github.recursivejr.discenteVivo.resources.Encryption;
 
 public class RespostaDaoPostgres implements RespostaDaoInterface{
     private final Connection conn;

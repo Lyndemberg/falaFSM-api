@@ -12,8 +12,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.github.recursivejr.discenteVivo.dao.EnqueteDaoPostgres;
+import io.github.recursivejr.discenteVivo.dao.RespostaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
+import io.github.recursivejr.discenteVivo.models.Resposta;
 
 @Path("aluno")
 public class AlunoController{
@@ -44,14 +45,15 @@ public class AlunoController{
 		//Caso token seja válido tenta salvar a nova resposta no BD
 		try {
 			//Cria um EnqueteDaoPostgres
-			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
+			RespostaDaoPostgres respostaDao = new RespostaDaoPostgres();
 			//Pega a matricula do aluno que esta respondendo a enquete pelo token de acesso
 			String matAluno = requestContext
 					.getSecurityContext()
 						.getUserPrincipal()
 							.getName();			
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
-			if(enqueteDao.adicionarResposta(idEnquete, matAluno, resposta) == false)
+			Resposta resp = new Resposta(idEnquete, resposta, matAluno);
+			if(respostaDao.adicionar(resp) == false)
 				throw new Exception("ERRO DE SQL");
 			//Se tudo certo retorna status 200
 			return Response.status(Response.Status.OK).build();
