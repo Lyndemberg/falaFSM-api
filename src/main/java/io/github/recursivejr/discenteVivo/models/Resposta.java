@@ -4,16 +4,16 @@ public class Resposta {
 
     private int idResposta;
     private String resposta;
-    private int alunoId;
-
-    public Resposta(int idResposta, String resposta, int alunoId) {
-        this.idResposta = idResposta;
-        this.resposta = resposta;
-        this.alunoId = alunoId;
-    }
-
+    private String matAluno;
+    
+	public Resposta(int idResposta, String resposta, String matAluno) {
+		this.idResposta = idResposta;
+		this.resposta = resposta;
+		this.matAluno = matAluno;
+	}
+    
     public Resposta() {
-
+    	
     }
 
 	public int getIdResposta() {
@@ -32,20 +32,20 @@ public class Resposta {
 		this.resposta = resposta;
 	}
 
-	public int getAlunoId() {
-		return alunoId;
+	public String getMatAluno() {
+		return matAluno;
 	}
 
-	public void setAlunoId(int alunoId) {
-		this.alunoId = alunoId;
+	public void setMatAluno(String matAluno) {
+		this.matAluno = matAluno;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + alunoId;
 		result = prime * result + idResposta;
+		result = prime * result + ((matAluno == null) ? 0 : matAluno.hashCode());
 		result = prime * result + ((resposta == null) ? 0 : resposta.hashCode());
 		return result;
 	}
@@ -59,9 +59,12 @@ public class Resposta {
 		if (getClass() != obj.getClass())
 			return false;
 		Resposta other = (Resposta) obj;
-		if (alunoId != other.alunoId)
-			return false;
 		if (idResposta != other.idResposta)
+			return false;
+		if (matAluno == null) {
+			if (other.matAluno != null)
+				return false;
+		} else if (!matAluno.equals(other.matAluno))
 			return false;
 		if (resposta == null) {
 			if (other.resposta != null)
@@ -73,9 +76,7 @@ public class Resposta {
 
 	@Override
 	public String toString() {
-		return "Resposta [idResposta=" + idResposta + ", resposta=" + resposta + ", alunoId=" + alunoId + "]";
+		return "Resposta [idResposta=" + idResposta + ", resposta=" + resposta + ", matAluno=" + matAluno + "]";
 	}
-
-    
     
 }
