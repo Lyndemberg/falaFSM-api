@@ -1,6 +1,10 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -30,11 +34,9 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
             int IDENQUETE = buscarId(enquete.getNome());
             
-            System.out.printf("\n\nPEGUEI O ID : " + IDENQUETE);
-
-            List<String> comentarios = new ArrayList();            
-            List<String> opcoes = new ArrayList();
-            List<Resposta> respostas = new ArrayList();
+            List<String> comentarios = new ArrayList<>();            
+            List<String> opcoes = new ArrayList<>();
+            List<Resposta> respostas = new ArrayList<>();
 
             if (enquete.getComentarios() != null) {
             	comentarios.addAll(enquete.getComentarios());
@@ -123,9 +125,9 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-                List<String> comentarios = null;
-                List<String> opcoes = null;
-                List<Resposta> respostas = null;
+                List<String> comentarios = new ArrayList<>();
+                List<String> opcoes = new ArrayList<>();
+                List<Resposta> respostas = new ArrayList<>();
 
                 Enquete enquete = new Enquete();
                 enquete.setId(rs.getInt("id"));
@@ -134,22 +136,28 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 enquete.setFoto(rs.getString("foto"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
+                //Instancia um Statement interno ao while
+                Statement internalStmt = conn.createStatement();
+                
+                //Percorre todos os Comentarios e adiciona cada um ao Arraylist desta enquete
                 String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
-                ResultSet rsListas = stmt.executeQuery(sqlComentarios);
+                ResultSet rsListas = internalStmt.executeQuery(sqlComentarios);
                 while (rsListas.next()){
                     comentarios.add(rs.getString("comentario"));
                 }
                 enquete.setComentarios(comentarios);
 
+                //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
                 String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
-                rsListas = stmt.executeQuery(sqlOpcoes);
+                rsListas = internalStmt.executeQuery(sqlOpcoes);
                 while (rsListas.next()){
                     opcoes.add(rs.getString("opcao"));
                 }
                 enquete.setOpcoes(opcoes);
 
+                //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquete
                 String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + enquete.getId() + ";";
-                rsListas = stmt.executeQuery(sqlRespostas);
+                rsListas = internalStmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
                     Resposta resposta = new Resposta();
                     resposta.setResposta(rs.getString("resposta"));
@@ -160,6 +168,8 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 
                 enquetes.add(enquete);
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -174,9 +184,9 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
-                List<String> comentarios = null;
-                List<String> opcoes = null;
-                List<Resposta> respostas = null;
+                List<String> comentarios = new ArrayList<>();
+                List<String> opcoes = new ArrayList<>();
+                List<Resposta> respostas = new ArrayList<>();
 
                 enquete = new Enquete();
                 enquete.setId(rs.getInt("id"));
@@ -185,6 +195,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 enquete.setFoto(rs.getString("foto"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
+                //Percorre todos os comentarios e adiciona cada um ao Arraylist desta enquete
                 String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
                 ResultSet rsListas = stmt.executeQuery(sqlComentarios);
                 while (rsListas.next()){
@@ -192,6 +203,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 }
                 enquete.setOpcoes(comentarios);
 
+                //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
                 String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = stmt.executeQuery(sqlOpcoes);
                 while (rsListas.next()){
@@ -199,6 +211,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 }
                 enquete.setOpcoes(opcoes);
 
+                //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquet
                 String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = stmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
@@ -207,9 +220,9 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                     resp.setAlunoId(rs.getInt("aluno"));
                 }
                 enquete.setRespostas(respostas);
-                stmt.close();
-                conn.close();
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -224,9 +237,9 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 aux = rs.getInt("id");
-                stmt.close();
-                conn.close();
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
