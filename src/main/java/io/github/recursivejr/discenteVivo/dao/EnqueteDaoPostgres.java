@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Enquete;
@@ -203,5 +202,115 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             ex.printStackTrace();
         }
         return aux;
+    }
+    
+    public List<Enquete> enquetesPorSetor(String nomeSetor) {
+    	List<Enquete> enquetes = new ArrayList<>();
+        String sql = "SELECT E.* FROM Enquete E, EnquetesSetor ES " + 
+        		"WHERE E.Id = ES.idEnquete AND ES.nomeSetor ILIKE " + nomeSetor +";";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                List<String> comentarios = new ArrayList<>();
+                List<String> opcoes = new ArrayList<>();
+                List<Resposta> respostas = new ArrayList<>();
+
+                Enquete enquete = new Enquete();
+                enquete.setId(rs.getInt("id"));
+                enquete.setNome(rs.getString("nome"));
+                enquete.setDescricao(rs.getString("descricao"));
+                enquete.setFoto(rs.getString("foto"));
+                enquete.setEmailAdmin(rs.getString("emailAdmin"));
+                
+                Statement internalStmt = conn.createStatement();
+
+                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
+                ResultSet rsListas = internalStmt.executeQuery(sqlComentarios);
+                while (rsListas.next()){
+                    comentarios.add(rsListas.getString("comentario"));
+                }
+                enquete.setComentarios(comentarios);
+
+                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
+                rsListas = internalStmt.executeQuery(sqlOpcoes);
+                while (rsListas.next()){
+                    opcoes.add(rsListas.getString("opcao"));
+                }
+                enquete.setOpcoes(opcoes);
+
+                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
+                rsListas = internalStmt.executeQuery(sqlRespostas);
+                while (rsListas.next()){
+                    Resposta resposta = new Resposta();
+                    resposta.setResposta(rsListas.getString("Resposta"));
+                    resposta.setMatAluno(rsListas.getString("matriculaAluno"));
+                }
+                enquete.setRespostas(respostas);
+             
+                enquetes.add(enquete);
+                internalStmt.close();
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return enquetes;
+    }
+    
+    public List<Enquete> enquetesPorCurso(String nomeCurso) {
+    	List<Enquete> enquetes = new ArrayList<>();
+        String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " + 
+        		"WHERE E.Id = EC.idEnquete AND EC.nomeSetor ILIKE " + nomeCurso +";";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                List<String> comentarios = new ArrayList<>();
+                List<String> opcoes = new ArrayList<>();
+                List<Resposta> respostas = new ArrayList<>();
+
+                Enquete enquete = new Enquete();
+                enquete.setId(rs.getInt("id"));
+                enquete.setNome(rs.getString("nome"));
+                enquete.setDescricao(rs.getString("descricao"));
+                enquete.setFoto(rs.getString("foto"));
+                enquete.setEmailAdmin(rs.getString("emailAdmin"));
+                
+                Statement internalStmt = conn.createStatement();
+
+                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
+                ResultSet rsListas = internalStmt.executeQuery(sqlComentarios);
+                while (rsListas.next()){
+                    comentarios.add(rsListas.getString("comentario"));
+                }
+                enquete.setComentarios(comentarios);
+
+                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
+                rsListas = internalStmt.executeQuery(sqlOpcoes);
+                while (rsListas.next()){
+                    opcoes.add(rsListas.getString("opcao"));
+                }
+                enquete.setOpcoes(opcoes);
+
+                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
+                rsListas = internalStmt.executeQuery(sqlRespostas);
+                while (rsListas.next()){
+                    Resposta resposta = new Resposta();
+                    resposta.setResposta(rsListas.getString("Resposta"));
+                    resposta.setMatAluno(rsListas.getString("matriculaAluno"));
+                }
+                enquete.setRespostas(respostas);
+             
+                enquetes.add(enquete);
+                internalStmt.close();
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return enquetes;
     }
 }
