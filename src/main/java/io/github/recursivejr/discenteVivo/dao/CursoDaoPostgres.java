@@ -1,11 +1,16 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Curso;
-import io.github.recursivejr.discenteVivo.resources.Encryption;
 
 public class CursoDaoPostgres implements CursoDaoInterface{
     private final Connection conn;
@@ -16,12 +21,13 @@ public class CursoDaoPostgres implements CursoDaoInterface{
     
     @Override
     public boolean adicionar(Curso curso) {
-        String sql = "INSERT INTO Curso(nome) VALUES (?)";
+        String sql = "INSERT INTO Curso(nome) VALUES (?);";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, curso.getNome());
             stmt.executeUpdate();
             stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
@@ -35,19 +41,19 @@ public class CursoDaoPostgres implements CursoDaoInterface{
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
+            
             stmt.close();
             conn.close();
-            
         } catch (SQLException ex) {
-                ex.printStackTrace(); 
+        	ex.printStackTrace(); 
         }
         return true;
     }
 
     @Override
     public List<Curso> listar() {
-        List<Curso> cursos = null;
-        String sql = "SELECT * FROM Curso";
+        List<Curso> cursos = new ArrayList<>();
+        String sql = "SELECT * FROM Curso;";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -57,6 +63,8 @@ public class CursoDaoPostgres implements CursoDaoInterface{
                 
                 cursos.add(curso);
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -65,7 +73,7 @@ public class CursoDaoPostgres implements CursoDaoInterface{
 
     @Override
     public Curso buscar(String nome) {
-        String sql = "SELECT * FROM Curso WHERE nome ILIKE" + nome;
+        String sql = "SELECT * FROM Curso WHERE nome ILIKE " + nome + ";";
         Curso curso = null;
         try {
             Statement stmt = conn.createStatement();
@@ -73,9 +81,9 @@ public class CursoDaoPostgres implements CursoDaoInterface{
             if(rs.next()){
                 curso = new Curso();
                 curso.setNome(rs.getString("nome"));
-                stmt.close();
-                conn.close();
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
