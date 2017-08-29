@@ -121,7 +121,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 
     @Override
     public Aluno buscar(String email) {
-        String sql = "SELECT * FROM Aluno WHERE email ILIKE" + email;
+        String sql = "SELECT * FROM Aluno WHERE email ILIKE " + email + ";";
         Aluno aluno = null;
         try {
             Statement stmt = conn.createStatement();
@@ -152,10 +152,9 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                 internalStmt.close();
                 
                 aluno.setCursos(cursos);
-                
-                stmt.close();
-                conn.close();
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

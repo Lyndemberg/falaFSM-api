@@ -33,27 +33,8 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             stmt.executeUpdate();
 
             int IDENQUETE = buscarId(enquete.getNome());
-            
-            List<String> comentarios = new ArrayList<>();            
+                      
             List<String> opcoes = new ArrayList<>();
-            List<Resposta> respostas = new ArrayList<>();
-
-            if (enquete.getComentarios() != null) {
-            	comentarios.addAll(enquete.getComentarios());
-                int aux = 0;
-                while(aux <= comentarios.size()){
-
-                    sql = "INSERT INTO Comentarios (IDENQUETE, COMENTARIO) VALUES (?,?);";
-                    stmt = conn.prepareStatement(sql);
-
-                    stmt.setInt(1,IDENQUETE);
-                    stmt.setString(2, comentarios.get(aux));
-                    stmt = conn.prepareStatement(sql);
-                    stmt.executeUpdate();
-
-                    ++aux;
-                }                
-            }
 
             if (enquete.getOpcoes() != null) {
             	opcoes.addAll(enquete.getOpcoes());
@@ -71,24 +52,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                     ++aux;
                 }                
             }
-
-            if (enquete.getRespostas() != null) {
-                respostas.addAll(enquete.getRespostas());
-            	int aux = 0;
-                while(aux <= respostas.size()){
-
-                    sql = "INSERT INTO Respostas (IDENQUETE, IDALUNO, COMENTARIO) VALUES (?,?,?);";
-                    stmt = conn.prepareStatement(sql);
-
-                    stmt.setInt(1,IDENQUETE);
-                    stmt.setString(2, respostas.get(aux).getMatAluno());
-                    stmt.setString(3, respostas.get(aux).getResposta());
-                    stmt = conn.prepareStatement(sql);
-                    stmt.executeUpdate();
-
-                    ++aux;
-                }                
-            }
+            
             stmt.close();
             conn.close();
 
@@ -102,7 +66,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     public boolean remover(Enquete enquete) {
         String sql = "DELETE FROM Comentario WHERE IDEnquete ILIKE " + enquete.getId() + ";"
                 + "DELETE FROM Opcoes WHERE IDEnquete ILIKE " + enquete.getId() + ";"
-                + "DELETE FROM Respostas WHERE IDEnquete ILIKE " + enquete.getId() + ";"
+                + "DELETE FROM RespondeEnquete WHERE IDEnquete ILIKE " + enquete.getId() + ";"
                 + "DELETE FROM Enquete WHERE ID ILIKE " + enquete.getId() + ";";
         try {
             Statement stmt = conn.createStatement();
@@ -151,12 +115,12 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 }
                 enquete.setOpcoes(opcoes);
 
-                String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + enquete.getId() + ";";
+                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = internalStmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
                     Resposta resposta = new Resposta();
-                    resposta.setResposta(rsListas.getString("resposta"));
-                    resposta.setMatAluno(rsListas.getString("matAluno"));
+                    resposta.setResposta(rsListas.getString("Resposta"));
+                    resposta.setMatAluno(rsListas.getString("matriculaAluno"));
                 }
                 enquete.setRespostas(respostas);
              
@@ -207,12 +171,12 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 enquete.setOpcoes(opcoes);
 
                 //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquet
-                String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + enquete.getId() + ";";
+                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = stmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
                     Resposta resp = new Resposta();
-                    resp.setResposta(rs.getString("resposta"));
-                    resp.setMatAluno(rs.getString("matAluno"));
+                    resp.setResposta(rs.getString("Resposta"));
+                    resp.setMatAluno(rs.getString("matriculaAluno"));
                 }
                 enquete.setRespostas(respostas);
             }
@@ -240,66 +204,4 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
         }
         return aux;
     }
-
-    public boolean adicionarResposta(int IdEnquete, String matAluno, String resposta) {
-        String sql = "INSERT INTO Respostas (IDENQUETE, MATALUNO, RESPOSTA) VALUES (?,?,?);";
-                   
-        try {
-        	PreparedStatement stmt = conn.prepareStatement(sql);
-        	
-            stmt.setInt(1,IdEnquete);
-            stmt.setString(2, matAluno);
-            stmt.setString(3, resposta);
-            stmt.executeUpdate();
-            
-            stmt.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        
-        return true;
-    }
-    
-    public String[][] relatorio(String nome) {
-    	String sql = "SELECT Id FROM Enquete WHERE Nome ILIKE " + nome + ";";
-    	
-    	//Matriz de resposta[opçao][numVotos]
-    	String respostas[][] = new String[1][1];
-    	
-    	respostas[0][0] = "Não";
-        respostas[0][1] = "0";
-        respostas[1][1] = "Sim";
-        respostas[1][1] = "0";
-    	
-    	try {
-    		Statement stmt = conn.createStatement();
-    		ResultSet rs = stmt.executeQuery(sql);
-    		
-    		if(rs.next()) {
-    			String idEnquete = rs.getString("id");
-    			
-    			//Recuperando as Respostas
-    			 String sqlRespostas = "SELECT * FROM Respostas WHERE IDEnquete = " + idEnquete + ";";
-                 ResultSet rsListas = stmt.executeQuery(sqlRespostas); 
-                 
-                 while (rsListas.next()){
-                	 if (rs.getString("resposta") == "Não") {
-                		 respostas[0][1] = String.valueOf((Integer.parseInt(respostas[0][1]) + 1));
-                	 } else {
-                		 respostas[1][1] = String.valueOf((Integer.parseInt(respostas[1][1]) + 1));
-                	 }
-                	 
-                     Resposta resp = new Resposta();
-                     resp.setResposta(rs.getString("resposta"));
-                     resp.setMatAluno(rs.getString("matAluno"));
-                 }
-    		}
-    		
-		} catch (SQLException ex) {
-			Logger.getLogger(ex.getMessage());
-		}
-    	return respostas;
-    }
-
 }

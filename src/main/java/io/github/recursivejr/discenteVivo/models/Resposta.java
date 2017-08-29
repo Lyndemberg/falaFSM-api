@@ -2,26 +2,26 @@ package io.github.recursivejr.discenteVivo.models;
 
 public class Resposta {
 
-    private int idResposta;
+    private int idEnquete;
     private String resposta;
     private String matAluno;
     
-	public Resposta(int idResposta, String resposta, String matAluno) {
-		this.idResposta = idResposta;
+	public Resposta(int idEnquete, String resposta, String matAluno) {
+		this.idEnquete = idEnquete;
 		this.resposta = resposta;
 		this.matAluno = matAluno;
 	}
     
-    public Resposta() {
-    	
-    }
-
-	public int getIdResposta() {
-		return idResposta;
+	public Resposta() {
+		
 	}
 
-	public void setIdResposta(int idResposta) {
-		this.idResposta = idResposta;
+	public int getIdEnquete() {
+		return idEnquete;
+	}
+
+	public void setIdEnquete(int idEnquete) {
+		this.idEnquete = idEnquete;
 	}
 
 	public String getResposta() {
@@ -44,7 +44,7 @@ public class Resposta {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + idResposta;
+		result = prime * result + idEnquete;
 		result = prime * result + ((matAluno == null) ? 0 : matAluno.hashCode());
 		result = prime * result + ((resposta == null) ? 0 : resposta.hashCode());
 		return result;
@@ -59,7 +59,7 @@ public class Resposta {
 		if (getClass() != obj.getClass())
 			return false;
 		Resposta other = (Resposta) obj;
-		if (idResposta != other.idResposta)
+		if (idEnquete != other.idEnquete)
 			return false;
 		if (matAluno == null) {
 			if (other.matAluno != null)
@@ -76,7 +76,7 @@ public class Resposta {
 
 	@Override
 	public String toString() {
-		return "Resposta [idResposta=" + idResposta + ", resposta=" + resposta + ", matAluno=" + matAluno + "]";
+		return "Resposta [idEnquete=" + idEnquete + ", resposta=" + resposta + ", matAluno=" + matAluno + "]";
 	}
-    
+	   
 }
