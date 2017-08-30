@@ -6,6 +6,7 @@ import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.CursoDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.EnqueteDaoPostgres;
+import io.github.recursivejr.discenteVivo.dao.OpcaoDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.RespostaDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.SetorDaoPostgres;
 
@@ -52,5 +53,10 @@ public class FabricaDaoPostgres implements FabricaDaoInterface {
 		return respDao;
 	}
 	
+	@Override
+	public OpcaoDaoPostgres criarOpcaoDao() throws ClassNotFoundException, SQLException {
+		OpcaoDaoPostgres opcaoDao = new OpcaoDaoPostgres();
+		return opcaoDao;
+	}
 	
 }
