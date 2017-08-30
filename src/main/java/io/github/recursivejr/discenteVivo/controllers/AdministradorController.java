@@ -1,7 +1,6 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;

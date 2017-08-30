@@ -9,21 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
-import io.github.recursivejr.discenteVivo.models.Curso;
+import io.github.recursivejr.discenteVivo.models.Setor;
 
-public class CursoDaoPostgres implements CursoDaoInterface{
+public class SetorDaoPostgres implements SetorDaoInterface{
     private final Connection conn;
 
-    public CursoDaoPostgres() throws SQLException, ClassNotFoundException {
+    public SetorDaoPostgres() throws SQLException, ClassNotFoundException {
         conn = Conexao.getConnection();
     }
     
     @Override
-    public boolean adicionar(Curso curso) {
-        String sql = "INSERT INTO Curso(nome) VALUES (?);";
+    public boolean adicionar(Setor setor) {
+        String sql = "INSERT INTO Setor(nome) VALUES (?);";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, curso.getNome());
+            stmt.setString(1, setor.getNome());
             stmt.executeUpdate();
             stmt.close();
             conn.close();
@@ -35,9 +35,9 @@ public class CursoDaoPostgres implements CursoDaoInterface{
     }
 
     @Override
-    public boolean remover(Curso curso) {
-        String sql = "DELETE FROM EnquetesCurso WHERE nomeCurso ILIKE " + curso.getNome() + "; " +
-        				"DELETE FROM Curso WHERE nome ILIKE " + curso.getNome() + ";";
+    public boolean remover(Setor setor) {
+        String sql = "DELETE FROM EnquetesSetor WHERE nomeSetor ILIKE " + setor.getNome() + "; " +
+        				"DELETE FROM Setor WHERE nome ILIKE " + setor.getNome() + ";";
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
@@ -51,49 +51,50 @@ public class CursoDaoPostgres implements CursoDaoInterface{
     }
 
     @Override
-    public List<Curso> listar() {
-        List<Curso> cursos = new ArrayList<>();
-        String sql = "SELECT * FROM Curso;";
+    public List<Setor> listar() {
+        List<Setor> setores = new ArrayList<>();
+        String sql = "SELECT * FROM Setor;";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-                Curso curso = new Curso();
-                curso.setNome(rs.getString("nome"));
+            	Setor setor = new Setor();
+            	setor.setNome(rs.getString("nome"));
+            	
+            	EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
+            	
+            	setor.setEnquetes(enqueteDao.enquetesPorSetor(setor.getNome()));
                 
-                EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();            	
-                curso.setEnquetes(enqueteDao.enquetesPorCurso(curso.getNome()));
-                
-                cursos.add(curso);
+            	setores.add(setor);
             }
             stmt.close();
             conn.close();
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        return cursos;
+        return setores;
     }
 
     @Override
-    public Curso buscar(String nome) {
-        String sql = "SELECT * FROM Curso WHERE nome ILIKE " + nome + ";";
-        Curso curso = null;
+    public Setor buscar(String nome) {
+        String sql = "SELECT * FROM Setor WHERE nome ILIKE " + nome + ";";
+        Setor setor = null;
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
-                curso = new Curso();
-                curso.setNome(rs.getString("nome"));
+                setor = new Setor();
+                setor.setNome(rs.getString("nome"));
                 
-                EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();            	
-                curso.setEnquetes(enqueteDao.enquetesPorCurso(curso.getNome()));
+                EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
+            	setor.setEnquetes(enqueteDao.enquetesPorSetor(setor.getNome()));
             }
             stmt.close();
             conn.close();
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        return curso;
+        return setor;
     }
 
 }

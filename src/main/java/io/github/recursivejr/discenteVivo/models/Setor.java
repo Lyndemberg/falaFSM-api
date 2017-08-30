@@ -5,69 +5,67 @@ import java.util.List;
 public class Setor {
 
     private String nome;
-    private List<Sugestao> sugestoes;
     private List<Enquete> enquetes;
-
-    public Setor(String nome, List<Sugestao> sugestoes, List<Enquete> enquetes) {
-        this.nome = nome;
-        this.sugestoes = sugestoes;
-        this.enquetes = enquetes;
-    }
+    
+	public Setor(String nome, List<Enquete> enquetes) {
+		this.nome = nome;
+		this.enquetes = enquetes;
+	}
 
     public Setor() {
-
+    	
     }
 
-    public String getNome() {
-        return nome;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public List<Sugestao> getSugestoes() {
-        return sugestoes;
-    }
+	public List<Enquete> getEnquetes() {
+		return enquetes;
+	}
 
-    public void setSugestoes(List<Sugestao> sugestoes) {
-        this.sugestoes = sugestoes;
-    }
+	public void setEnquetes(List<Enquete> enquetes) {
+		this.enquetes = enquetes;
+	}
 
-    public List<Enquete> getEnquetes() {
-        return enquetes;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((enquetes == null) ? 0 : enquetes.hashCode());
+		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		return result;
+	}
 
-    public void setEnquetes(List<Enquete> enquetes) {
-        this.enquetes = enquetes;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Setor other = (Setor) obj;
+		if (enquetes == null) {
+			if (other.enquetes != null)
+				return false;
+		} else if (!enquetes.equals(other.enquetes))
+			return false;
+		if (nome == null) {
+			if (other.nome != null)
+				return false;
+		} else if (!nome.equals(other.nome))
+			return false;
+		return true;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Setor setor = (Setor) o;
-
-        if (!nome.equals(setor.nome)) return false;
-        if (!sugestoes.equals(setor.sugestoes)) return false;
-        return enquetes.equals(setor.enquetes);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = nome.hashCode();
-        result = 31 * result + sugestoes.hashCode();
-        result = 31 * result + enquetes.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Setor{" +
-                "nome='" + nome + '\'' +
-                ", sugestoes=" + sugestoes +
-                ", enquetes=" + enquetes +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Setor [nome=" + nome + ", enquetes=" + enquetes + "]";
+	}
+	
 }

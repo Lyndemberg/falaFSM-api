@@ -1,6 +1,11 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,7 +34,18 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
             stmt.setString(7, aluno.getEndereco().getRua());
             stmt.setString(8, aluno.getEndereco().getNumero());
             stmt.executeUpdate();
+            
+            //Seta os cursos do aluno na tabela AlunoCurso
+            sql = "INSERT INTO AlunoCurso(matriculaAluno, nomeCurso) VALUES (?,?);";
+            for(String curso: aluno.getCursos()) {
+            	stmt = conn.prepareStatement(sql);
+            	stmt.setString(1, aluno.getMatricula());
+            	stmt.setString(2, curso);
+            	stmt.executeUpdate();
+            }
+            
             stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
@@ -39,7 +55,19 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 
     @Override
     public boolean remover(Aluno aluno) {
-        String sql = "DELETE FROM Aluno WHERE matricula ILIKE " + aluno.getMatricula()+ ";";
+    	//Remove Aluno da tabela AlunoCurso = aluno frequenta curso
+    	String sql = "DELETE FROM AlunoCurso WHERE matriculaAluno ILIKE " + aluno.getMatricula() + ";";
+    	try {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+            
+        } catch (SQLException ex) {
+                ex.printStackTrace(); 
+        }
+    	
+    	//Remove o aluno da tabela aluno
+        sql = "DELETE FROM Aluno WHERE matricula ILIKE " + aluno.getMatricula()+ ";";
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
@@ -54,14 +82,14 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 
     @Override
     public List<Aluno> listar() {
-        List<Aluno> alunos = null;
+        List<Aluno> alunos = new ArrayList<>();
         String sql = "SELECT * FROM Aluno";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
                 Aluno aluno = new Aluno();
-                aluno.setMatricula(rs.getNString("matricula"));
+                aluno.setMatricula(rs.getString("matricula"));
                 aluno.setEmail(rs.getString("email"));
                 aluno.setNome(rs.getString("nome"));
                 aluno.setLogin(rs.getString("login"));
@@ -70,8 +98,26 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                 aluno.getEndereco().setCidade(rs.getString("cidade"));
                 aluno.getEndereco().setNumero(rs.getString("numero"));
                 
+                //Procura e Adiciona os cursos que este aluno frequenta
+                List<String> cursos = new ArrayList<>();
+                
+                String recuperaCursos = "SELECT * FROM AlunoCurso WHERE matriculaAluno ILIKE " + 
+                							aluno.getMatricula() + ";";
+                
+                Statement internalStmt = conn.createStatement();
+                ResultSet rsCursos = internalStmt.executeQuery(recuperaCursos);
+                
+                while(rsCursos.next()) {
+                	cursos.add(rsCursos.getString("nome"));
+                }
+                internalStmt.close();
+                
+                aluno.setCursos(cursos);
+                
                 alunos.add(aluno);
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -80,7 +126,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 
     @Override
     public Aluno buscar(String email) {
-        String sql = "SELECT * FROM Aluno WHERE email ILIKE" + email;
+        String sql = "SELECT * FROM Aluno WHERE email ILIKE " + email + ";";
         Aluno aluno = null;
         try {
             Statement stmt = conn.createStatement();
@@ -95,9 +141,25 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                 aluno.getEndereco().setCidade(rs.getString("cidade"));
                 aluno.getEndereco().setRua(rs.getString("rua"));
                 aluno.getEndereco().setNumero(rs.getString("numero"));
-                stmt.close();
-                conn.close();
+                
+                //Procura e Adiciona os cursos que este aluno frequenta
+                List<String> cursos = new ArrayList<>();
+                
+                String recuperaCursos = "SELECT * FROM AlunoCurso WHERE matriculaAluno ILIKE " + 
+                							aluno.getMatricula() + ";";
+                
+                Statement internalStmt = conn.createStatement();
+                ResultSet rsCursos = internalStmt.executeQuery(recuperaCursos);
+                
+                while(rsCursos.next()) {
+                	cursos.add(rsCursos.getString("nome"));
+                }
+                internalStmt.close();
+                
+                aluno.setCursos(cursos);
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -118,6 +180,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 				throw new Exception("Credenciais Inválidas");
 			}
 			
+			stmt.close();
+            conn.close();
 			return rs.getString("matricula");
 			
 		} catch (SQLException ex) {

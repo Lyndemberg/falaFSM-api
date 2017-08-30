@@ -4,147 +4,196 @@ import java.util.List;
 
 public class Enquete {
 
+	private int id;
+	private String emailAdmin;
     private String nome;
     private String descricao;
     private String foto;
-    private int id;
     private List<String> comentarios;
     private List<String> opcoes;
     private List<Resposta> respostas;
-    private String emailAdmin;
-
-    public Enquete(String nome, String descricao, String foto, int id, List<String> comentarios, List<String> opcoes, List<Resposta> respostas, String emailAdmin) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.foto = foto;
-        this.id = id;
-        this.comentarios = comentarios;
-        this.opcoes = opcoes;
-        this.respostas = respostas;
-        this.emailAdmin = emailAdmin;
-    }
-
-    public Enquete() {
-
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getFoto() {
-        return foto;
-    }
-
-    public void setFoto(String foto) {
-        this.foto = foto;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public List<String> getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentarios.add(comentario);
-    }
+    private List<Curso> cursos;
+    private List<Setor> setores;
     
-    public void setComentarios(List<String> comentarios) {
-        this.comentarios = comentarios;
-    }
-
-    public List<String> getOpcoes() {
-        return opcoes;
-    }
-
-    public void setOpcao(String opcao) {
-        this.opcoes.add(opcao);
-    }
+	public Enquete(int id, String emailAdmin, String nome, String descricao, String foto, List<String> comentarios,
+			List<String> opcoes, List<Resposta> respostas, List<Curso> cursos, List<Setor> setores) {
+		this.id = id;
+		this.emailAdmin = emailAdmin;
+		this.nome = nome;
+		this.descricao = descricao;
+		this.foto = foto;
+		this.comentarios = comentarios;
+		this.opcoes = opcoes;
+		this.respostas = respostas;
+		this.cursos = cursos;
+		this.setores = setores;
+	}
     
-    public void setOpcoes(List<String> opcoes) {
-        this.opcoes = opcoes;
-    }
+	public Enquete() {
+		
+	}
 
-    public List<Resposta> getRespostas() {
-        return respostas;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setResposta(Resposta resposta) {
-        this.respostas.add(resposta);
-    }
-    
-    public void setRespostas(List<Resposta> respostas) {
-        this.respostas = respostas;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public String getEmailAdmin() {
-        return emailAdmin;
-    }
+	public String getEmailAdmin() {
+		return emailAdmin;
+	}
 
-    public void setEmailAdmin(String emailAdmin) {
-        this.emailAdmin = emailAdmin;
-    }
+	public void setEmailAdmin(String emailAdmin) {
+		this.emailAdmin = emailAdmin;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	public String getNome() {
+		return nome;
+	}
 
-        Enquete enquete = (Enquete) o;
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-        if (id != enquete.id) return false;
-        if (!nome.equals(enquete.nome)) return false;
-        if (!descricao.equals(enquete.descricao)) return false;
-        if (foto != null ? !foto.equals(enquete.foto) : enquete.foto != null) return false;
-        if (comentarios != null ? !comentarios.equals(enquete.comentarios) : enquete.comentarios != null) return false;
-        if (opcoes != null ? !opcoes.equals(enquete.opcoes) : enquete.opcoes != null) return false;
-        if (respostas != null ? !respostas.equals(enquete.respostas) : enquete.respostas != null) return false;
-        return emailAdmin.equals(enquete.emailAdmin);
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 
-    @Override
-    public int hashCode() {
-        int result = nome.hashCode();
-        result = 31 * result + descricao.hashCode();
-        result = 31 * result + (foto != null ? foto.hashCode() : 0);
-        result = 31 * result + id;
-        result = 31 * result + (comentarios != null ? comentarios.hashCode() : 0);
-        result = 31 * result + (opcoes != null ? opcoes.hashCode() : 0);
-        result = 31 * result + (respostas != null ? respostas.hashCode() : 0);
-        result = 31 * result + emailAdmin.hashCode();
-        return result;
-    }
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
 
-    @Override
-    public String toString() {
-        return "Enquete{" +
-                "nome='" + nome + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", foto='" + foto + '\'' +
-                ", id=" + id +
-                ", comentarios=" + comentarios +
-                ", opcoes=" + opcoes +
-                ", respostas=" + respostas +
-                ", emailAdmin='" + emailAdmin + '\'' +
-                '}';
-    }
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
+	public List<String> getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(List<String> comentarios) {
+		this.comentarios = comentarios;
+	}
+
+	public List<String> getOpcoes() {
+		return opcoes;
+	}
+
+	public void setOpcoes(List<String> opcoes) {
+		this.opcoes = opcoes;
+	}
+
+	public List<Resposta> getRespostas() {
+		return respostas;
+	}
+
+	public void setRespostas(List<Resposta> respostas) {
+		this.respostas = respostas;
+	}
+
+	public List<Curso> getCursos() {
+		return cursos;
+	}
+
+	public void setCursos(List<Curso> cursos) {
+		this.cursos = cursos;
+	}
+
+	public List<Setor> getSetores() {
+		return setores;
+	}
+
+	public void setSetores(List<Setor> setores) {
+		this.setores = setores;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((comentarios == null) ? 0 : comentarios.hashCode());
+		result = prime * result + ((cursos == null) ? 0 : cursos.hashCode());
+		result = prime * result + ((descricao == null) ? 0 : descricao.hashCode());
+		result = prime * result + ((emailAdmin == null) ? 0 : emailAdmin.hashCode());
+		result = prime * result + ((foto == null) ? 0 : foto.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		result = prime * result + ((opcoes == null) ? 0 : opcoes.hashCode());
+		result = prime * result + ((respostas == null) ? 0 : respostas.hashCode());
+		result = prime * result + ((setores == null) ? 0 : setores.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Enquete other = (Enquete) obj;
+		if (comentarios == null) {
+			if (other.comentarios != null)
+				return false;
+		} else if (!comentarios.equals(other.comentarios))
+			return false;
+		if (cursos == null) {
+			if (other.cursos != null)
+				return false;
+		} else if (!cursos.equals(other.cursos))
+			return false;
+		if (descricao == null) {
+			if (other.descricao != null)
+				return false;
+		} else if (!descricao.equals(other.descricao))
+			return false;
+		if (emailAdmin == null) {
+			if (other.emailAdmin != null)
+				return false;
+		} else if (!emailAdmin.equals(other.emailAdmin))
+			return false;
+		if (foto == null) {
+			if (other.foto != null)
+				return false;
+		} else if (!foto.equals(other.foto))
+			return false;
+		if (id != other.id)
+			return false;
+		if (nome == null) {
+			if (other.nome != null)
+				return false;
+		} else if (!nome.equals(other.nome))
+			return false;
+		if (opcoes == null) {
+			if (other.opcoes != null)
+				return false;
+		} else if (!opcoes.equals(other.opcoes))
+			return false;
+		if (respostas == null) {
+			if (other.respostas != null)
+				return false;
+		} else if (!respostas.equals(other.respostas))
+			return false;
+		if (setores == null) {
+			if (other.setores != null)
+				return false;
+		} else if (!setores.equals(other.setores))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Enquete [id=" + id + ", emailAdmin=" + emailAdmin + ", nome=" + nome + ", descricao=" + descricao
+				+ ", foto=" + foto + ", comentarios=" + comentarios + ", opcoes=" + opcoes + ", respostas=" + respostas
+				+ ", cursos=" + cursos + ", setores=" + setores + "]";
+	}
+	
 }
