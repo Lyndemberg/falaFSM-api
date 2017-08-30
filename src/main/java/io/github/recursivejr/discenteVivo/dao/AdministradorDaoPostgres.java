@@ -1,6 +1,11 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -18,8 +23,10 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
     @Override
     public boolean adicionar(Administrador administrador) {
         String sql = "INSERT INTO Administrador(EMAIL,NOME,LOGIN,SENHA,CIDADE,RUA,NUMERO) VALUES (?,?,?,?,?,?,?);";
+        
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
+            
             stmt.setString(1, administrador.getEmail());
             stmt.setString(2, administrador.getNome());
             stmt.setString(3, administrador.getLogin());
@@ -27,8 +34,11 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
             stmt.setString(5, administrador.getEndereco().getCidade());
             stmt.setString(6, administrador.getEndereco().getRua());
             stmt.setString(7, administrador.getEndereco().getNumero());
+            
             stmt.executeUpdate();
+            
             stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
@@ -53,7 +63,7 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 
     @Override
     public List<Administrador> listar() {
-        List<Administrador> administradores = null;
+        List<Administrador> administradores = new ArrayList<>();
         String sql = "SELECT * FROM Administrador";
         try {
             Statement stmt = conn.createStatement();
@@ -70,6 +80,8 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
                 
                 administradores.add(administrador);
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -92,9 +104,9 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
                 administrador.getEndereco().setCidade(rs.getString("cidade"));
                 administrador.getEndereco().setRua(rs.getString("rua"));
                 administrador.getEndereco().setNumero(rs.getString("numero"));
-                stmt.close();
-                conn.close();
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -115,6 +127,8 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 				throw new Exception("Credenciais Inválidas");
 			}
 			
+			stmt.close();
+            conn.close();
 			return rs.getString("email");
 			
 		} catch (SQLException ex) {

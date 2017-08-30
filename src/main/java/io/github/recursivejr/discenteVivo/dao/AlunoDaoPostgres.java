@@ -45,6 +45,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
             }
             
             stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
@@ -54,6 +55,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 
     @Override
     public boolean remover(Aluno aluno) {
+    	//Remove Aluno da tabela AlunoCurso = aluno frequenta curso
     	String sql = "DELETE FROM AlunoCurso WHERE matriculaAluno ILIKE " + aluno.getMatricula() + ";";
     	try {
             Statement stmt = conn.createStatement();
@@ -64,6 +66,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                 ex.printStackTrace(); 
         }
     	
+    	//Remove o aluno da tabela aluno
         sql = "DELETE FROM Aluno WHERE matricula ILIKE " + aluno.getMatricula()+ ";";
         try {
             Statement stmt = conn.createStatement();
@@ -113,6 +116,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                 
                 alunos.add(aluno);
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -175,6 +180,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 				throw new Exception("Credenciais Inválidas");
 			}
 			
+			stmt.close();
+            conn.close();
 			return rs.getString("matricula");
 			
 		} catch (SQLException ex) {

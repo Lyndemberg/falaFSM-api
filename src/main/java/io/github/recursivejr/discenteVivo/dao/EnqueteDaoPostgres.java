@@ -99,14 +99,16 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
                 
                 Statement internalStmt = conn.createStatement();
-
+                
+                //Percorre todos os comentarios e adiciona cada um ao Arraylist desta enquete
                 String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
                 ResultSet rsListas = internalStmt.executeQuery(sqlComentarios);
                 while (rsListas.next()){
                     comentarios.add(rsListas.getString("comentario"));
                 }
                 enquete.setComentarios(comentarios);
-
+                
+                //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
                 String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = internalStmt.executeQuery(sqlOpcoes);
                 while (rsListas.next()){
@@ -114,6 +116,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 }
                 enquete.setOpcoes(opcoes);
 
+                //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquet
                 String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
                 rsListas = internalStmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
@@ -153,31 +156,35 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 enquete.setFoto(rs.getString("foto"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
+                Statement internalStmt = conn.createStatement();
+                
                 //Percorre todos os comentarios e adiciona cada um ao Arraylist desta enquete
                 String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
-                ResultSet rsListas = stmt.executeQuery(sqlComentarios);
+                ResultSet rsListas = internalStmt.executeQuery(sqlComentarios);
                 while (rsListas.next()){
-                    comentarios.add(rs.getString("comentario"));
+                    comentarios.add(rsListas.getString("comentario"));
                 }
-                enquete.setOpcoes(comentarios);
-
+                enquete.setComentarios(comentarios);
+                
                 //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
                 String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
-                rsListas = stmt.executeQuery(sqlOpcoes);
+                rsListas = internalStmt.executeQuery(sqlOpcoes);
                 while (rsListas.next()){
-                    opcoes.add(rs.getString("opcao"));
+                    opcoes.add(rsListas.getString("opcao"));
                 }
                 enquete.setOpcoes(opcoes);
 
                 //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquet
                 String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
-                rsListas = stmt.executeQuery(sqlRespostas);
+                rsListas = internalStmt.executeQuery(sqlRespostas);
                 while (rsListas.next()){
-                    Resposta resp = new Resposta();
-                    resp.setResposta(rs.getString("Resposta"));
-                    resp.setMatAluno(rs.getString("matriculaAluno"));
+                    Resposta resposta = new Resposta();
+                    resposta.setResposta(rsListas.getString("Resposta"));
+                    resposta.setMatAluno(rsListas.getString("matriculaAluno"));
                 }
+                
                 enquete.setRespostas(respostas);
+                internalStmt.close();
             }
             stmt.close();
             conn.close();

@@ -47,6 +47,7 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
+            conn.close();
             
         } catch (SQLException ex) {
                 ex.printStackTrace(); 
@@ -69,6 +70,8 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
                 
                 respostas.add(resp);
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
