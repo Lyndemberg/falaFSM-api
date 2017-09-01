@@ -180,9 +180,11 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 				throw new Exception("Credenciais Inválidas");
 			}
 			
+			String matricula = rs.getString("matricula");
+			
 			stmt.close();
             conn.close();
-			return rs.getString("matricula");
+			return matricula;
 			
 		} catch (SQLException ex) {
 			Logger.getLogger(ex.getMessage());
