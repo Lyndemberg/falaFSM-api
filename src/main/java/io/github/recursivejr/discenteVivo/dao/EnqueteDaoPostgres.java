@@ -72,7 +72,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
-            
+
             stmt.close();
             conn.close();
 
@@ -97,7 +97,14 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
         String sql = "SELECT * FROM Enquete WHERE id = " + id + ";";
 
-        return getEnquetes(sql).get(0);
+        List<Enquete> enquetes = getEnquetes(sql);
+
+        if (enquetes.isEmpty()) {
+            return null;
+        } else {
+            return enquetes.get(0);
+        }
+        
     }
 
     public int buscarId(String nome) {
@@ -134,14 +141,11 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     }
 
     private List<Enquete> getEnquetes(String sql){
-        List<Enquete> enquetes = null;
+        List<Enquete> enquetes = new ArrayList<>();
+
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-
-            ///Se houver enquetes
-            if(rs.first())
-                enquetes = new ArrayList<>();
 
             while(rs.next()) {
                 List<Comentario> comentarios = new ArrayList<>();
@@ -159,13 +163,13 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
                 //Percorre todos os comentarios e adiciona cada um ao Arraylist desta enquete
                 String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
-                ResultSet rsListas = internalStmt.executeQuery(sqlComentarios);
-                while (rsListas.next()) {
+                ResultSet rsLista = internalStmt.executeQuery(sqlComentarios);
+                while (rsLista.next()) {
 
                     Comentario comentario = new Comentario(
-                            rs.getInt("ID"),
-                            rs.getInt("IdEnquete"),
-                            rs.getString("Comentario")
+                            rsLista.getInt("ID"),
+                            rsLista.getInt("IdEnquete"),
+                            rsLista.getString("Comentario")
                     );
 
                     comentarios.add(comentario);
@@ -174,13 +178,13 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
                 //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
                 String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
-                rsListas = internalStmt.executeQuery(sqlOpcoes);
-                while (rsListas.next()) {
+                rsLista = internalStmt.executeQuery(sqlOpcoes);
+                while (rsLista.next()) {
 
                     Opcao opcao = new Opcao(
-                            rsListas.getInt("ID"),
-                            rs.getInt("IdEnquete"),
-                            rs.getString("Opcao")
+                            rsLista.getInt("ID"),
+                            rsLista.getInt("IdEnquete"),
+                            rsLista.getString("Opcao")
                     );
 
                     opcoes.add(opcao);
@@ -189,13 +193,13 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
                 //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquet
                 String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
-                rsListas = internalStmt.executeQuery(sqlRespostas);
-                while (rsListas.next()) {
+                rsLista = internalStmt.executeQuery(sqlRespostas);
+                while (rsLista.next()) {
 
                     Resposta resposta = new Resposta();
 
-                    resposta.setResposta(rsListas.getString("Resposta"));
-                    resposta.setMatAluno(rsListas.getString("matriculaAluno"));
+                    resposta.setResposta(rsLista.getString("Resposta"));
+                    resposta.setMatAluno(rsLista.getString("matriculaAluno"));
                 }
                 enquete.setRespostas(respostas);
 
