@@ -10,5 +10,6 @@ public interface AlunoDaoInterface {
     public boolean remover(Aluno aluno);
     public Aluno buscar(String Aluno);
     public List<Aluno> listar();
+    public String login(String login, String senha) throws Exception;
 
 }

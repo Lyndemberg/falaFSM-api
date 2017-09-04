@@ -25,22 +25,10 @@ public class AlunoController{
     @Path("responder/{idEnquete}/{resposta}")
 	public Response responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("resposta") String resposta,
 			@Context ContainerRequestContext requestContext) {
-		
-		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
-		try {			
-			FilterDetect fd = new FilterDetect();
-			fd.filter(requestContext);
-			/*
-				Verifica com base no token se é um administrador, apenas administradores posuem email no token
-					logo a condição de teste é possuir um "@" no token
-			 */
-			if(requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
-				throw new IOException("Não é Aluno");
-		} catch (IOException ioEx) {
-			ioEx.printStackTrace();
-			Logger.getLogger("AlunoController-log").info("Erro:" + ioEx.getStackTrace());
+
+		//Verifica se e um Aluno, caso nao seja entao retorna nao autorizado para o Cliente
+		if (!FilterDetect.checkAluno(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
 		
 		//Caso token seja válido tenta salvar a nova resposta no BD
 		try {

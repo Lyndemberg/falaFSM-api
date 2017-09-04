@@ -3,6 +3,7 @@ package io.github.recursivejr.discenteVivo.infraSecurity;
 import java.io.IOException;
 
 import java.security.Principal;
+import java.util.logging.Logger;
 
 import javax.annotation.Priority;
 
@@ -73,5 +74,48 @@ public class FilterDetect implements ContainerRequestFilter{
 
 			});
 	}
-	
+
+	//Retorna false se nao for admin, retorna true se for admin
+	public static boolean checkAdmin(ContainerRequestContext requestContext) {
+		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
+		try {
+			new FilterDetect().filter(requestContext);
+
+			/*
+				Verifica com base no token se é um administrador, apenas administradores posuem email no token
+					logo a condição de parada é possuir um "@" no token
+			*/
+			if(!requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
+				throw new IOException("Não é Administrador");
+
+			return true;
+
+		} catch (IOException ioEx) {
+			ioEx.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ioEx.getStackTrace());
+			return false;
+		}
+	}
+
+
+	public static boolean checkAluno(ContainerRequestContext requestContext) {
+		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
+		try {
+			new FilterDetect().filter(requestContext);
+
+			/*
+				Verifica com base no token se é um aluno, apenas administradores posuem email no token
+					logo a condição de teste é possuir um "@" no token
+			 */
+			if(requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
+				throw new IOException("Não é Aluno");
+
+			return true;
+
+		} catch (IOException ioEx) {
+			ioEx.printStackTrace();
+			Logger.getLogger("AlunoController-log").info("Erro:" + ioEx.getStackTrace());
+			return false;
+		}
+	}
 }

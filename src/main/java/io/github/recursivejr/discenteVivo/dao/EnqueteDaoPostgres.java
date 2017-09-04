@@ -107,6 +107,24 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
         
     }
 
+    @Override
+    public List<Enquete> enquetesPorSetor(String nomeSetor) {
+
+        String sql = "SELECT E.* FROM Enquete E, EnquetesSetor ES " +
+                "WHERE E.Id = ES.idEnquete AND ES.nomeSetor ILIKE " + nomeSetor +";";
+
+        return getEnquetes(sql);
+    }
+
+    @Override
+    public List<Enquete> enquetesPorCurso(String nomeCurso) {
+
+        String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " +
+                "WHERE E.Id = EC.idEnquete AND EC.nomeSetor ILIKE " + nomeCurso +";";
+
+        return getEnquetes(sql);
+    }
+
     public int buscarId(String nome) {
         String sql = "SELECT * FROM Enquete WHERE nome ILIKE '" + nome + "';";
         int aux = -1;
@@ -122,22 +140,6 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             ex.printStackTrace();
         }
         return aux;
-    }
-    
-    public List<Enquete> enquetesPorSetor(String nomeSetor) {
-
-        String sql = "SELECT E.* FROM Enquete E, EnquetesSetor ES " + 
-        		"WHERE E.Id = ES.idEnquete AND ES.nomeSetor ILIKE " + nomeSetor +";";
-
-        return getEnquetes(sql);
-    }
-    
-    public List<Enquete> enquetesPorCurso(String nomeCurso) {
-
-        String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " + 
-        		"WHERE E.Id = EC.idEnquete AND EC.nomeSetor ILIKE " + nomeCurso +";";
-
-        return getEnquetes(sql);
     }
 
     private List<Enquete> getEnquetes(String sql){

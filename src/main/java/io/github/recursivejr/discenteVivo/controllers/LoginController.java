@@ -13,8 +13,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 
+import io.github.recursivejr.discenteVivo.dao.AdministradorDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
+import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
+import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -31,7 +34,7 @@ public class LoginController {
 	public Response loginAluno(@PathParam("login") String login, @PathParam("senha") String senha) {
 		
 		try {
-			AlunoDaoPostgres alunoDao = new AlunoDaoPostgres();
+			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 			
 			String matricula = alunoDao.login(login, senha);
 			
@@ -52,7 +55,7 @@ public class LoginController {
 	public Response loginAdmin(@PathParam("login") String login, @PathParam("senha") String senha) {
 		
 		try {
-			AdministradorDaoPostgres adminDao = new AdministradorDaoPostgres();
+			AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
 			
 			String email = adminDao.login(login, senha);
 			

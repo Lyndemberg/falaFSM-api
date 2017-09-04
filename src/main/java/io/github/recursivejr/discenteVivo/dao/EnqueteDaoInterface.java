@@ -10,4 +10,6 @@ public interface EnqueteDaoInterface {
     public boolean remover(Enquete enquete);
     public Enquete buscar(String pesquisa);
     public List<Enquete> listar();
+    public List<Enquete> enquetesPorSetor(String nomeSetor);
+    public List<Enquete> enquetesPorCurso(String nomeCurso);
 }

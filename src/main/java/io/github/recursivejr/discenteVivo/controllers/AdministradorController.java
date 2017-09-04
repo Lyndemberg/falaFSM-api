@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
@@ -28,23 +27,11 @@ public class AdministradorController {
 	@Consumes(MediaType.APPLICATION_JSON)
     @Path("cadastrarAluno/")
 	public Response cadastrarAluno(Aluno aluno, @Context ContainerRequestContext requestContext) {
-		
-		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
-		try {			
-			FilterDetect fd = new FilterDetect();
-			fd.filter(requestContext);
-			/*
-				Verifica com base no token se é um administrador, apenas administradores posuem email no token
-					logo a condição de parada é possuir um "@" no token
-			*/
-			if(!requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
-				throw new IOException("Não é Administrador");
-		} catch (IOException ioEx) {
-			ioEx.printStackTrace();
-			Logger.getLogger("AdministradorController-log").info("Erro:" + ioEx.getStackTrace());
+
+		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
+		if (!FilterDetect.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
-		
+
 		//Caso token seja válido tenta salvar o aluno no BD
 		try {
 			//Cria um ALunoDaoPostgres
@@ -65,22 +52,10 @@ public class AdministradorController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("cadastrarAdmin/")
 	public Response cadastrarAdministrador(Administrador admin,  @Context ContainerRequestContext requestContext) {
-		
-		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
-		try {			
-			FilterDetect fd = new FilterDetect();
-			fd.filter(requestContext);
-			/*
-				Verifica com base no token se é um administrador, apenas administradores posuem email no token
-					logo a condição de parada é possuir um "@" no token
-			 */
-			if(!requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
-				throw new IOException("Não é Administrador");
-		} catch (IOException ioEx) {
-			ioEx.printStackTrace();
-			Logger.getLogger("AdministradorController-log").info("Erro:" + ioEx.getStackTrace());
+
+		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
+		if (!FilterDetect.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
 		
 		//Caso token seja válido tenta salvar o administrador no BD
 		try {
@@ -102,21 +77,9 @@ public class AdministradorController {
 	@Path("cadastrarEnquete/")
 	public Response cadastrarEnquete(Enquete enquete, @Context ContainerRequestContext requestContext) {
 
-		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
-		try {			
-			FilterDetect fd = new FilterDetect();
-			fd.filter(requestContext);
-			/*
-				Verifica com base no token se é um administrador, apenas administradores posuem email no token
-					logo a condição de parada é possuir um "@" no token
-			 */
-			if(!requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
-				throw new IOException("Não é Administrador");
-		} catch (IOException ioEx) {
-			ioEx.printStackTrace();
-			Logger.getLogger("AdministradorController-log").info("Erro:" + ioEx.getStackTrace());
+		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
+		if (!FilterDetect.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
 				
 		//Caso token seja válido tenta salvar a enquete no BD		
 		try {

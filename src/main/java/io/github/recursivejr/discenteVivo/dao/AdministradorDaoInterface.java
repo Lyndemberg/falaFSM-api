@@ -6,11 +6,9 @@ import io.github.recursivejr.discenteVivo.models.Administrador;
 
 public interface AdministradorDaoInterface {
 
-//    public boolean cadastrarAluno(Aluno aluno);
-//    public boolean cadastrarAdminstrador(Administrador admin);
-//    public Enquete cadastrarEnquete(Enquete enquete);
     public boolean adicionar(Administrador administrador);
     public boolean remover(Administrador administrador);
     public Administrador buscar(String pesquisa);
-    public List<Administrador>   listar();
+    public List<Administrador>  listar();
+    public String login(String login, String senha) throws Exception;
 }
