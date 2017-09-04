@@ -46,6 +46,7 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
     	try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
+
             stmt.close();
             conn.close();
             

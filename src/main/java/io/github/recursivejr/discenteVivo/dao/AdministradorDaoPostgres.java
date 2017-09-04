@@ -127,9 +127,11 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 				throw new Exception("Credenciais Inválidas");
 			}
 			
+			String email = rs.getString("email");
+			
 			stmt.close();
             conn.close();
-			return rs.getString("email");
+			return email;
 			
 		} catch (SQLException ex) {
 			Logger.getLogger(ex.getMessage());
