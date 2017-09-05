@@ -10,10 +10,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
-import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
-import io.github.recursivejr.discenteVivo.dao.EnqueteDaoPostgres;
+import io.github.recursivejr.discenteVivo.dao.*;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
@@ -24,8 +21,8 @@ import io.github.recursivejr.discenteVivo.models.Enquete;
 @Path("administrador")
 public class AdministradorController {
 
-	@Security
 	@POST
+	@Security
 	@Consumes(MediaType.APPLICATION_JSON)
     @Path("cadastrarAluno/")
 	public Response cadastrarAluno(Aluno aluno, @Context ContainerRequestContext requestContext) {
@@ -37,12 +34,15 @@ public class AdministradorController {
 		//Caso token seja válido tenta salvar o aluno no BD
 		try {
 			//Cria um ALunoDaoPostgres
-			AlunoDaoPostgres alunoDao = new AlunoDaoPostgres();
+			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			if(alunoDao.adicionar(aluno) == false)
 				throw new Exception("ERRO DE SQL");
+
 			//Se tudo certo retorna status 200
 			return Response.status(Response.Status.OK).build();
+
 		} catch (Exception ex) {
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -51,6 +51,7 @@ public class AdministradorController {
 	}
 
 	@POST
+	@Security
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("cadastrarAdmin/")
 	public Response cadastrarAdministrador(Administrador admin,  @Context ContainerRequestContext requestContext) {
@@ -62,12 +63,15 @@ public class AdministradorController {
 		//Caso token seja válido tenta salvar o administrador no BD
 		try {
 			//Cria um AdministradorDaoPostgres
-			AdministradorDaoPostgres adminDao = new AdministradorDaoPostgres();
+			AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
+
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			if(adminDao.adicionar(admin) == false)
 				throw new Exception("ERRO DE SQL");
+
 			//Se tudo certo retorna status 200
 			return Response.status(Response.Status.OK).build();
+
 		} catch (Exception ex) {
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -75,6 +79,7 @@ public class AdministradorController {
 	}
 
 	@POST
+	@Security
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("cadastrarEnquete/")
 	public Response cadastrarEnquete(Enquete enquete, @Context ContainerRequestContext requestContext) {
@@ -85,19 +90,23 @@ public class AdministradorController {
 				
 		//Caso token seja válido tenta salvar a enquete no BD		
 		try {
-			EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
+			//Cria um EnqueteDao com base na interface
+			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+
 			//Seta o email do admin que está criando a Enquete com base no token
 			enquete.setEmailAdmin(
 					requestContext
 						.getSecurityContext()
 							.getUserPrincipal()
-								.getName());			
-			//Cria um AdministradorDaoPostgres
+								.getName());
+
+			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			if(enqueteDao.adicionar(enquete) == false)
 					throw new Exception("ERRO DE SQL");
-			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
-			return Response.status(Response.Status.OK).build();
+
 			//Se tudo certo retorna status 200
+			return Response.status(Response.Status.OK).build();
+
 		} catch (Exception ex) {
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -114,7 +123,9 @@ public class AdministradorController {
 		if(!FilterDetect.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
+		//Tenta atualizar o Aluno
 		try {
+			//Cria um alunoDao com base na Interface
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 
 			//Tenta atualizar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
