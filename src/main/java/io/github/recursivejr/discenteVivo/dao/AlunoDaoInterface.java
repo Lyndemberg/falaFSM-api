@@ -10,7 +10,7 @@ public interface AlunoDaoInterface {
     public boolean remover(Aluno aluno);
     public Aluno buscar(String Aluno);
     public List<Aluno> listar();
-    public boolean atualizar(String matricula, Aluno aluno);
+    public boolean atualizar(Aluno aluno);
     public String login(String login, String senha) throws Exception;
 
 }

@@ -77,14 +77,10 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     }
 
     @Override
-    public boolean atualizar(String matricula, Aluno aluno) {
+    public boolean atualizar(Aluno aluno) {
         String sql = "Update Aluno(Email, Nome, Login, Senha, Cidade, Rua, Numero) SET (?,?,?,?,?,?,?) WHERE Matricula = "
-                + matricula + ";"
-                + "DELETE FROM AlunoCurso WHERE Matricula = " + matricula + ";";
-
-        //Se a matricula do aluno que for passada for diferente da matricula do aluno a ser setado retorna false
-        if(!aluno.getMatricula().equals(matricula))
-            return false;
+                + aluno.getMatricula() + ";"
+                + "DELETE FROM AlunoCurso WHERE Matricula = " + aluno.getMatricula() + ";";
 
         return setAluno(sql, aluno);
     }

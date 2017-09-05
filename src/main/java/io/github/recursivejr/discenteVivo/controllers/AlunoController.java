@@ -79,8 +79,13 @@ public class AlunoController{
 							.getUserPrincipal()
 								.getName();
 
+				//Caso a matricula do token seja diferente do aluno entao este usuario esta tentando alterar perfil
+					//de outro aluno
+				if (!matricula.equals(aluno.getMatricula()))
+					return Response.status(Response.Status.UNAUTHORIZED).build();
+
 				//Se ao tentar salvar retornar false entao houve erro durante a execucao do SQL
-				if(alunoDao.atualizar(matricula, aluno) == false)
+				if(alunoDao.atualizar(aluno) == false)
 					throw new Exception("ERRO DE SQL");
 
 				//Se tudo foi executado corretamente retorna codigo 200 de OK para o cliente

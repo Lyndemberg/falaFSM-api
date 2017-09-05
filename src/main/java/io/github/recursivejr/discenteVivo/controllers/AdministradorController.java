@@ -11,8 +11,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
+import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.EnqueteDaoPostgres;
+import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Administrador;
@@ -97,6 +99,33 @@ public class AdministradorController {
 			return Response.status(Response.Status.OK).build();
 			//Se tudo certo retorna status 200
 		} catch (Exception ex) {
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+	}
+
+	@POST
+	@Security
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("atualizarAluno")
+	public Response atualizarAluno(Aluno aluno, @Context ContainerRequestContext requestContext) {
+
+		//Checa se e administrador
+		if(!FilterDetect.checkAdmin(requestContext))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+
+		try {
+			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+
+			//Tenta atualizar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
+			if(alunoDao.atualizar(aluno) == false)
+				throw new Exception("ERRO DE SQL");
+
+			//Se tudo ocorreu corretamente retorna codigo 200 de OK para o Cliente
+			return Response.status(Response.Status.OK).build();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
