@@ -39,7 +39,7 @@ public class RelatorioController {
         return generateRelatios(param, requestContext);
     }
 
-    public List<Relatorio> generateRelatios(String param, ContainerRequestContext requestContext) {
+    private List<Relatorio> generateRelatios(String param, ContainerRequestContext requestContext) {
 
         //Cria uma lista de relatorios contando nada
         List<Relatorio> relatorios = null;

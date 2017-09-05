@@ -69,5 +69,19 @@ public class Aluno extends Usuario {
 	public String toString() {
 		return "Aluno [matricula=" + matricula + ", cursos=" + cursos + "]";
 	}
+
+	@Override
+    public boolean isEmpty() {
+        try {
+            //Se a superClasse retornar vazio ou cursos for vazio
+            if (super.isEmpty() || getCursos().isEmpty()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NullPointerException nPE) {
+            return true;
+        }
+    }
 	
 }

@@ -29,4 +29,19 @@ public class Endereco {
     public void setNumero(String numero) {
         this.numero = numero;
     }
+
+    //Metodo que verifica se o endereco esta vazio, Baseado no String.isEmpty()
+    public boolean isEmpty() {
+        try {
+            //Se alguma coisa estiver fazio entao retorna true
+            if (getCidade().isEmpty() || getNumero().isEmpty() || getRua().isEmpty())
+                return true;
+            else
+                //Se tudo estiver preenchido entao retorna false
+                return false;
+        //Se algum atributo estiver como null dispara NullPointException logo esta vazio retornando true
+        } catch (NullPointerException nPE) {
+            return true;
+        }
+    }
 }

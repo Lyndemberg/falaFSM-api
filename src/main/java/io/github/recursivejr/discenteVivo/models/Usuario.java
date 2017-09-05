@@ -93,4 +93,21 @@ public abstract class Usuario {
                 ", endereco=" + endereco +
                 '}';
     }
+
+    //Metodo que verifica se o Usuario esta vazio, baseado no String.isEmpty()
+    public boolean isEmpty() {
+        try {
+            //Se alguma coisa estiver vazia retorna true
+            if (getNome().isEmpty() || getEmail().isEmpty() || getLogin().isEmpty()
+                    || getSenha().isEmpty() || getEndereco().isEmpty()) {
+                return true;
+            } else {
+                //Se tudo estiver preenchido entao retorna false
+                return false;
+            }
+            //Se algum atributo estiver como null dispara NullPointException logo esta vazio retornando true
+        } catch (NullPointerException nPE) {
+            return true;
+        }
+    }
 }
