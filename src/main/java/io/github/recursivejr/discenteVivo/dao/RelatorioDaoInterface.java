@@ -5,7 +5,8 @@ import java.util.List;
 import io.github.recursivejr.discenteVivo.models.Relatorio;
 
 public interface RelatorioDaoInterface {
-	
-	public List<Relatorio> gerarRelatorio(String nome);
-	public List<Relatorio> gerarRelatorio(int id);
+
+	public List<Relatorio> gerarRelatorio();
+	public List<Relatorio> gerarRelatorio(String nomeEnquete);
+	public List<Relatorio> gerarRelatorio(int idEnquete);
 }
