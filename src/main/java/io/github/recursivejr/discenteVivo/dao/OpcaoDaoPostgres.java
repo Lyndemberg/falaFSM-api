@@ -19,14 +19,13 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
     }
     
     @Override
-    public boolean adicionar(Opcao opcao) {
-    	String sql = "INSERT INTO Opcao (idEnquete, Opcao) VALUES (?,?);";
+    public boolean adicionar(int idEnquete, Opcao opcao) {
+    	String sql = "INSERT INTO Opcao (Opcao) VALUES (?) WHERE IdEnquete = "+ idEnquete + ";";
         
         try {
         	PreparedStatement stmt = conn.prepareStatement(sql);
         	
-            stmt.setInt(1, opcao.getIdEnquete());
-            stmt.setString(2, opcao.getOpcao());
+            stmt.setString(1, opcao.getOpcao());
             stmt.executeUpdate();
             
             stmt.close();
@@ -56,16 +55,29 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
 
     @Override
     public List<Opcao> listar() {
-        List<Opcao> opcoes = new ArrayList<>();
         String sql = "SELECT * FROM Opcao";
+
+        return getOpcoes(sql);
+    }
+
+    @Override
+    public List<Opcao> listarPorEnquete(int idEnquete) {
+        String sql = "SELECT * FROM Opcao WHERE idEnquete = " + idEnquete + ";";
+
+        return getOpcoes(sql);
+    }
+
+    private List<Opcao> getOpcoes(String sql) {
+        List<Opcao> opcoes = new ArrayList<>();
+
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-            	Opcao opcao = new Opcao();
-            	opcao.setIdEnquete(rs.getInt("idEnquete"));
-            	opcao.setOpcao(rs.getString("Opcao"));
-                
+                Opcao opcao = new Opcao();
+                opcao.setIdEnquete(rs.getInt("idEnquete"));
+                opcao.setOpcao(rs.getString("Opcao"));
+
                 opcoes.add(opcao);
             }
             stmt.close();

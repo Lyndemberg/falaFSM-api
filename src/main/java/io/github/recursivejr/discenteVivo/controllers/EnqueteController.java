@@ -10,8 +10,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import io.github.recursivejr.discenteVivo.dao.EnqueteDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.EnqueteDaoPostgres;
-import io.github.recursivejr.discenteVivo.factories.FabricaDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 
@@ -34,7 +32,7 @@ public class EnqueteController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("enquete/{id}")
+    @Path("enquete/{id}/")
     public Enquete getEnquete(@PathParam("id") String id) {
 
 		EnqueteDaoInterface enquetesDao = null;
@@ -50,7 +48,7 @@ public class EnqueteController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("enquetes/curso/{nomeCurso}")
+	@Path("enquetes/curso/{nomeCurso}/")
 	public List<Enquete> EnquetesByCurso(@PathParam("nomeCurso") String nome) {
 
 		EnqueteDaoInterface enquetesDao = null;
