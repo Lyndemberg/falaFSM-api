@@ -14,9 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 
 import io.github.recursivejr.discenteVivo.dao.AdministradorDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.AdministradorDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.AlunoDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -30,7 +28,7 @@ public class LoginController {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("loginAluno/{login}/{senha}")
+	@Path("loginAluno/{login}/{senha}/")
 	public Response loginAluno(@PathParam("login") String login, @PathParam("senha") String senha) {
 		
 		try {
@@ -51,7 +49,7 @@ public class LoginController {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("loginAdmin/{login}/{senha}")
+	@Path("loginAdmin/{login}/{senha}/")
 	public Response loginAdmin(@PathParam("login") String login, @PathParam("senha") String senha) {
 		
 		try {

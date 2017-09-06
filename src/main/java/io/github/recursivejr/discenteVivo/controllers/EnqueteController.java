@@ -62,7 +62,7 @@ public class EnqueteController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("enquetes/setor/{nomeSetor}")
+	@Path("enquetes/setor/{nomeSetor}/")
 	public List<Enquete> EnquetesBySetor(@PathParam("nomeSetor") String nome) {
 
 		EnqueteDaoInterface enquetesDao = null;

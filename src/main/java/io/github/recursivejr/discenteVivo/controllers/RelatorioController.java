@@ -23,23 +23,23 @@ public class RelatorioController {
 	@GET
 	@Security
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("getRelatorios")
-    public List<Relatorio> getRelatorios(@Context ContainerRequestContext requestContext) {
+    @Path("gerarRelatorios/")
+    public List<Relatorio> gerarRelatorios(@Context ContainerRequestContext requestContext) {
 
-	    return generateRelatios(null, requestContext);
+	    return getRelatios(null, requestContext);
     }
 
     @GET
     @Security
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("getRelatorios/enquete/{param}")
+    @Path("gerarRelatorios/enquete/{param}/")
     //Variavel param pode ser a Id da Enquete ou o Nome da Enquete
-    public List<Relatorio> getRelatios(@PathParam("param") String param, @Context ContainerRequestContext requestContext) {
+    public List<Relatorio> gerarRelatorios(@PathParam("param") String param, @Context ContainerRequestContext requestContext) {
 
-        return generateRelatios(param, requestContext);
+        return getRelatios(param, requestContext);
     }
 
-    private List<Relatorio> generateRelatios(String param, ContainerRequestContext requestContext) {
+    private List<Relatorio> getRelatios(String param, ContainerRequestContext requestContext) {
 
         //Cria uma lista de relatorios contando nada
         List<Relatorio> relatorios = null;

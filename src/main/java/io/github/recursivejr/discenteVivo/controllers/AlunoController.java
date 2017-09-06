@@ -19,10 +19,10 @@ import io.github.recursivejr.discenteVivo.models.Resposta;
 @Path("aluno")
 public class AlunoController{
 
-	//public boolean alterarSenha(){}
 	@POST
+	@Security
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("responder/{idEnquete}/{resposta}")
+    @Path("responder/{idEnquete}/{resposta}/")
 	public Response responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("resposta") String resposta,
 			@Context ContainerRequestContext requestContext) {
 
@@ -58,7 +58,7 @@ public class AlunoController{
 	@PUT
 	@Security
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("atualizarPerfil")
+	@Path("atualizarPerfil/")
 	public Response atualizarPerfil(Aluno aluno, @Context ContainerRequestContext requestContext) {
 
 		//Verifica se o token e valido para um aluno
