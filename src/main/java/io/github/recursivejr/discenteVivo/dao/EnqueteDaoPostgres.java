@@ -193,15 +193,18 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 }
                 enquete.setOpcoes(opcoes);
 
-                //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquet
+                //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquete
                 String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
                 rsLista = internalStmt.executeQuery(sqlRespostas);
                 while (rsLista.next()) {
 
-                    Resposta resposta = new Resposta();
+                    Resposta resposta = new Resposta(
+                            rsLista.getInt("IdEnquete"),
+                            rsLista.getString("Resposta"),
+                            rsLista.getString("matriculaAluno")
+                    );
 
-                    resposta.setResposta(rsLista.getString("Resposta"));
-                    resposta.setMatAluno(rsLista.getString("matriculaAluno"));
+                    respostas.add(resposta);
                 }
                 enquete.setRespostas(respostas);
 
