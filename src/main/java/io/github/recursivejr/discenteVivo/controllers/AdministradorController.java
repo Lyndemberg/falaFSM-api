@@ -181,10 +181,42 @@ public class AdministradorController {
 
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
+				Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 				return Response.status(Response.Status.BAD_REQUEST).build();
 			}
 		} else
 			return Response.status(Response.Status.BAD_REQUEST).build();
 	}
+
+    @GET
+    @Security
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("perfil/")
+    public Response getPerfil(@Context ContainerRequestContext requestContext) {
+
+        //Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
+        if (!FilterDetect.checkAdmin(requestContext))
+            Response.status(Response.Status.UNAUTHORIZED).build();
+
+        //Caso token seja válido tenta recuperar o Perfil
+        try {
+            //Cria um AdminDao com base na interface
+            AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
+
+            //Recupera o email do token
+            String email = requestContext
+                    .getSecurityContext()
+                        .getUserPrincipal()
+                            .getName();
+
+            //Retorna uma resposta com codigo 200 de OK e o Objeto Administrador com o Email do Token
+            return Response.ok(adminDao.buscar(email)).build();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+    }
 }

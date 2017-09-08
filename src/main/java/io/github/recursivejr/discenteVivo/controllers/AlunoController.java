@@ -98,4 +98,35 @@ public class AlunoController{
 		}
 	}
 
+	@GET
+	@Security
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("perfil/")
+	public Response getPerfil(@Context ContainerRequestContext requestContext) {
+
+		//Verifica se o token e valido para um aluno
+		if(!FilterDetect.checkAluno(requestContext))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+
+		//Caso seja entao recupera o perfil com base na matricula do token
+		try {
+			//Cria Objeto AlunoDao com base na interface
+			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+
+			//Recupera a matricula do aluno pelo token
+			String matricula =  requestContext
+					.getSecurityContext()
+						.getUserPrincipal()
+							.getName();
+
+			//Retorna Reposta com codigo 200 de OK contendo o Objeto Aluno
+            return Response.ok(alunoDao.buscar(matricula)).build();
+
+		} catch (Exception ex) {
+            ex.printStackTrace();
+            Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+	}
 }
+
