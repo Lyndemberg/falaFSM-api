@@ -22,7 +22,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     
     @Override
     public boolean adicionar(Aluno aluno) {
-        String sql = "INSERT INTO Aluno(Matricula, Email, Nome, Login, Senha, Cidade, Rua, Numero) VALUES (?,?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO Aluno(Matricula, Email, Nome, Login, Senha, Cidade, Rua, Numero) " +
+                "VALUES (" + aluno.getMatricula() + ",?,?,?,?,?,?,?);";
 
         return setAluno(sql, aluno);
     }
@@ -78,13 +79,14 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 
     @Override
     public boolean atualizar(Aluno aluno) {
-        String sql = "Update Aluno SET Email = ?, Nome = ?, Login = ?, Senha = ?, Cidade = ?, Rua = ?, Numero = ? "
+        String sql = "UPDATE Aluno SET Email = ?, Nome = ?, Login = ?, Senha = ?, Cidade = ?, Rua = ?, Numero = ? "
                 + "WHERE Matricula ILIKE " + aluno.getMatricula() + ";"
                 + "DELETE FROM AlunoCurso WHERE Matricula ILIKE " + aluno.getMatricula() + ";";
 
         return setAluno(sql, aluno);
     }
-    
+
+    @Override
     public String login(String login, String senha) throws Exception {
     	
     	senha = Encryption.encrypt(senha);
@@ -114,14 +116,13 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     private boolean setAluno(String sql, Aluno aluno) {
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, aluno.getMatricula());
-            stmt.setString(2, aluno.getEmail());
-            stmt.setString(3, aluno.getNome());
-            stmt.setString(4, aluno.getLogin());
-            stmt.setString(5, Encryption.encrypt(aluno.getSenha()));//Senha Criptografada em md5
-            stmt.setString(6, aluno.getEndereco().getCidade());
-            stmt.setString(7, aluno.getEndereco().getRua());
-            stmt.setString(8, aluno.getEndereco().getNumero());
+            stmt.setString(1, aluno.getEmail());
+            stmt.setString(2, aluno.getNome());
+            stmt.setString(3, aluno.getLogin());
+            stmt.setString(4, Encryption.encrypt(aluno.getSenha()));//Senha Criptografada em md5
+            stmt.setString(5, aluno.getEndereco().getCidade());
+            stmt.setString(6, aluno.getEndereco().getRua());
+            stmt.setString(7, aluno.getEndereco().getNumero());
             stmt.executeUpdate();
 
             //Seta os cursos do aluno na tabela AlunoCurso

@@ -24,26 +24,7 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
     public boolean adicionar(Administrador administrador) {
         String sql = "INSERT INTO Administrador(EMAIL,NOME,LOGIN,SENHA,CIDADE,RUA,NUMERO) VALUES (?,?,?,?,?,?,?);";
         
-        try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            
-            stmt.setString(1, administrador.getEmail());
-            stmt.setString(2, administrador.getNome());
-            stmt.setString(3, administrador.getLogin());
-            stmt.setString(4, Encryption.encrypt(administrador.getSenha()));//Senha Criptografada em md5
-            stmt.setString(5, administrador.getEndereco().getCidade());
-            stmt.setString(6, administrador.getEndereco().getRua());
-            stmt.setString(7, administrador.getEndereco().getNumero());
-            
-            stmt.executeUpdate();
-            
-            stmt.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
-        }
-        return true;
+        return setAdmin(sql, administrador);
     }
 
     @Override
@@ -63,56 +44,32 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 
     @Override
     public List<Administrador> listar() {
-        List<Administrador> administradores = new ArrayList<>();
         String sql = "SELECT * FROM Administrador";
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while(rs.next()){
-                Administrador administrador = new Administrador();
-                administrador.setEmail(rs.getString("email"));
-                administrador.setNome(rs.getString("nome"));
-                administrador.setLogin(rs.getString("login"));
-                administrador.setSenha(rs.getString("senha"));
-                administrador.getEndereco().setRua(rs.getString("rua"));
-                administrador.getEndereco().setCidade(rs.getString("cidade"));
-                administrador.getEndereco().setNumero(rs.getString("numero"));
-                
-                administradores.add(administrador);
-            }
-            stmt.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return administradores;
+
+        return getAdmins(sql);
     }
 
     @Override
     public Administrador buscar(String email) {
         String sql = "SELECT * FROM Administrador WHERE email ILIKE" + email + ";";
-        Administrador administrador = null;
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            if(rs.next()){
-                administrador = new Administrador();
-                administrador.setEmail(rs.getString("email"));
-                administrador.setNome(rs.getString("nome"));
-                administrador.setLogin(rs.getString("login"));
-                administrador.setSenha(rs.getString("senha"));
-                administrador.getEndereco().setCidade(rs.getString("cidade"));
-                administrador.getEndereco().setRua(rs.getString("rua"));
-                administrador.getEndereco().setNumero(rs.getString("numero"));
-            }
-            stmt.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return administrador;
+
+        List<Administrador> administradores = getAdmins(sql);
+
+        if (administradores.isEmpty())
+            return null;
+        else
+            return administradores.get(0);
     }
-    
+
+    @Override
+    public boolean atualizar(Administrador administrador) {
+        String sql = "UPDATE Administrador SET Email = ?, Nome = ?,Login = ?,Senha = ?,Cidade = ?,Rua= ?,Numero = ? "
+        + "ILIKE Email = " + administrador.getEmail() + ";";
+
+        return setAdmin(sql, administrador);
+    }
+
+    @Override
     public String login(String login, String senha) throws Exception {
     	
     	senha = Encryption.encrypt(senha);
@@ -137,6 +94,55 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 			Logger.getLogger(ex.getMessage());
 			throw ex;
 		}
+    }
+
+    private boolean setAdmin(String sql, Administrador administrador) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, administrador.getEmail());
+            stmt.setString(2, administrador.getNome());
+            stmt.setString(3, administrador.getLogin());
+            stmt.setString(4, Encryption.encrypt(administrador.getSenha()));//Senha Criptografada em md5
+            stmt.setString(5, administrador.getEndereco().getCidade());
+            stmt.setString(6, administrador.getEndereco().getRua());
+            stmt.setString(7, administrador.getEndereco().getNumero());
+
+            stmt.executeUpdate();
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    private List<Administrador> getAdmins(String sql) {
+        List<Administrador> administradores = new ArrayList<>();
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                Administrador administrador = new Administrador();
+                administrador.setEmail(rs.getString("email"));
+                administrador.setNome(rs.getString("nome"));
+                administrador.setLogin(rs.getString("login"));
+                administrador.setSenha(rs.getString("senha"));
+                administrador.getEndereco().setRua(rs.getString("rua"));
+                administrador.getEndereco().setCidade(rs.getString("cidade"));
+                administrador.getEndereco().setNumero(rs.getString("numero"));
+
+                administradores.add(administrador);
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return administradores;
     }
 
 }

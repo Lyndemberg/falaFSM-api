@@ -1,5 +1,6 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
+import java.awt.*;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -107,6 +108,43 @@ public class AdministradorController {
 		}
 	}
 
+	@PUT
+    @Security
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("atualizarAdmin/")
+    public Response atualizarAdmin(Administrador admin, @Context ContainerRequestContext requestContext) {
+
+	    //Verifica pelo token se e um Admin
+        if (!FilterDetect.checkAdmin(requestContext))
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+
+        //Caso o token seja valido entao verifica se o objeto passado e valido
+        if (!admin.isEmpty()) {
+            //Caso seja valido tenta salvar
+
+            try {
+                //Cria objeto AdminDao com base na interface
+                AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
+
+                //Tenta atualizar, caso retorne false deu SQL Exception, caso retorne true entao atualizou com sucesso
+                if (!adminDao.atualizar(admin))
+                    throw new Exception("ERRO DE SQL");
+
+                //Se der tudo certo entao retorna codigo 200 de OK
+                return Response.status(Response.Status.OK).build();
+
+            }catch (Exception ex) {
+                ex.printStackTrace();
+                Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+        } else {
+            //Se nao for valido entao retorna codigo 400 de BAD REQUEST
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
 	@POST
 	@Security
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -206,8 +244,8 @@ public class AdministradorController {
             //Recupera o email do token
             String email = requestContext
                     .getSecurityContext()
-                        .getUserPrincipal()
-                            .getName();
+                    .getUserPrincipal()
+                    .getName();
 
             //Retorna uma resposta com codigo 200 de OK e o Objeto Administrador com o Email do Token
             return Response.ok(adminDao.buscar(email)).build();
@@ -217,6 +255,5 @@ public class AdministradorController {
             Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-
     }
 }
