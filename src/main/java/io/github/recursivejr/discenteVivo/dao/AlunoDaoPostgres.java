@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Aluno;
+import io.github.recursivejr.discenteVivo.models.Endereco;
 import io.github.recursivejr.discenteVivo.resources.Encryption;
 
 public class AlunoDaoPostgres implements AlunoDaoInterface{
@@ -59,17 +60,17 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     public List<Aluno> listar() {
         String sql = "SELECT * FROM Aluno";
 
-        return getAlunos(sql);
+        return getAlunos(sql, null);
     }
 
     @Override
-    public Aluno buscar(String email) {
+    public Aluno buscar(String matricula) {
 
         //Testar se n da erro ao tentar buscar um aluno q nao existe
 
-        String sql = "SELECT * FROM Aluno WHERE email ILIKE " + email + ";";
+        String sql = "SELECT * FROM Aluno WHERE Matricula ILIKE ?;";
 
-        List<Aluno> alunos = getAlunos(sql);
+        List<Aluno> alunos = getAlunos(sql, matricula);
 
         if(alunos.isEmpty())
             return null;
@@ -143,31 +144,41 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
         return true;
     }
 
-    private List<Aluno> getAlunos(String sql) {
+    private List<Aluno> getAlunos(String sql, String param) {
         List<Aluno> alunos = new ArrayList<>();
 
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while(rs.next()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            if(param != null)
+                stmt.setString(1, param);
+
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
                 Aluno aluno = new Aluno();
                 aluno.setMatricula(rs.getString("matricula"));
                 aluno.setEmail(rs.getString("email"));
                 aluno.setNome(rs.getString("nome"));
                 aluno.setLogin(rs.getString("login"));
                 aluno.setSenha(rs.getString("senha"));
-                aluno.getEndereco().setRua(rs.getString("rua"));
-                aluno.getEndereco().setCidade(rs.getString("cidade"));
-                aluno.getEndereco().setNumero(rs.getString("numero"));
+
+                //Cria objeto Endereço e o atribui ao aluno
+                aluno.setEndereco(
+                        new Endereco(
+                            rs.getString("cidade"),
+                            rs.getString("numero"),
+                            rs.getString("rua")
+                        )
+                );
 
                 //Procura e Adiciona os cursos que este aluno frequenta
                 List<String> cursos = new ArrayList<>();
 
-                String recuperaCursos = "SELECT * FROM AlunoCurso WHERE matriculaAluno ILIKE " +
-                        aluno.getMatricula() + ";";
+                String recuperaCursos = "SELECT * FROM AlunoCurso WHERE matriculaAluno ILIKE ?;";
 
-                Statement internalStmt = conn.createStatement();
-                ResultSet rsCursos = internalStmt.executeQuery(recuperaCursos);
+                PreparedStatement internalStmt = conn.prepareStatement(sql);
+                internalStmt.setString(1, aluno.getMatricula());
+                ResultSet rsCursos = internalStmt.executeQuery();
 
                 while(rsCursos.next()) {
                     cursos.add(rsCursos.getString("nome"));

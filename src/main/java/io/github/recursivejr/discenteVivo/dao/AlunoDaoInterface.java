@@ -8,7 +8,7 @@ public interface AlunoDaoInterface {
 
     public boolean adicionar(Aluno aluno);
     public boolean remover(Aluno aluno);
-    public Aluno buscar(String Aluno);
+    public Aluno buscar(String matricula);
     public List<Aluno> listar();
     public boolean atualizar(Aluno aluno);
     public String login(String login, String senha) throws Exception;

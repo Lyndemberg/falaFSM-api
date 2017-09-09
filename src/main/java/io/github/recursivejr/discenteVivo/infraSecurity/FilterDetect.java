@@ -38,7 +38,7 @@ public class FilterDetect implements ContainerRequestFilter{
 			if(claims==null)
 				throw new IOException("Token inválido");
 
-			modificarRequestContext(requestContext, claims.getId());
+			modificarRequestContext(requestContext, claims.getIssuer());
 		}
 
 	private void modificarRequestContext(ContainerRequestContext requestContext,String indentificador){
