@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Administrador;
+import io.github.recursivejr.discenteVivo.models.Endereco;
 import io.github.recursivejr.discenteVivo.resources.Encryption;
 
 public class AdministradorDaoPostgres implements AdministradorDaoInterface{
@@ -46,14 +47,14 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
     public List<Administrador> listar() {
         String sql = "SELECT * FROM Administrador";
 
-        return getAdmins(sql);
+        return getAdmins(sql, null);
     }
 
     @Override
     public Administrador buscar(String email) {
-        String sql = "SELECT * FROM Administrador WHERE email ILIKE" + email + ";";
+        String sql = "SELECT * FROM Administrador WHERE email ILIKE ?;";
 
-        List<Administrador> administradores = getAdmins(sql);
+        List<Administrador> administradores = getAdmins(sql, email);
 
         if (administradores.isEmpty())
             return null;
@@ -64,7 +65,7 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
     @Override
     public boolean atualizar(Administrador administrador) {
         String sql = "UPDATE Administrador SET Email = ?, Nome = ?,Login = ?,Senha = ?,Cidade = ?,Rua= ?,Numero = ? "
-        + "ILIKE Email = " + administrador.getEmail() + ";";
+        + "ILIKE Email = ?;";
 
         return setAdmin(sql, administrador);
     }
@@ -74,11 +75,15 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
     	
     	senha = Encryption.encrypt(senha);
     	
-    	String sql = "SELECT Email FROM Administrador WHERE login ILIKE '" + login + "' AND SENHA ILIKE '" + senha + "';";
-    	Statement stmt;
+    	String sql = "SELECT Email FROM Administrador WHERE Login ILIKE ? AND Senha ILIKE ?;";
+    	PreparedStatement stmt;
 		try {
-			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(sql);
+
+			stmt.setString(1, login);
+			stmt.setString(2, senha);
+
+			ResultSet rs = stmt.executeQuery();
 			
 			if(!rs.next()) {
 				throw new Exception("Credenciais Inválidas");
@@ -108,6 +113,9 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
             stmt.setString(6, administrador.getEndereco().getRua());
             stmt.setString(7, administrador.getEndereco().getNumero());
 
+            if (sql.contains("ILIKE"))
+                stmt.setString(8, administrador.getEmail());
+
             stmt.executeUpdate();
 
             stmt.close();
@@ -119,21 +127,31 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
         return true;
     }
 
-    private List<Administrador> getAdmins(String sql) {
+    private List<Administrador> getAdmins(String sql, String param) {
         List<Administrador> administradores = new ArrayList<>();
 
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            if(param != null)
+                stmt.setString(1, param);
+
+            ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 Administrador administrador = new Administrador();
                 administrador.setEmail(rs.getString("email"));
                 administrador.setNome(rs.getString("nome"));
                 administrador.setLogin(rs.getString("login"));
                 administrador.setSenha(rs.getString("senha"));
-                administrador.getEndereco().setRua(rs.getString("rua"));
-                administrador.getEndereco().setCidade(rs.getString("cidade"));
-                administrador.getEndereco().setNumero(rs.getString("numero"));
+
+                //Cria objeto Endereço e o atribui ao Administrador
+                administrador.setEndereco(
+                        new Endereco(
+                                rs.getString("cidade"),
+                                rs.getString("numero"),
+                                rs.getString("rua")
+                        )
+                );
 
                 administradores.add(administrador);
             }

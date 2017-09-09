@@ -92,11 +92,15 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     	
     	senha = Encryption.encrypt(senha);
     	
-    	String sql = "SELECT Matricula FROM Aluno WHERE login ILIKE '" + login + "' AND SENHA ILIKE '" + senha + "';";
-    	Statement stmt;
+    	String sql = "SELECT Matricula FROM Aluno WHERE Login ILIKE ? AND SENHA ILIKE ?;";
+    	PreparedStatement stmt;
 		try {
-			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(sql);
+
+			stmt.setString(1, login);
+			stmt.setString(2, senha);
+
+			ResultSet rs = stmt.executeQuery();
 			
 			if(!rs.next()) {
 				throw new Exception("Credenciais Inválidas");
