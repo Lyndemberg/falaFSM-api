@@ -24,7 +24,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     @Override
     public boolean adicionar(Aluno aluno) {
         String sql = "INSERT INTO Aluno(Matricula, Email, Nome, Login, Senha, Cidade, Rua, Numero) " +
-                "VALUES (" + aluno.getMatricula() + ",?,?,?,?,?,?,?);";
+                "VALUES ('" + aluno.getMatricula() + "',?,?,?,?,?,?,?);";
 
         return setAluno(sql, aluno);
     }
@@ -32,7 +32,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     @Override
     public boolean remover(Aluno aluno) {
     	//Remove Aluno da tabela AlunoCurso = aluno frequenta curso
-    	String sql = "DELETE FROM AlunoCurso WHERE matriculaAluno ILIKE " + aluno.getMatricula() + ";";
+    	String sql = "DELETE FROM AlunoCurso WHERE matriculaAluno ILIKE '" + aluno.getMatricula() + "';";
     	try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
@@ -81,8 +81,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     @Override
     public boolean atualizar(Aluno aluno) {
         String sql = "UPDATE Aluno SET Email = ?, Nome = ?, Login = ?, Senha = ?, Cidade = ?, Rua = ?, Numero = ? "
-                + "WHERE Matricula ILIKE " + aluno.getMatricula() + ";"
-                + "DELETE FROM AlunoCurso WHERE Matricula ILIKE " + aluno.getMatricula() + ";";
+                + "WHERE Matricula ILIKE '" + aluno.getMatricula() + "';"
+                + "DELETE FROM AlunoCurso WHERE MatriculaAluno ILIKE '" + aluno.getMatricula() + "';";
 
         return setAluno(sql, aluno);
     }
@@ -178,14 +178,14 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                 //Procura e Adiciona os cursos que este aluno frequenta
                 List<String> cursos = new ArrayList<>();
 
-                String recuperaCursos = "SELECT * FROM AlunoCurso WHERE matriculaAluno ILIKE ?;";
+                String recuperaCursos = "SELECT NomeCurso FROM AlunoCurso WHERE matriculaAluno ILIKE ?;";
 
-                PreparedStatement internalStmt = conn.prepareStatement(sql);
+                PreparedStatement internalStmt = conn.prepareStatement(recuperaCursos);
                 internalStmt.setString(1, aluno.getMatricula());
                 ResultSet rsCursos = internalStmt.executeQuery();
 
                 while(rsCursos.next()) {
-                    cursos.add(rsCursos.getString("nome"));
+                    cursos.add(rsCursos.getString("NomeCurso"));
                 }
                 internalStmt.close();
 
