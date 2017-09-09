@@ -30,7 +30,7 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 
     @Override
     public boolean remover(Administrador administrador) {
-        String sql = "DELETE FROM Administrador WHERE email ILIKE " + administrador.getEmail()+ ";";
+        String sql = "DELETE FROM Administrador WHERE email ILIKE '" + administrador.getEmail()+ "';";
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
@@ -65,7 +65,7 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
     @Override
     public boolean atualizar(Administrador administrador) {
         String sql = "UPDATE Administrador SET Email = ?, Nome = ?,Login = ?,Senha = ?,Cidade = ?,Rua= ?,Numero = ? "
-        + "ILIKE Email = ?;";
+        + "WHERE Email ILIKE ?;";
 
         return setAdmin(sql, administrador);
     }
