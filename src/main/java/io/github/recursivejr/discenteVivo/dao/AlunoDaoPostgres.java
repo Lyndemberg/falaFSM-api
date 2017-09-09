@@ -23,27 +23,16 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     
     @Override
     public boolean adicionar(Aluno aluno) {
-        String sql = "INSERT INTO Aluno(Matricula, Email, Nome, Login, Senha, Cidade, Rua, Numero) " +
-                "VALUES ('" + aluno.getMatricula() + "',?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO Aluno(Matricula, Email, Nome, Login, Senha, Cidade, Rua, Numero, NomeCurso) " +
+                "VALUES ('" + aluno.getMatricula() + "',?,?,?,?,?,?,?,?);";
 
         return setAluno(sql, aluno);
     }
 
     @Override
     public boolean remover(Aluno aluno) {
-    	//Remove Aluno da tabela AlunoCurso = aluno frequenta curso
-    	String sql = "DELETE FROM AlunoCurso WHERE matriculaAluno ILIKE '" + aluno.getMatricula() + "';";
-    	try {
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-            
-        } catch (SQLException ex) {
-                ex.printStackTrace(); 
-        }
-    	
     	//Remove o aluno da tabela aluno
-        sql = "DELETE FROM Aluno WHERE matricula ILIKE " + aluno.getMatricula()+ ";";
+        String sql = "DELETE FROM Aluno WHERE Matricula ILIKE '" + aluno.getMatricula()+ "';";
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
@@ -80,9 +69,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 
     @Override
     public boolean atualizar(Aluno aluno) {
-        String sql = "UPDATE Aluno SET Email = ?, Nome = ?, Login = ?, Senha = ?, Cidade = ?, Rua = ?, Numero = ? "
-                + "WHERE Matricula ILIKE '" + aluno.getMatricula() + "';"
-                + "DELETE FROM AlunoCurso WHERE MatriculaAluno ILIKE '" + aluno.getMatricula() + "';";
+        String sql = "UPDATE Aluno SET Email = ?, Nome = ?, Login = ?, Senha = ?, Cidade = ?, Rua = ?, Numero = ?, " +
+                "NomeCurso = ? WHERE Matricula ILIKE '" + aluno.getMatricula() + "';";
 
         return setAluno(sql, aluno);
     }
@@ -128,16 +116,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
             stmt.setString(5, aluno.getEndereco().getCidade());
             stmt.setString(6, aluno.getEndereco().getRua());
             stmt.setString(7, aluno.getEndereco().getNumero());
+            stmt.setString(8, aluno.getCurso());
             stmt.executeUpdate();
-
-            //Seta os cursos do aluno na tabela AlunoCurso
-            sql = "INSERT INTO AlunoCurso(matriculaAluno, nomeCurso) VALUES (?,?);";
-            for(String curso: aluno.getCursos()) {
-                stmt = conn.prepareStatement(sql);
-                stmt.setString(1, aluno.getMatricula());
-                stmt.setString(2, curso);
-                stmt.executeUpdate();
-            }
 
             stmt.close();
             conn.close();
@@ -175,21 +155,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                         )
                 );
 
-                //Procura e Adiciona os cursos que este aluno frequenta
-                List<String> cursos = new ArrayList<>();
-
-                String recuperaCursos = "SELECT NomeCurso FROM AlunoCurso WHERE matriculaAluno ILIKE ?;";
-
-                PreparedStatement internalStmt = conn.prepareStatement(recuperaCursos);
-                internalStmt.setString(1, aluno.getMatricula());
-                ResultSet rsCursos = internalStmt.executeQuery();
-
-                while(rsCursos.next()) {
-                    cursos.add(rsCursos.getString("NomeCurso"));
-                }
-                internalStmt.close();
-
-                aluno.setCursos(cursos);
+               aluno.setCurso(rs.getString("NomeCurso"));
 
                 alunos.add(aluno);
             }
