@@ -65,10 +65,10 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
     @Override
     public boolean remover(Enquete enquete) {
-        String sql = "DELETE FROM Comentario WHERE IDEnquete ILIKE " + enquete.getId() + ";"
-                + "DELETE FROM Opcoes WHERE IDEnquete ILIKE " + enquete.getId() + ";"
-                + "DELETE FROM RespondeEnquete WHERE IDEnquete ILIKE " + enquete.getId() + ";"
-                + "DELETE FROM Enquete WHERE ID ILIKE " + enquete.getId() + ";";
+        String sql = "DELETE FROM Comentario WHERE IDEnquete ILIKE '" + enquete.getId() + "';"
+                + "DELETE FROM Opcoes WHERE IDEnquete ILIKE '" + enquete.getId() + "'';"
+                + "DELETE FROM RespondeEnquete WHERE IDEnquete ILIKE '" + enquete.getId() + "';"
+                + "DELETE FROM Enquete WHERE ID ILIKE '" + enquete.getId() + "';";
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
@@ -95,7 +95,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
         //Testar se n da erro ao tentar buscar uma enquete q nao existe
 
-        String sql = "SELECT * FROM Enquete WHERE id = " + id + ";";
+        String sql = "SELECT * FROM Enquete WHERE id = '" + id + "';";
 
         List<Enquete> enquetes = getEnquetes(sql);
 
@@ -111,7 +111,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     public List<Enquete> enquetesPorSetor(String nomeSetor) {
 
         String sql = "SELECT E.* FROM Enquete E, EnquetesSetor ES " +
-                "WHERE E.Id = ES.idEnquete AND ES.nomeSetor ILIKE " + nomeSetor +";";
+                "WHERE E.Id = ES.idEnquete AND ES.nomeSetor ILIKE '" + nomeSetor +"';";
 
         return getEnquetes(sql);
     }
@@ -120,7 +120,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     public List<Enquete> enquetesPorCurso(String nomeCurso) {
 
         String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " +
-                "WHERE E.Id = EC.idEnquete AND EC.nomeSetor ILIKE " + nomeCurso +";";
+                "WHERE E.Id = EC.idEnquete AND EC.nomeSetor ILIKE '" + nomeCurso +"';";
 
         return getEnquetes(sql);
     }

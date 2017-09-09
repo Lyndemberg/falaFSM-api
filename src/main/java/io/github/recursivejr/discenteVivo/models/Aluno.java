@@ -1,80 +1,70 @@
 package io.github.recursivejr.discenteVivo.models;
 
-import java.util.List;
-
 public class Aluno extends Usuario {
 
     private String matricula;
-    private List<String> cursos;
-    
-	public Aluno(String nome, String email, String login, String senha, Endereco endereco, String matricula,
-			List<String> cursos) {
-		super(nome, email, login, senha, endereco);
-		this.matricula = matricula;
-		this.cursos = cursos;
-	}
-    
-	public Aluno() {
-		super();
-	}
+    private String curso;
 
-	public String getMatricula() {
-		return matricula;
-	}
+    public Aluno(String nome, String email, String login, String senha, Endereco endereco,
+                 String matricula, String curso) {
+        super(nome, email, login, senha, endereco);
+        this.matricula = matricula;
+        this.curso = curso;
+    }
 
-	public void setMatricula(String matricula) {
-		this.matricula = matricula;
-	}
+    public Aluno() {
 
-	public List<String> getCursos() {
-		return cursos;
-	}
+    }
 
-	public void setCursos(List<String> cursos) {
-		this.cursos = cursos;
-	}
+    public String getMatricula() {
+        return matricula;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((cursos == null) ? 0 : cursos.hashCode());
-		result = prime * result + ((matricula == null) ? 0 : matricula.hashCode());
-		return result;
-	}
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Aluno other = (Aluno) obj;
-		if (cursos == null) {
-			if (other.cursos != null)
-				return false;
-		} else if (!cursos.equals(other.cursos))
-			return false;
-		if (matricula == null) {
-			if (other.matricula != null)
-				return false;
-		} else if (!matricula.equals(other.matricula))
-			return false;
-		return true;
-	}
+    public String getCurso() {
+        return curso;
+    }
 
-	@Override
-	public String toString() {
-		return "Aluno [matricula=" + matricula + ", cursos=" + cursos + "]";
-	}
+    public void setCurso(String curso) {
+        this.curso = curso;
+    }
 
-	@Override
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Aluno aluno = (Aluno) o;
+
+        if (!matricula.equals(aluno.matricula)) return false;
+        return curso.equals(aluno.curso);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + matricula.hashCode();
+        result = 31 * result + curso.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Aluno{" +
+                "matricula='" + matricula + '\'' +
+                ", curso='" + curso + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean isEmpty() {
         try {
-            //Se a superClasse retornar vazio ou cursos for vazio
-            if (super.isEmpty() || getCursos().isEmpty()) {
+            //Se a superClasse retornar vazio ou curso for vazio
+            if (super.isEmpty() || getCurso().isEmpty()) {
                 return true;
             } else {
                 return false;
@@ -83,5 +73,5 @@ public class Aluno extends Usuario {
             return true;
         }
     }
-	
+
 }
