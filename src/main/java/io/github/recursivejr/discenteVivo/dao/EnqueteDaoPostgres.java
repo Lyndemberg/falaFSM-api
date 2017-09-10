@@ -39,19 +39,15 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
             if (enquete.getOpcoes() != null) {
             	opcoes.addAll(enquete.getOpcoes());
-                int aux = 0;
-                while(aux <= opcoes.size()){
 
-                    sql = "INSERT INTO Opcoes (IDENQUETE, Opcao) VALUES (?,?);";
-                    stmt = conn.prepareStatement(sql);
+                sql = "INSERT INTO Opcoes (IDENQUETE, Opcao) VALUES (?,?);";
+                stmt = conn.prepareStatement(sql);
 
+                for (int i = 0; i < opcoes.size(); i++) {
                     stmt.setInt(1,IDENQUETE);
-                    stmt.setString(2, opcoes.get(aux).getOpcao());
-                    stmt = conn.prepareStatement(sql);
+                    stmt.setString(2, opcoes.get(i).getOpcao());
                     stmt.executeUpdate();
-
-                    ++aux;
-                }                
+                }
             }
             
             stmt.close();
@@ -134,8 +130,8 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             if(rs.next()){
                 aux = rs.getInt("id");
             }
-            stmt.close();
-            conn.close();
+//            stmt.close();
+//            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

@@ -80,8 +80,8 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
 
                 opcoes.add(opcao);
             }
-            stmt.close();
-            conn.close();
+//            stmt.close();
+//            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
