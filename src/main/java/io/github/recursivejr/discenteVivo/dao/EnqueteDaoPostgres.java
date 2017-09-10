@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.recursivejr.discenteVivo.factories.Conexao;
-import io.github.recursivejr.discenteVivo.models.Comentario;
-import io.github.recursivejr.discenteVivo.models.Enquete;
-import io.github.recursivejr.discenteVivo.models.Opcao;
-import io.github.recursivejr.discenteVivo.models.Resposta;
+import io.github.recursivejr.discenteVivo.models.*;
 
 public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     private final Connection conn;
@@ -33,19 +30,64 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
 
             stmt.executeUpdate();
 
-            int IDENQUETE = buscarId(enquete.getNome());
-                      
+            //Recupera o valor do Id desta Enquete no BD para ser usada nas proximas Querys
+            final int IDENQUETE = buscarId(enquete.getNome());
+
+            //Cria um ArrayList de Opçoes e Verifica se Ha Opçoes que devem ser Salvas nesta Enquete
             List<Opcao> opcoes = new ArrayList<>();
 
+            //Se nao for null entao ha Opcoes que devem ser referenciadas
             if (enquete.getOpcoes() != null) {
+                //Recupera todas as Opçoes que serao salvas
             	opcoes.addAll(enquete.getOpcoes());
 
                 sql = "INSERT INTO Opcoes (IDENQUETE, Opcao) VALUES (?,?);";
                 stmt = conn.prepareStatement(sql);
 
+                //Perccore todas as opcoes salvando eles no BD
                 for (int i = 0; i < opcoes.size(); i++) {
                     stmt.setInt(1,IDENQUETE);
                     stmt.setString(2, opcoes.get(i).getOpcao());
+                    stmt.executeUpdate();
+                }
+            }
+
+            //Cria um ArrayList de Cursos e Verifica se Ha Cursos que devem ser Referenciados
+                // por esta Enquete
+            List<Curso> cursos = new ArrayList<>();
+
+            //Se nao for null entao ha Cursos que devem ser Referenciados
+            if (enquete.getCursos() != null) {
+                //Recupera todas os Cursos que serao Referenciados
+                cursos.addAll(enquete.getCursos());
+
+                sql = "INSERT INTO EnquetesCurso (IDENQUETE, NomeCurso) VALUES (?,?);";
+                stmt = conn.prepareStatement(sql);
+
+                //Perccore todas os Cursos salvando eles no BD
+                for (int i = 0; i < cursos.size(); i++) {
+                    stmt.setInt(1,IDENQUETE);
+                    stmt.setString(2, cursos.get(i).getNome());
+                    stmt.executeUpdate();
+                }
+            }
+
+            //Cria um ArrayList de Setores e Verifica se Ha Setores que devem ser
+                // Referenciados nesta Enquete
+            List<Setor> setores = new ArrayList<>();
+
+            //Se nao for null entao ha Setores que devem ser Referenciados
+            if (enquete.getSetores() != null) {
+                //Recupera todas os Setores que serao Referenciados
+                setores.addAll(enquete.getSetores());
+
+                sql = "INSERT INTO EnquetesSetor (IDENQUETE, NomeSetor) VALUES (?,?);";
+                stmt = conn.prepareStatement(sql);
+
+                //Perccore todas os Setores salvando eles no BD
+                for (int i = 0; i < setores.size(); i++) {
+                    stmt.setInt(1,IDENQUETE);
+                    stmt.setString(2, setores.get(i).getNome());
                     stmt.executeUpdate();
                 }
             }
@@ -149,6 +191,8 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 List<Comentario> comentarios = new ArrayList<>();
                 List<Opcao> opcoes = new ArrayList<>();
                 List<Resposta> respostas = new ArrayList<>();
+                List<Curso> cursos = new ArrayList<>();
+                List<Setor> setores = new ArrayList<>();
 
                 Enquete enquete = new Enquete();
                 enquete.setId(rs.getInt("id"));
@@ -175,7 +219,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 enquete.setComentarios(comentarios);
 
                 //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
-                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = " + enquete.getId() + ";";
+                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = '" + enquete.getId() + "';";
                 rsLista = internalStmt.executeQuery(sqlOpcoes);
                 while (rsLista.next()) {
 
@@ -190,7 +234,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 enquete.setOpcoes(opcoes);
 
                 //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquete
-                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + enquete.getId() + ";";
+                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = '" + enquete.getId() + "';";
                 rsLista = internalStmt.executeQuery(sqlRespostas);
                 while (rsLista.next()) {
 
@@ -203,6 +247,34 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                     respostas.add(resposta);
                 }
                 enquete.setRespostas(respostas);
+
+                //Percorre todos os Cursos Associados a esta Enquete e adiciona-os ao ArrayList de Retorno
+                String sqlCursos = "SELECT NomeCurso FROM EnquetesCurso WHERE idEnquete = '"+ enquete.getId() +"';";
+                rsLista = internalStmt.executeQuery(sqlCursos);
+                while (rsLista.next()) {
+
+                    //Retorno apenas o nome pois e o unico dado realmente necessario
+                        //para se identificar a qual Curso pertence a Enquete
+                    Curso curso = new Curso();
+                    curso.setNome(rsLista.getString("NomeCurso"));
+
+                    cursos.add(curso);
+                }
+                enquete.setCursos(cursos);
+
+                //Percorre todos os Setores Associados a esta Enquete e adiciona-os ao ArrayList de Retorno
+                String sqlSetores = "SELECT NomeSetor FROM EnquetesSetor WHERE idEnquete = '" + enquete.getId() + "';";
+                rsLista = internalStmt.executeQuery(sqlSetores);
+                while (rsLista.next()) {
+
+                    //Retorno apenas o nome pois e o unico dado realmente necessario
+                        //para se identificar a qual Setor pertence a Enquete
+                    Setor setor = new Setor();
+                    setor.setNome(rsLista.getString("NomeSetor"));
+
+                    setores.add(setor);
+                }
+                enquete.setSetores(setores);
 
                 enquetes.add(enquete);
                 internalStmt.close();
