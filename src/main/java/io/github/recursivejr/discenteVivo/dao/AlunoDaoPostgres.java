@@ -150,8 +150,8 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                 aluno.setEndereco(
                         new Endereco(
                             rs.getString("cidade"),
-                            rs.getString("numero"),
-                            rs.getString("rua")
+                            rs.getString("rua"),
+                            rs.getString("numero")
                         )
                 );
 
