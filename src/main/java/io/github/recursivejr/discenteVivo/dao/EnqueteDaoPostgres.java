@@ -158,7 +158,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
     public List<Enquete> enquetesPorCurso(String nomeCurso) {
 
         String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " +
-                "WHERE E.Id = EC.idEnquete AND EC.nomeSetor ILIKE '" + nomeCurso +"';";
+                "WHERE E.Id = EC.idEnquete AND EC.nomeCurso ILIKE '" + nomeCurso +"';";
 
         return getEnquetes(sql);
     }

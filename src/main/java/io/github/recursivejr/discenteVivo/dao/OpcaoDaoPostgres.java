@@ -20,16 +20,17 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
     
     @Override
     public boolean adicionar(int idEnquete, Opcao opcao) {
-    	String sql = "INSERT INTO Opcao (Opcao) VALUES (?) WHERE IdEnquete = "+ idEnquete + ";";
+    	String sql = "INSERT INTO Opcoes (Opcao) VALUES (?) WHERE IdEnquete = ?;";
         
         try {
         	PreparedStatement stmt = conn.prepareStatement(sql);
         	
             stmt.setString(1, opcao.getOpcao());
+            stmt.setInt(2, idEnquete);
             stmt.executeUpdate();
             
-            stmt.close();
-            conn.close();
+//            stmt.close();
+//            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -39,8 +40,8 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
 
     @Override
     public boolean remover(Opcao opcao) {
-    	String sql = "DELETE FROM Opcao WHERE Opcao ILIKE " + opcao.getOpcao() 
-    	+ " AND idEnquete = " + opcao.getIdEnquete() + ";";
+    	String sql = "DELETE FROM Opcoes WHERE Opcao ILIKE '" + opcao.getOpcao()
+    	+ "' AND idEnquete = '" + opcao.getIdEnquete() + "';";
     	try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
@@ -55,14 +56,14 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
 
     @Override
     public List<Opcao> listar() {
-        String sql = "SELECT * FROM Opcao";
+        String sql = "SELECT * FROM Opcoes";
 
         return getOpcoes(sql);
     }
 
     @Override
     public List<Opcao> listarPorEnquete(int idEnquete) {
-        String sql = "SELECT * FROM Opcao WHERE idEnquete = " + idEnquete + ";";
+        String sql = "SELECT * FROM Opcoes WHERE idEnquete = '" + idEnquete + "';";
 
         return getOpcoes(sql);
     }
