@@ -1,5 +1,6 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
+import java.util.logging.Filter;
 import java.util.logging.Logger;
 
 import javax.ws.rs.*;
@@ -9,11 +10,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.ComentarioDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.RespostaDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Aluno;
+import io.github.recursivejr.discenteVivo.models.Comentario;
 import io.github.recursivejr.discenteVivo.models.Resposta;
 
 @Path("aluno")
@@ -136,6 +139,45 @@ public class AlunoController{
 			System.gc();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+	}
+
+	@POST
+	@Security
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("comentar/{idEnquete}/{comentario}/")
+	public Response enviarComentario(@PathParam("idEnquete") int idEnquete, @PathParam("comentario") String comentario,
+									 @Context ContainerRequestContext requestContext) {
+
+		//Verifica se e um Aluno tentando enviar um comentario
+		if(!FilterDetect.checkAluno(requestContext))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+
+		//Caso seja tenta enviar o Comentario
+		try {
+			//Cria um comentarioDao com base na Interface
+			ComentarioDaoInterface comentarioDao = new FabricaDaoPostgres().criarComentarioDao();
+
+			//Tenta Salvar o Comentario
+			if (!comentarioDao.adicionar(new Comentario(
+					1,
+					idEnquete,
+					comentario
+				))) {
+				//Caso return false entao houve problema de SQL
+				throw new Exception("ERRO DE SQL");
+			}
+
+			//Se o comentario for enviado com sucesso retorna Codigo 200 de OK
+			System.gc();
+			return Response.status(Response.Status.OK).build();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
 	}
 }
 
