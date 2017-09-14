@@ -13,7 +13,6 @@ public class ElementoDao {
 
     public ElementoDao() throws SQLException, ClassNotFoundException {
         conn = Conexao.getConnection();
-
     }
 
     public Connection getConexao() {

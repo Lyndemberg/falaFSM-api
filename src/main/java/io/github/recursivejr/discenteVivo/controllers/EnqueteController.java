@@ -27,7 +27,10 @@ public class EnqueteController {
     	} catch (Exception ex) {
     		Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
 		}
-    	return enquetesDao.listar();
+
+		List<Enquete> enquetes = enquetesDao.listar();
+    	System.gc();
+    	return enquetes;
     }
 
     @GET
@@ -43,6 +46,7 @@ public class EnqueteController {
     		return null;
 		}
     	Enquete enquete = enquetesDao.buscar(id);
+    	System.gc();
     	return enquete;
     }
 
@@ -57,7 +61,9 @@ public class EnqueteController {
 		} catch (Exception ex) {
 			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
 		}
-		return enquetesDao.enquetesPorCurso(nome);
+		List<Enquete> enquetes = enquetesDao.enquetesPorCurso(nome);
+		System.gc();
+		return enquetes;
 	}
 
 	@GET
@@ -71,7 +77,9 @@ public class EnqueteController {
 		} catch (Exception ex) {
 			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
 		}
-		return enquetesDao.enquetesPorSetor(nome);
+		List<Enquete> enquetes = enquetesDao.enquetesPorSetor(nome);
+		System.gc();
+		return enquetes;
 	}
 
 }

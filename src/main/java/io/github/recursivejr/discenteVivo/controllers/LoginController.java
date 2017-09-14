@@ -37,12 +37,13 @@ public class LoginController {
 			String matricula = alunoDao.login(login, senha);
 			
 			String token = gerarToken(matricula, 1);
-			
+
+			System.gc();
 			return Response.ok(token).build();
+
 		} catch(Exception ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
 			Logger.getLogger(ex.getMessage());
+			System.gc();
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}	
 	}
@@ -58,10 +59,13 @@ public class LoginController {
 			String email = adminDao.login(login, senha);
 			
 			String token = gerarToken(email, 1);
-			
+
+			System.gc();
 			return Response.ok(token).build();
+
 		} catch(Exception ex) {
 			Logger.getLogger(ex.getMessage());
+			System.gc();
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}	
 	}

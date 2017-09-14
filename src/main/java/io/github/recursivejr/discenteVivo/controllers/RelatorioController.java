@@ -26,7 +26,9 @@ public class RelatorioController {
     @Path("gerarRelatorios/")
     public List<Relatorio> gerarRelatorios(@Context ContainerRequestContext requestContext) {
 
-	    return getRelatios(null, requestContext);
+	    List<Relatorio> relatorios = getRelatios(null, requestContext);
+	    System.gc();
+	    return relatorios;
     }
 
     @GET
@@ -36,7 +38,9 @@ public class RelatorioController {
     //Variavel param pode ser a Id da Enquete ou o Nome da Enquete
     public List<Relatorio> gerarRelatorios(@PathParam("param") String param, @Context ContainerRequestContext requestContext) {
 
-        return getRelatios(param, requestContext);
+        List<Relatorio> relatorios = getRelatios(param, requestContext);
+        System.gc();
+        return relatorios;
     }
 
     private List<Relatorio> getRelatios(String param, ContainerRequestContext requestContext) {

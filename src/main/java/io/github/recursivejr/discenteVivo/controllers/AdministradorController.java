@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import java.awt.*;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -42,10 +41,12 @@ public class AdministradorController {
 				throw new Exception("ERRO DE SQL");
 
 			//Se tudo certo retorna status 200
+			System.gc();
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		} 
 		
@@ -71,11 +72,13 @@ public class AdministradorController {
 				throw new Exception("ERRO DE SQL");
 
 			//Se tudo ocorreu corretamente retorna codigo 200 de OK para o Cliente
+			System.gc();
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}
@@ -100,10 +103,12 @@ public class AdministradorController {
 				throw new Exception("ERRO DE SQL");
 
 			//Se tudo certo retorna status 200
+			System.gc();
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}
@@ -131,11 +136,13 @@ public class AdministradorController {
                     throw new Exception("ERRO DE SQL");
 
                 //Se der tudo certo entao retorna codigo 200 de OK
+				System.gc();
                 return Response.status(Response.Status.OK).build();
 
             }catch (Exception ex) {
                 ex.printStackTrace();
                 Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+				System.gc();
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
@@ -172,10 +179,12 @@ public class AdministradorController {
 				throw new Exception("ERRO DE SQL");
 
 			//Se tudo certo retorna status 200
+			System.gc();
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}
@@ -215,11 +224,13 @@ public class AdministradorController {
 				}
 
 				//Se tudo der certo retorna ao Cliente o Codigo 200 de OK
+				System.gc();
 				return Response.status(Response.Status.OK).build();
 
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+				System.gc();
 				return Response.status(Response.Status.BAD_REQUEST).build();
 			}
 		} else
@@ -248,11 +259,14 @@ public class AdministradorController {
                     .getName();
 
             //Retorna uma resposta com codigo 200 de OK e o Objeto Administrador com o Email do Token
-            return Response.ok(adminDao.buscar(email)).build();
+			Administrador admin = adminDao.buscar(email);
+			System.gc();
+            return Response.ok(admin).build();
 
         } catch (Exception ex) {
             ex.printStackTrace();
             Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }

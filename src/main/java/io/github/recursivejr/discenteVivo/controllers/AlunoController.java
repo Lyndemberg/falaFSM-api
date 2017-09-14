@@ -47,10 +47,13 @@ public class AlunoController{
 				throw new Exception("ERRO DE SQL");
 
 			//Se tudo certo retorna status 200
+			System.gc();
 			return Response.status(Response.Status.OK).build();
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 	}
@@ -86,10 +89,13 @@ public class AlunoController{
 					throw new Exception("ERRO DE SQL");
 
 				//Se tudo foi executado corretamente retorna codigo 200 de OK para o cliente
+				System.gc();
 				return Response.status(Response.Status.OK).build();
+
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+				System.gc();
 				return Response.status(Response.Status.BAD_REQUEST).build();
 			}
 		} else {
@@ -120,11 +126,14 @@ public class AlunoController{
 							.getName();
 
 			//Retorna Reposta com codigo 200 de OK contendo o Objeto Aluno
-            return Response.ok(alunoDao.buscar(matricula)).build();
+			Aluno aluno = alunoDao.buscar(matricula);
+			System.gc();
+            return Response.ok(aluno).build();
 
 		} catch (Exception ex) {
             ex.printStackTrace();
             Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 	}
