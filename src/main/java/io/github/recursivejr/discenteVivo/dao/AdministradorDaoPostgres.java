@@ -31,10 +31,11 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
         try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
-            stmt.close();
             
+            stmt.close();
         } catch (SQLException ex) {
-                ex.printStackTrace(); 
+            ex.printStackTrace();
+            return false;
         }
         return true;
     }

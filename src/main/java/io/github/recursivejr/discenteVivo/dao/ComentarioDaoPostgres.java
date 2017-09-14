@@ -24,12 +24,11 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
             stmt.executeUpdate();
             
             stmt.close();
-            return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            return false;
         }
-        
-        return false;
+        return true;
     }
 
     @Override
@@ -41,11 +40,11 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
             stmt.executeUpdate(sql);
 
             stmt.close();
-            return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override

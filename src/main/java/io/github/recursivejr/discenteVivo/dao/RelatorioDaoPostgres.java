@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Relatorio;
 
 public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInterface {
@@ -82,11 +80,10 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 				internalStmt.close();
 			}
 			stmt.close();
-			return relatorio;
 		} catch (SQLException ex) {
 			Logger.getLogger(ex.getMessage());
 		}
-		return null;
+		return relatorio;
 	}
 
 }

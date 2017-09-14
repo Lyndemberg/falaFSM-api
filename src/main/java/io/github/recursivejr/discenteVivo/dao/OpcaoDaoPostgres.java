@@ -29,8 +29,8 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface{
             stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
+            return false;
         }
-        
         return true;
     }
 
@@ -41,9 +41,11 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface{
     	try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
+
             stmt.close();
         } catch (SQLException ex) {
-                ex.printStackTrace(); 
+    	    ex.printStackTrace();
+    	    return false;
         }
         return true;
     }

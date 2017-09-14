@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +7,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Setor;
 
 public class SetorDaoPostgres extends ElementoDao implements SetorDaoInterface{
@@ -42,7 +40,8 @@ public class SetorDaoPostgres extends ElementoDao implements SetorDaoInterface{
             
             stmt.close();
         } catch (SQLException ex) {
-        	ex.printStackTrace(); 
+        	ex.printStackTrace();
+        	return false;
         }
         return true;
     }

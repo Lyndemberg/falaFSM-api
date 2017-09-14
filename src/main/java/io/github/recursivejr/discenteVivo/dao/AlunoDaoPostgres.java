@@ -33,10 +33,11 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface{
         try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
+
             stmt.close();
-            
         } catch (SQLException ex) {
-                ex.printStackTrace(); 
+            ex.printStackTrace();
+            return false;
         }
         return true;
     }
