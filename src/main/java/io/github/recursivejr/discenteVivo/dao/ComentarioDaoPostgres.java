@@ -24,56 +24,47 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
             stmt.executeUpdate();
             
             stmt.close();
+            return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         
-        return true;
+        return false;
     }
 
     @Override
     public boolean remover(Comentario comentario) {
-    	String sql = "DELETE FROM Comentario WHERE Comentario ILIKE " + comentario.getComentario()
-    	+ " AND idEnquete = " + comentario.getIdEnquete() + ";";
+    	String sql = "DELETE FROM Comentario WHERE Comentario ILIKE '" + comentario.getComentario()
+    	+ "' AND idEnquete = '" + comentario.getIdEnquete() + "';";
     	try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
 
             stmt.close();
-            
+            return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     @Override
     public List<Comentario> listar() {
-        List<Comentario> comentarios = new ArrayList<>();
-        String sql = "SELECT * FROM Comentario";
-        try {
-            Statement stmt = getConexao().createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while(rs.next()) {
-                Comentario comentario = new Comentario(
-                        rs.getInt("ID"),
-                        rs.getInt("idEnquete"),
-                        rs.getString("Comentario")
-                );
+        String sql = "SELECT * FROM Comentario;";
 
-                comentarios.add(comentario);
-            }
-            stmt.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return comentarios;
+        return getComentarios(sql);
     }
 
     @Override
     public List<Comentario> listarPorEnquete(int IdEnquete) {
+        String sql = "SELECT * FROM Comentario WHERE idEnquete = '" + IdEnquete + "';";
+
+        return getComentarios(sql);
+    }
+
+    private List<Comentario> getComentarios(String sql) {
         List<Comentario> comentarios = new ArrayList<>();
-        String sql = "SELECT * FROM Comentario WHERE idEnquete = " + IdEnquete;
+
         try {
             Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
