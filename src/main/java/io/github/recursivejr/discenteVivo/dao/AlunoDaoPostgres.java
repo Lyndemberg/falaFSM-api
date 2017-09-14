@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,16 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Aluno;
 import io.github.recursivejr.discenteVivo.models.Endereco;
 import io.github.recursivejr.discenteVivo.resources.Encryption;
 
-public class AlunoDaoPostgres implements AlunoDaoInterface{
-    private final Connection conn;
+public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface{
 
     public AlunoDaoPostgres() throws SQLException, ClassNotFoundException {
-        conn = Conexao.getConnection();
+        super();
     }
     
     @Override
@@ -34,10 +31,9 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     	//Remove o aluno da tabela aluno
         String sql = "DELETE FROM Aluno WHERE Matricula ILIKE '" + aluno.getMatricula()+ "';";
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
-            conn.close();
             
         } catch (SQLException ex) {
                 ex.printStackTrace(); 
@@ -83,7 +79,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
     	String sql = "SELECT Matricula FROM Aluno WHERE Login ILIKE ? AND SENHA ILIKE ?;";
     	PreparedStatement stmt;
 		try {
-			stmt = conn.prepareStatement(sql);
+			stmt = getConexao().prepareStatement(sql);
 
 			stmt.setString(1, login);
 			stmt.setString(2, senha);
@@ -97,7 +93,6 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 			String matricula = rs.getString("matricula");
 			
 			stmt.close();
-            conn.close();
 			return matricula;
 			
 		} catch (SQLException ex) {
@@ -108,7 +103,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
 
     private boolean setAluno(String sql, Aluno aluno) {
         try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, aluno.getEmail());
             stmt.setString(2, aluno.getNome());
             stmt.setString(3, aluno.getLogin());
@@ -120,7 +115,6 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
             stmt.executeUpdate();
 
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
@@ -132,7 +126,7 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
         List<Aluno> alunos = new ArrayList<>();
 
         try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
 
             if(param != null)
                 stmt.setString(1, param);
@@ -160,7 +154,6 @@ public class AlunoDaoPostgres implements AlunoDaoInterface{
                 alunos.add(aluno);
             }
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

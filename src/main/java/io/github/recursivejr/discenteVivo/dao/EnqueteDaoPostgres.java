@@ -11,18 +11,17 @@ import java.util.List;
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.*;
 
-public class EnqueteDaoPostgres implements EnqueteDaoInterface {
-    private final Connection conn;
+public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterface {
 
     public EnqueteDaoPostgres() throws SQLException, ClassNotFoundException {
-        conn = Conexao.getConnection();
+        super();
     }
 
     @Override
     public boolean  adicionar(Enquete enquete) {
         String sql = "INSERT INTO Enquete (NOME, DESCRICAO, FOTO, EMAILADMIN) VALUES (?,?,?,?);";
         try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, enquete.getNome());
             stmt.setString(2, enquete.getDescricao());
             stmt.setString(3, enquete.getFoto());
@@ -42,7 +41,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             	opcoes.addAll(enquete.getOpcoes());
 
                 sql = "INSERT INTO Opcoes (IDENQUETE, Opcao) VALUES (?,?);";
-                stmt = conn.prepareStatement(sql);
+                stmt = getConexao().prepareStatement(sql);
 
                 //Perccore todas as opcoes salvando eles no BD
                 for (int i = 0; i < opcoes.size(); i++) {
@@ -62,7 +61,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 cursos.addAll(enquete.getCursos());
 
                 sql = "INSERT INTO EnquetesCurso (IDENQUETE, NomeCurso) VALUES (?,?);";
-                stmt = conn.prepareStatement(sql);
+                stmt = getConexao().prepareStatement(sql);
 
                 //Perccore todas os Cursos salvando eles no BD
                 for (int i = 0; i < cursos.size(); i++) {
@@ -82,7 +81,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 setores.addAll(enquete.getSetores());
 
                 sql = "INSERT INTO EnquetesSetor (IDENQUETE, NomeSetor) VALUES (?,?);";
-                stmt = conn.prepareStatement(sql);
+                stmt = getConexao().prepareStatement(sql);
 
                 //Perccore todas os Setores salvando eles no BD
                 for (int i = 0; i < setores.size(); i++) {
@@ -93,8 +92,6 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
             }
             
             stmt.close();
-            conn.close();
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -108,12 +105,10 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 + "DELETE FROM RespondeEnquete WHERE IDEnquete ILIKE '" + enquete.getId() + "';"
                 + "DELETE FROM Enquete WHERE ID ILIKE '" + enquete.getId() + "';";
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
 
             stmt.close();
-            conn.close();
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -167,13 +162,12 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
         String sql = "SELECT * FROM Enquete WHERE nome ILIKE '" + nome + "';";
         int aux = -1;
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 aux = rs.getInt("id");
             }
-//            stmt.close();
-//            conn.close();
+            stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -184,7 +178,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
         List<Enquete> enquetes = new ArrayList<>();
 
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()) {
@@ -201,7 +195,7 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 enquete.setFoto(rs.getString("foto"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
-                Statement internalStmt = conn.createStatement();
+                Statement internalStmt = getConexao().createStatement();
 
                 //Percorre todos os comentarios e adiciona cada um ao Arraylist desta enquete
                 String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
@@ -280,7 +274,6 @@ public class EnqueteDaoPostgres implements EnqueteDaoInterface {
                 internalStmt.close();
             }
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

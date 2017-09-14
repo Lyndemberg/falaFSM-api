@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,16 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Endereco;
 import io.github.recursivejr.discenteVivo.resources.Encryption;
 
-public class AdministradorDaoPostgres implements AdministradorDaoInterface{
-    private final Connection conn;
+public class AdministradorDaoPostgres extends ElementoDao implements AdministradorDaoInterface{
 
     public AdministradorDaoPostgres() throws SQLException, ClassNotFoundException {
-        conn = Conexao.getConnection();
+        super();
     }
     
     @Override
@@ -32,10 +29,9 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
     public boolean remover(Administrador administrador) {
         String sql = "DELETE FROM Administrador WHERE email ILIKE '" + administrador.getEmail()+ "';";
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
-            conn.close();
             
         } catch (SQLException ex) {
                 ex.printStackTrace(); 
@@ -78,7 +74,7 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
     	String sql = "SELECT Email FROM Administrador WHERE Login ILIKE ? AND Senha ILIKE ?;";
     	PreparedStatement stmt;
 		try {
-			stmt = conn.prepareStatement(sql);
+			stmt = getConexao().prepareStatement(sql);
 
 			stmt.setString(1, login);
 			stmt.setString(2, senha);
@@ -92,7 +88,6 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 			String email = rs.getString("email");
 			
 			stmt.close();
-            conn.close();
 			return email;
 			
 		} catch (SQLException ex) {
@@ -103,7 +98,7 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
 
     private boolean setAdmin(String sql, Administrador administrador) {
         try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
 
             stmt.setString(1, administrador.getEmail());
             stmt.setString(2, administrador.getNome());
@@ -119,7 +114,6 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
             stmt.executeUpdate();
 
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
@@ -131,7 +125,7 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
         List<Administrador> administradores = new ArrayList<>();
 
         try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
 
             if(param != null)
                 stmt.setString(1, param);
@@ -156,7 +150,6 @@ public class AdministradorDaoPostgres implements AdministradorDaoInterface{
                 administradores.add(administrador);
             }
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

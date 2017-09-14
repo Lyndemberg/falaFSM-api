@@ -11,11 +11,10 @@ import java.util.logging.Logger;
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Relatorio;
 
-public class RelatorioDaoPostgres implements RelatorioDaoInterface {
-    private final Connection conn;
+public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInterface {
 
     public RelatorioDaoPostgres() throws SQLException, ClassNotFoundException {
-        conn = Conexao.getConnection();
+        super();
     }
 
 	@Override
@@ -45,12 +44,12 @@ public class RelatorioDaoPostgres implements RelatorioDaoInterface {
 		List<Relatorio> relatorio = new ArrayList<>();
 
 		try {
-			Statement stmt = conn.createStatement();
+			Statement stmt = getConexao().createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 
 			if(rs.next()) {
 				String idEnquete = rs.getString("id");
-				Statement internalStmt = conn.createStatement();
+				Statement internalStmt = getConexao().createStatement();
 
 				//Recuperando as Respostas
 				String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + idEnquete + ";";
@@ -83,13 +82,10 @@ public class RelatorioDaoPostgres implements RelatorioDaoInterface {
 				internalStmt.close();
 			}
 			stmt.close();
-			conn.close();
-
 			return relatorio;
 		} catch (SQLException ex) {
 			Logger.getLogger(ex.getMessage());
 		}
-
 		return null;
 	}
 

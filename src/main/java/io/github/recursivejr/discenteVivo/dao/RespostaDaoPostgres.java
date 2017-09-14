@@ -11,11 +11,10 @@ import java.util.List;
 import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Resposta;
 
-public class RespostaDaoPostgres implements RespostaDaoInterface{
-    private final Connection conn;
+public class RespostaDaoPostgres extends ElementoDao implements RespostaDaoInterface{
 
     public RespostaDaoPostgres() throws SQLException, ClassNotFoundException {
-        conn = Conexao.getConnection();
+        super();
     }
     
     @Override
@@ -23,7 +22,7 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
     	String sql = "INSERT INTO RespondeEnquete (idEnquete, matriculaAluno, Resposta) VALUES (?,?,?);";
         
         try {
-        	PreparedStatement stmt = conn.prepareStatement(sql);
+        	PreparedStatement stmt = getConexao().prepareStatement(sql);
         	
             stmt.setInt(1, resposta.getIdEnquete());
             stmt.setString(2, resposta.getMatAluno());
@@ -31,7 +30,6 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
             stmt.executeUpdate();
             
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -44,12 +42,10 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
     	String sql = "DELETE FROM RespondeEnquete WHERE matriculaAluno ILIKE " + resposta.getMatAluno() 
     	+ " AND idEnquete = " + resposta.getIdEnquete() + ";";
     	try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
 
             stmt.close();
-            conn.close();
-            
         } catch (SQLException ex) {
                 ex.printStackTrace(); 
         }
@@ -61,7 +57,7 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
         List<Resposta> respostas = new ArrayList<>();
         String sql = "SELECT * FROM RespondeEnquete";
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
                 Resposta resp = new Resposta();
@@ -72,7 +68,6 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
                 respostas.add(resp);
             }
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -85,7 +80,7 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
         				+ " AND IdEnquete = " + IdEnquete + ";";
         Resposta resp = null;
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 resp = new Resposta();
@@ -94,7 +89,6 @@ public class RespostaDaoPostgres implements RespostaDaoInterface{
                 resp.setResposta(rs.getString("Resposta"));
             }
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

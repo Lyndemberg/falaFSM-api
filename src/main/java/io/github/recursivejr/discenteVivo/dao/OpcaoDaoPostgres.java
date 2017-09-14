@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,14 +7,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Opcao;
 
-public class OpcaoDaoPostgres implements OpcaoDaoInterface{
-    private final Connection conn;
+public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface{
 
     public OpcaoDaoPostgres() throws SQLException, ClassNotFoundException {
-        conn = Conexao.getConnection();
+        super();
     }
     
     @Override
@@ -23,14 +20,13 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
     	String sql = "INSERT INTO Opcoes (Opcao) VALUES (?) WHERE IdEnquete = ?;";
         
         try {
-        	PreparedStatement stmt = conn.prepareStatement(sql);
+        	PreparedStatement stmt = getConexao().prepareStatement(sql);
         	
             stmt.setString(1, opcao.getOpcao());
             stmt.setInt(2, idEnquete);
             stmt.executeUpdate();
             
-//            stmt.close();
-//            conn.close();
+            stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -43,11 +39,9 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
     	String sql = "DELETE FROM Opcoes WHERE Opcao ILIKE '" + opcao.getOpcao()
     	+ "' AND idEnquete = '" + opcao.getIdEnquete() + "';";
     	try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
-            conn.close();
-            
         } catch (SQLException ex) {
                 ex.printStackTrace(); 
         }
@@ -72,7 +66,7 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
         List<Opcao> opcoes = new ArrayList<>();
 
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
                 Opcao opcao = new Opcao();
@@ -81,8 +75,7 @@ public class OpcaoDaoPostgres implements OpcaoDaoInterface{
 
                 opcoes.add(opcao);
             }
-//            stmt.close();
-//            conn.close();
+            stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

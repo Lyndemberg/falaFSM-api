@@ -14,23 +14,21 @@ import io.github.recursivejr.discenteVivo.models.Curso;
 import io.github.recursivejr.discenteVivo.models.Endereco;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 
-public class CursoDaoPostgres implements CursoDaoInterface{
-    private final Connection conn;
+public class CursoDaoPostgres extends ElementoDao implements CursoDaoInterface{
 
     public CursoDaoPostgres() throws SQLException, ClassNotFoundException {
-        conn = Conexao.getConnection();
+        super();
     }
     
     @Override
     public boolean adicionar(Curso curso) {
         String sql = "INSERT INTO Curso(Nome, Descricao) VALUES (?, ?);";
         try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, curso.getNome());
             stmt.setString(2, curso.getDescricao());
             stmt.executeUpdate();
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
@@ -43,11 +41,10 @@ public class CursoDaoPostgres implements CursoDaoInterface{
         String sql = "DELETE FROM EnquetesCurso WHERE nomeCurso ILIKE '" + curso.getNome() + "'; " +
         				"DELETE FROM Curso WHERE nome ILIKE '" + curso.getNome() + "';";
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
             
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
         	ex.printStackTrace(); 
         }
@@ -77,7 +74,7 @@ public class CursoDaoPostgres implements CursoDaoInterface{
         List<Curso> cursos = new ArrayList<>();
 
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()) {
                 Curso curso = new Curso();
@@ -96,7 +93,7 @@ public class CursoDaoPostgres implements CursoDaoInterface{
                     recuperaAlunos = "SELECT * FROM Aluno AS A JOIN Curso AS C ON A.NomeCurso = C.Nome "+
                             "WHERE C.Nome ILIKE '"+ nomeCurso + "';";
 
-                Statement internalstmt = conn.createStatement();
+                Statement internalstmt = getConexao().createStatement();
                 ResultSet rsListas = internalstmt.executeQuery(sql);
 
                 while(rsListas.next()) {
@@ -126,7 +123,6 @@ public class CursoDaoPostgres implements CursoDaoInterface{
                 cursos.add(curso);
             }
             stmt.close();
-            conn.close();
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }

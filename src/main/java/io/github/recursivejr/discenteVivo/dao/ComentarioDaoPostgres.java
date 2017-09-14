@@ -1,17 +1,15 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import io.github.recursivejr.discenteVivo.factories.Conexao;
 import io.github.recursivejr.discenteVivo.models.Comentario;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComentarioDaoPostgres implements ComentarioDaoInterface{
-    private final Connection conn;
+public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoInterface{
 
     public ComentarioDaoPostgres() throws SQLException, ClassNotFoundException {
-        conn = Conexao.getConnection();
+        super();
     }
     
     @Override
@@ -19,14 +17,13 @@ public class ComentarioDaoPostgres implements ComentarioDaoInterface{
     	String sql = "INSERT INTO Comentario (idEnquete, Comentario) VALUES (?,?);";
         
         try {
-        	PreparedStatement stmt = conn.prepareStatement(sql);
+        	PreparedStatement stmt = getConexao().prepareStatement(sql);
         	
             stmt.setInt(1, comentario.getIdEnquete());
             stmt.setString(2, comentario.getComentario());
             stmt.executeUpdate();
             
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -39,11 +36,10 @@ public class ComentarioDaoPostgres implements ComentarioDaoInterface{
     	String sql = "DELETE FROM Comentario WHERE Comentario ILIKE " + comentario.getComentario()
     	+ " AND idEnquete = " + comentario.getIdEnquete() + ";";
     	try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
 
             stmt.close();
-            conn.close();
             
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -56,7 +52,7 @@ public class ComentarioDaoPostgres implements ComentarioDaoInterface{
         List<Comentario> comentarios = new ArrayList<>();
         String sql = "SELECT * FROM Comentario";
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()) {
                 Comentario comentario = new Comentario(
@@ -68,7 +64,6 @@ public class ComentarioDaoPostgres implements ComentarioDaoInterface{
                 comentarios.add(comentario);
             }
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -80,7 +75,7 @@ public class ComentarioDaoPostgres implements ComentarioDaoInterface{
         List<Comentario> comentarios = new ArrayList<>();
         String sql = "SELECT * FROM Comentario WHERE idEnquete = " + IdEnquete;
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()) {
                 Comentario comentario = new Comentario(
@@ -92,7 +87,6 @@ public class ComentarioDaoPostgres implements ComentarioDaoInterface{
                 comentarios.add(comentario);
             }
             stmt.close();
-            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
