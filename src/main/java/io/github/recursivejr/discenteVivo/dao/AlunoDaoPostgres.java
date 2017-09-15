@@ -73,9 +73,10 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface{
     }
 
     @Override
-    public String login(String login, String senha) throws Exception {
-    	
-    	senha = Encryption.encrypt(senha);
+    public Aluno login(String login, String senha) throws Exception {
+
+        Aluno aluno = null;
+        senha = Encryption.encrypt(senha);
     	
     	String sql = "SELECT Matricula FROM Aluno WHERE Login ILIKE ? AND SENHA ILIKE ?;";
     	PreparedStatement stmt;
@@ -90,16 +91,16 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface{
 			if(!rs.next()) {
 				throw new Exception("Credenciais Inválidas");
 			}
-			
-			String matricula = rs.getString("matricula");
+
+			aluno = buscar(rs.getString("matricula"));
 			
 			stmt.close();
-			return matricula;
 			
 		} catch (SQLException ex) {
 			Logger.getLogger(ex.getMessage());
 			throw ex;
 		}
+		return aluno;
     }
 
     private boolean setAluno(String sql, Aluno aluno) {

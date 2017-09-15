@@ -11,5 +11,5 @@ public interface AdministradorDaoInterface {
     public Administrador buscar(String pesquisa);
     public List<Administrador>  listar();
     public boolean atualizar(Administrador administrador);
-    public String login(String login, String senha) throws Exception;
+    public Administrador login(String login, String senha) throws Exception;
 }

@@ -16,6 +16,8 @@ import javax.xml.bind.DatatypeConverter;
 import io.github.recursivejr.discenteVivo.dao.AdministradorDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
+import io.github.recursivejr.discenteVivo.models.Administrador;
+import io.github.recursivejr.discenteVivo.models.Aluno;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -34,18 +36,20 @@ public class LoginController {
 		try {
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 			
-			String matricula = alunoDao.login(login, senha);
+			Aluno aluno = alunoDao.login(login, senha);
 			
-			String token = gerarToken(matricula, 1);
+			String token = gerarToken(aluno.getMatricula(), 1);
+
+			aluno.setSenha(token);
 
 			System.gc();
-			return Response.ok(token).build();
+			return Response.ok(aluno).build();
 
 		} catch(Exception ex) {
 			Logger.getLogger(ex.getMessage());
 			System.gc();
 			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}	
+		}
 	}
 	
 	@POST
@@ -56,12 +60,14 @@ public class LoginController {
 		try {
 			AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
 			
-			String email = adminDao.login(login, senha);
+			Administrador admin = adminDao.login(login, senha);
 			
-			String token = gerarToken(email, 1);
+			String token = gerarToken(admin.getEmail(), 1);
+
+			admin.setSenha(token);
 
 			System.gc();
-			return Response.ok(token).build();
+			return Response.ok(admin).build();
 
 		} catch(Exception ex) {
 			Logger.getLogger(ex.getMessage());

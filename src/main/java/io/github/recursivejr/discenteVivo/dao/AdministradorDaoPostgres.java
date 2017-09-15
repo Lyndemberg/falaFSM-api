@@ -31,7 +31,7 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
         try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
-            
+
             stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -68,8 +68,9 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
     }
 
     @Override
-    public String login(String login, String senha) throws Exception {
-    	
+    public Administrador login(String login, String senha) throws Exception {
+
+        Administrador admin = null;
     	senha = Encryption.encrypt(senha);
     	
     	String sql = "SELECT Email FROM Administrador WHERE Login ILIKE ? AND Senha ILIKE ?;";
@@ -86,15 +87,14 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
 				throw new Exception("Credenciais Inválidas");
 			}
 			
-			String email = rs.getString("email");
+			admin = buscar(rs.getString("email"));
 			
 			stmt.close();
-			return email;
-			
 		} catch (SQLException ex) {
 			Logger.getLogger(ex.getMessage());
 			throw ex;
 		}
+		return admin;
     }
 
     private boolean setAdmin(String sql, Administrador administrador) {

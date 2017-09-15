@@ -11,6 +11,6 @@ public interface AlunoDaoInterface {
     public Aluno buscar(String matricula);
     public List<Aluno> listar();
     public boolean atualizar(Aluno aluno);
-    public String login(String login, String senha) throws Exception;
+    public Aluno login(String login, String senha) throws Exception;
 
 }
