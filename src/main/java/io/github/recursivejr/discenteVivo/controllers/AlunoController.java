@@ -207,6 +207,12 @@ public class AlunoController{
 
 			List<Curso> cursos = enquete.getCursos();
 
+			//Caso a variavel cursos estaja vazia entao a enquete nao esta associada a nenhum curso
+				//logo todos os alunos tem permissao a acessa-la
+			if (cursos.isEmpty())
+				return true;
+
+			//Retorna true se o curso do aluno estiver dentro da variavel cursos
 			for (Curso curso: cursos) {
 				if (aluno.getCurso().equals(curso)) {
 					System.gc();
@@ -214,6 +220,7 @@ public class AlunoController{
 				}
 			}
 
+			//Caso nao esteja retorna false
 			System.gc();
 			return false;
 
