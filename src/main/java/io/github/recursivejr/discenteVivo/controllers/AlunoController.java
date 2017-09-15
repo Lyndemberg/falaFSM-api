@@ -1,6 +1,6 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import java.util.logging.Filter;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ws.rs.*;
@@ -11,13 +11,12 @@ import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.ComentarioDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.EnqueteDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.RespostaDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
-import io.github.recursivejr.discenteVivo.models.Aluno;
-import io.github.recursivejr.discenteVivo.models.Comentario;
-import io.github.recursivejr.discenteVivo.models.Resposta;
+import io.github.recursivejr.discenteVivo.models.*;
 
 @Path("aluno")
 public class AlunoController{
@@ -43,6 +42,10 @@ public class AlunoController{
 					.getSecurityContext()
 						.getUserPrincipal()
 							.getName();
+
+			//Verifica se o Aluno pode Comentar nesta Enquete
+			if(!checkEnquete(matAluno, idEnquete))
+				return Response.status(Response.Status.UNAUTHORIZED).build();
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			Resposta resp = new Resposta(idEnquete, resposta, matAluno);
@@ -157,6 +160,16 @@ public class AlunoController{
 			//Cria um comentarioDao com base na Interface
 			ComentarioDaoInterface comentarioDao = new FabricaDaoPostgres().criarComentarioDao();
 
+			//Recupera a Matricula do Aluno com base no token
+			String matAluno =  requestContext
+					.getSecurityContext()
+					.getUserPrincipal()
+					.getName();
+
+			//Verifica se o Aluno pode Comentar nesta Enquete
+			if(!checkEnquete(matAluno, idEnquete))
+				return Response.status(Response.Status.UNAUTHORIZED).build();
+
 			//Tenta Salvar o Comentario
 			if (!comentarioDao.adicionar(new Comentario(
 					1,
@@ -176,6 +189,39 @@ public class AlunoController{
 			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
+	}
+
+	//Verifica se o Aluno esta Interagindo com uma Enquete que esta Associada a seu Curso
+	private boolean checkEnquete(String matAluno, int idEnquete) {
+		//Retorna True se aluno tem permissao para acessar esta enquete
+		//Retorna False se aluno nao tem permissao para acessar esta enquete
+		try {
+
+			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+
+			Enquete enquete = enqueteDao.buscar(idEnquete);
+			Aluno aluno = alunoDao.buscar(matAluno);
+
+			List<Curso> cursos = enquete.getCursos();
+
+			for (Curso curso: cursos) {
+				if (aluno.getCurso().equals(curso)) {
+					System.gc();
+					return true;
+				}
+			}
+
+			System.gc();
+			return false;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return false;
 		}
 
 	}

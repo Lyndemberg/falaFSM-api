@@ -124,11 +124,11 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     @Override
-    public Enquete buscar(String id) {
+    public Enquete buscar(int idEnquete) {
 
         //Testar se n da erro ao tentar buscar uma enquete q nao existe
 
-        String sql = "SELECT * FROM Enquete WHERE id = '" + id + "';";
+        String sql = "SELECT * FROM Enquete WHERE id = '" + idEnquete + "';";
 
         List<Enquete> enquetes = getEnquetes(sql);
 
@@ -158,7 +158,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
         return getEnquetes(sql);
     }
 
-    public int buscarId(String nome) {
+    private int buscarId(String nome) {
         String sql = "SELECT * FROM Enquete WHERE nome ILIKE '" + nome + "';";
         int aux = -1;
         try {

@@ -36,7 +36,7 @@ public class EnqueteController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("enquete/{id}/")
-    public Enquete getEnquete(@PathParam("id") String id) {
+    public Enquete getEnquete(@PathParam("id") int id) {
 
 		EnqueteDaoInterface enquetesDao = null;
     	try {
