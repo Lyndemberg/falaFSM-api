@@ -14,7 +14,7 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
     
     @Override
     public boolean adicionar(Comentario comentario) {
-    	String sql = "INSERT INTO Comentario (idEnquete, Comentario) VALUES (?,?);";
+    	String sql = "INSERT INTO Comentarios (idEnquete, Comentario) VALUES (?,?);";
         
         try {
         	PreparedStatement stmt = getConexao().prepareStatement(sql);
@@ -33,7 +33,7 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
 
     @Override
     public boolean remover(Comentario comentario) {
-    	String sql = "DELETE FROM Comentario WHERE Comentario ILIKE '" + comentario.getComentario()
+    	String sql = "DELETE FROM Comentarios WHERE Comentario ILIKE '" + comentario.getComentario()
     	+ "' AND idEnquete = '" + comentario.getIdEnquete() + "';";
     	try {
             Statement stmt = getConexao().createStatement();
@@ -49,14 +49,14 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
 
     @Override
     public List<Comentario> listar() {
-        String sql = "SELECT * FROM Comentario;";
+        String sql = "SELECT * FROM Comentarios;";
 
         return getComentarios(sql);
     }
 
     @Override
     public List<Comentario> listarPorEnquete(int IdEnquete) {
-        String sql = "SELECT * FROM Comentario WHERE idEnquete = '" + IdEnquete + "';";
+        String sql = "SELECT * FROM Comentarios WHERE idEnquete = '" + IdEnquete + "';";
 
         return getComentarios(sql);
     }
