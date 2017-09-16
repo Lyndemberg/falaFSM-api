@@ -5,10 +5,7 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
@@ -29,7 +26,7 @@ public class LoginController {
 	private final String SECRETKEY = "FSM#STUD3NT-V01C3@K3Y/CR1PT";  
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("loginAluno/{login}/{senha}/")
 	public Response loginAluno(@PathParam("login") String login, @PathParam("senha") String senha) {
 		
@@ -53,7 +50,7 @@ public class LoginController {
 	}
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("loginAdmin/{login}/{senha}/")
 	public Response loginAdmin(@PathParam("login") String login, @PathParam("senha") String senha) {
 		
