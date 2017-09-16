@@ -214,7 +214,10 @@ public class AlunoController{
 
 			//Retorna true se o curso do aluno estiver dentro da variavel cursos
 			for (Curso curso: cursos) {
-				if (aluno.getCurso().equals(curso)) {
+				if (aluno.getCurso()
+						.equals(
+								curso.getNome()
+						)) {
 					System.gc();
 					return true;
 				}
