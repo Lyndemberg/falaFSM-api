@@ -85,10 +85,8 @@ public class AlunoController{
 							.getUserPrincipal()
 								.getName();
 
-				//Caso a matricula do token seja diferente do aluno entao este usuario esta tentando alterar perfil
-					//de outro aluno
-				if (!matricula.equals(aluno.getMatricula()))
-					return Response.status(Response.Status.UNAUTHORIZED).build();
+				//Insere no Aluno a Matricula provida pelo Token
+				aluno.setMatricula(matricula);
 
 				//Se ao tentar salvar retornar false entao houve erro durante a execucao do SQL
 				if(alunoDao.atualizar(aluno) == false)
