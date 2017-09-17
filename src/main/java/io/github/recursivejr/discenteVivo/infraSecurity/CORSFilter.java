@@ -18,7 +18,7 @@ public class CORSFilter implements ContainerResponseFilter {
 		//headers.add("Access-Control-Allow-Origin", "https://discente-vivo.herokuapp.com/");
 		headers.add("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
         headers.add("Access-Control-Allow-Credentials", "true");
-		headers.add("Access-Control-Allow-Headers", "accept, origin, X-Requested-With, Content-Type, X-Codingpedia");
+		headers.add("Access-Control-Allow-Headers", "accept, origin, X-Requested-With, Content-Type, X-Codingpedia, Authorization");
 		headers.add("Access-Control-Max-Age", "172800");
 	}
 
