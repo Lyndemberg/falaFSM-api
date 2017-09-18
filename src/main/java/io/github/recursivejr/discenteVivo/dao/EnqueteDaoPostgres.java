@@ -198,7 +198,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 Statement internalStmt = getConexao().createStatement();
 
                 //Percorre todos os comentarios e adiciona cada um ao Arraylist desta enquete
-                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = " + enquete.getId() + ";";
+                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = '" + enquete.getId() + "';";
                 ResultSet rsLista = internalStmt.executeQuery(sqlComentarios);
                 while (rsLista.next()) {
 
@@ -227,8 +227,9 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 }
                 enquete.setOpcoes(opcoes);
 
-                //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquete
-                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = '" + enquete.getId() + "';";
+                //Percorre todas as Respostas e retorna a(s) resposta(s) deste aluno
+                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = '" + enquete.getId() + "'" +
+                        " and MatriculaAluno ILIKE '" + matAluno + "';";
                 rsLista = internalStmt.executeQuery(sqlRespostas);
                 while (rsLista.next()) {
 
@@ -237,16 +238,6 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                             rsLista.getString("Resposta"),
                             rsLista.getString("matriculaAluno")
                     );
-
-                    //Se a matricula do aluno estiver na tabela RespondeEnquete entao este aluno respondeu a enquete
-                    if (matAluno.equals(
-                                rsLista.getString("matriculaAluno")
-                            ))
-                        enquete.setRespondida(true);
-                    else
-                        enquete.setRespondida(false);
-
-                    respostas.add(resposta);
                 }
                 enquete.setRespostas(respostas);
 
