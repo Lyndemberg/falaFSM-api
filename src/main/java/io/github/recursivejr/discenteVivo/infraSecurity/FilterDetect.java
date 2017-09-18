@@ -118,4 +118,11 @@ public class FilterDetect implements ContainerRequestFilter{
 			return false;
 		}
 	}
+
+	public static String getToken(ContainerRequestContext requestContext) {
+		return requestContext
+				.getSecurityContext()
+					.getUserPrincipal()
+						.getName();
+	}
 }
