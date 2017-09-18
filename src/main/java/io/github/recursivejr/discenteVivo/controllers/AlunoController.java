@@ -200,7 +200,7 @@ public class AlunoController{
 			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 
-			Enquete enquete = enqueteDao.buscar(idEnquete);
+			Enquete enquete = enqueteDao.buscar(idEnquete, matAluno);
 			Aluno aluno = alunoDao.buscar(matAluno);
 
 			List<Curso> cursos = enquete.getCursos();

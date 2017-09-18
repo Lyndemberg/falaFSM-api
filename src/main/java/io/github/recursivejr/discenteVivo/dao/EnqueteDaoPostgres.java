@@ -99,7 +99,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
     @Override
     public boolean remover(Enquete enquete) {
-        String sql = "DELETE FROM Comentario WHERE IDEnquete ILIKE '" + enquete.getId() + "';"
+        String sql = "DELETE FROM ComentaEnquete WHERE IDEnquete ILIKE '" + enquete.getId() + "';"
                 + "DELETE FROM Opcoes WHERE IDEnquete ILIKE '" + enquete.getId() + "'';"
                 + "DELETE FROM RespondeEnquete WHERE IDEnquete ILIKE '" + enquete.getId() + "';"
                 + "DELETE FROM Enquete WHERE ID ILIKE '" + enquete.getId() + "';";
@@ -120,7 +120,12 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
         String sql = "SELECT * FROM Enquete;";
 
-        return getEnquetes(sql, matAluno);
+        //Se nao tiver matAluno entao nao e necessario filtrar por aluno
+        if (matAluno == null)
+            return getAllEnquetes(sql);
+        else
+            //caso matAluno nao seja null entao filtra por aluno
+            return getEnquetes(sql, matAluno);
     }
 
     @Override
@@ -130,7 +135,14 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
         String sql = "SELECT * FROM Enquete WHERE id = '" + idEnquete + "';";
 
-        List<Enquete> enquetes = getEnquetes(sql, matAluno);
+        List<Enquete> enquetes = null;
+
+        //Se nao tiver matAluno entao nao e necessario filtrar por aluno
+        if (matAluno == null)
+            enquetes = getAllEnquetes(sql);
+        else
+            //caso matAluno nao seja null entao filtra por aluno
+            enquetes = getEnquetes(sql, matAluno);
 
         if (enquetes.isEmpty()) {
             return null;
@@ -146,7 +158,12 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
         String sql = "SELECT E.* FROM Enquete E, EnquetesSetor ES " +
                 "WHERE E.Id = ES.idEnquete AND ES.nomeSetor ILIKE '" + nomeSetor +"';";
 
-        return getEnquetes(sql, matAluno);
+        //Se nao tiver matAluno entao nao e necessario filtrar por aluno
+        if (matAluno == null)
+            return getAllEnquetes(sql);
+        else
+            //caso matAluno nao seja null entao filtra por aluno
+            return getEnquetes(sql, matAluno);
     }
 
     @Override
@@ -155,7 +172,12 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
         String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " +
                 "WHERE E.Id = EC.idEnquete AND EC.nomeCurso ILIKE '" + nomeCurso +"';";
 
-        return getEnquetes(sql, matAluno);
+        //Se nao tiver matAluno entao nao e necessario filtrar por aluno
+        if (matAluno == null)
+            return getAllEnquetes(sql);
+        else
+            //caso matAluno nao seja null entao filtra por aluno
+            return getEnquetes(sql, matAluno);
     }
 
     private int buscarId(String nome) {
@@ -197,13 +219,14 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
                 Statement internalStmt = getConexao().createStatement();
 
-                //Percorre todos os comentarios e adiciona cada um ao Arraylist desta enquete
-                String sqlComentarios = "SELECT * FROM Comentarios WHERE IDEnquete = '" + enquete.getId() + "';";
+                //Percorre todos os comentarios e recupera apenas o comentario deste aluno
+                String sqlComentarios = "SELECT * FROM ComentaEnquete WHERE IDEnquete = '" + enquete.getId() + "'" +
+                        " and MatriculaAluno ILIKE '" + matAluno + "';";
                 ResultSet rsLista = internalStmt.executeQuery(sqlComentarios);
                 while (rsLista.next()) {
 
                     Comentario comentario = new Comentario(
-                            rsLista.getInt("ID"),
+                            rsLista.getString("MatriculaAluno"),
                             rsLista.getInt("IdEnquete"),
                             rsLista.getString("Comentario")
                     );
@@ -262,6 +285,112 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
                     //Retorno apenas o nome pois e o unico dado realmente necessario
                         //para se identificar a qual Setor pertence a Enquete
+                    Setor setor = new Setor();
+                    setor.setNome(rsLista.getString("NomeSetor"));
+
+                    setores.add(setor);
+                }
+                enquete.setSetores(setores);
+
+                enquetes.add(enquete);
+                internalStmt.close();
+            }
+            stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return enquetes;
+    }
+
+    private List<Enquete> getAllEnquetes(String sql){
+        List<Enquete> enquetes = new ArrayList<>();
+
+        try {
+            Statement stmt = getConexao().createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()) {
+                List<Comentario> comentarios = new ArrayList<>();
+                List<Opcao> opcoes = new ArrayList<>();
+                List<Resposta> respostas = new ArrayList<>();
+                List<Curso> cursos = new ArrayList<>();
+                List<Setor> setores = new ArrayList<>();
+
+                Enquete enquete = new Enquete();
+                enquete.setId(rs.getInt("id"));
+                enquete.setNome(rs.getString("nome"));
+                enquete.setDescricao(rs.getString("descricao"));
+                enquete.setFoto(rs.getString("foto"));
+                enquete.setEmailAdmin(rs.getString("emailAdmin"));
+
+                Statement internalStmt = getConexao().createStatement();
+
+                //Percorre todos os comentarios e adiciona cada um ao Arraylist desta enquete
+                String sqlComentarios = "SELECT * FROM ComentaEnquete WHERE IDEnquete = '" + enquete.getId() + "';";
+                ResultSet rsLista = internalStmt.executeQuery(sqlComentarios);
+                while (rsLista.next()) {
+
+                    Comentario comentario = new Comentario(
+                            rsLista.getString("MatriculaAluno"),
+                            rsLista.getInt("IdEnquete"),
+                            rsLista.getString("Comentario")
+                    );
+
+                    comentarios.add(comentario);
+                }
+                enquete.setComentarios(comentarios);
+
+                //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
+                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = '" + enquete.getId() + "';";
+                rsLista = internalStmt.executeQuery(sqlOpcoes);
+                while (rsLista.next()) {
+
+                    Opcao opcao = new Opcao(
+                            rsLista.getInt("ID"),
+                            rsLista.getInt("IdEnquete"),
+                            rsLista.getString("Opcao")
+                    );
+
+                    opcoes.add(opcao);
+                }
+                enquete.setOpcoes(opcoes);
+
+                //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquete
+                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = '" + enquete.getId() + "';";
+                rsLista = internalStmt.executeQuery(sqlRespostas);
+                while (rsLista.next()) {
+
+                    Resposta resposta = new Resposta(
+                            rsLista.getInt("IdEnquete"),
+                            rsLista.getString("Resposta"),
+                            rsLista.getString("matriculaAluno")
+                    );
+
+                    respostas.add(resposta);
+                }
+                enquete.setRespostas(respostas);
+
+                //Percorre todos os Cursos Associados a esta Enquete e adiciona-os ao ArrayList de Retorno
+                String sqlCursos = "SELECT NomeCurso FROM EnquetesCurso WHERE idEnquete = '"+ enquete.getId() +"';";
+                rsLista = internalStmt.executeQuery(sqlCursos);
+                while (rsLista.next()) {
+
+                    //Retorno apenas o nome pois e o unico dado realmente necessario
+                    //para se identificar a qual Curso pertence a Enquete
+                    Curso curso = new Curso();
+                    curso.setNome(rsLista.getString("NomeCurso"));
+
+                    cursos.add(curso);
+                }
+                enquete.setCursos(cursos);
+
+                //Percorre todos os Setores Associados a esta Enquete e adiciona-os ao ArrayList de Retorno
+                String sqlSetores = "SELECT NomeSetor FROM EnquetesSetor WHERE idEnquete = '" + enquete.getId() + "';";
+                rsLista = internalStmt.executeQuery(sqlSetores);
+                while (rsLista.next()) {
+
+                    //Retorno apenas o nome pois e o unico dado realmente necessario
+                    //para se identificar a qual Setor pertence a Enquete
                     Setor setor = new Setor();
                     setor.setNome(rsLista.getString("NomeSetor"));
 
