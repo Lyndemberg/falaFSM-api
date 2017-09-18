@@ -66,8 +66,8 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface{
 
     @Override
     public boolean atualizar(Aluno aluno) {
-        String sql = "UPDATE Aluno SET Email = ?, Nome = ?, Login = ?, Senha = ?, Cidade = ?, Rua = ?, Numero = ?, " +
-                "NomeCurso = ? WHERE Matricula ILIKE '" + aluno.getMatricula() + "';";
+        String sql = "UPDATE Aluno SET Email = ?, Nome = ?, Login = ?, Senha = ?, Cidade = ?, Rua = ?, Numero = ?" +
+                " WHERE Matricula ILIKE '" + aluno.getMatricula() + "';";
 
         return setAluno(sql, aluno);
     }
