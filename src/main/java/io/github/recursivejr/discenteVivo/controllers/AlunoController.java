@@ -74,9 +74,6 @@ public class AlunoController{
 		if (!FilterDetect.checkAluno(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
-		System.out.printf("\n\nALUNO VAZIO? " + aluno.isEmpty());
-		System.out.printf("\n\n\nALUNO POR ESCRITO? " + aluno.toString() + "\n\n");
-
 		//Caso seja token seja valido verifica se o Aluno foi totalmente Preenchido
 		if(!aluno.isEmpty()) {
 			try {
