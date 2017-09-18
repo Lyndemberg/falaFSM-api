@@ -261,6 +261,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                             rsLista.getString("Resposta"),
                             rsLista.getString("matriculaAluno")
                     );
+
+                    respostas.add(resposta);
                 }
                 enquete.setRespostas(respostas);
 
