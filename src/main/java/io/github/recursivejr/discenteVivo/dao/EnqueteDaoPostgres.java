@@ -116,21 +116,21 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     @Override
-    public List<Enquete> listar() {
+    public List<Enquete> listar(String matAluno) {
 
         String sql = "SELECT * FROM Enquete;";
 
-        return getEnquetes(sql);
+        return getEnquetes(sql, matAluno);
     }
 
     @Override
-    public Enquete buscar(int idEnquete) {
+    public Enquete buscar(int idEnquete, String matAluno) {
 
         //Testar se n da erro ao tentar buscar uma enquete q nao existe
 
         String sql = "SELECT * FROM Enquete WHERE id = '" + idEnquete + "';";
 
-        List<Enquete> enquetes = getEnquetes(sql);
+        List<Enquete> enquetes = getEnquetes(sql, matAluno);
 
         if (enquetes.isEmpty()) {
             return null;
@@ -141,21 +141,21 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     @Override
-    public List<Enquete> enquetesPorSetor(String nomeSetor) {
+    public List<Enquete> enquetesPorSetor(String nomeSetor, String matAluno) {
 
         String sql = "SELECT E.* FROM Enquete E, EnquetesSetor ES " +
                 "WHERE E.Id = ES.idEnquete AND ES.nomeSetor ILIKE '" + nomeSetor +"';";
 
-        return getEnquetes(sql);
+        return getEnquetes(sql, matAluno);
     }
 
     @Override
-    public List<Enquete> enquetesPorCurso(String nomeCurso) {
+    public List<Enquete> enquetesPorCurso(String nomeCurso, String matAluno) {
 
         String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " +
                 "WHERE E.Id = EC.idEnquete AND EC.nomeCurso ILIKE '" + nomeCurso +"';";
 
-        return getEnquetes(sql);
+        return getEnquetes(sql, matAluno);
     }
 
     private int buscarId(String nome) {
@@ -174,7 +174,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
         return aux;
     }
 
-    private List<Enquete> getEnquetes(String sql){
+    private List<Enquete> getEnquetes(String sql, String matAluno){
         List<Enquete> enquetes = new ArrayList<>();
 
         try {
@@ -237,6 +237,14 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                             rsLista.getString("Resposta"),
                             rsLista.getString("matriculaAluno")
                     );
+
+                    //Se a matricula do aluno estiver na tabela RespondeEnquete entao este aluno respondeu a enquete
+                    if (matAluno.equals(
+                                rsLista.getString("matriculaAluno")
+                            ))
+                        enquete.setRespondida(true);
+                    else
+                        enquete.setRespondida(false);
 
                     respostas.add(resposta);
                 }
