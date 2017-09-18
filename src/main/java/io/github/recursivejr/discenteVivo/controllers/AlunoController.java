@@ -159,10 +159,7 @@ public class AlunoController{
 			ComentarioDaoInterface comentarioDao = new FabricaDaoPostgres().criarComentarioDao();
 
 			//Recupera a Matricula do Aluno com base no token
-			String matAluno =  requestContext
-					.getSecurityContext()
-					.getUserPrincipal()
-					.getName();
+			String matAluno =  FilterDetect.getToken(requestContext);
 
 			//Verifica se o Aluno pode Comentar nesta Enquete
 			if(!checkEnquete(matAluno, idEnquete))
@@ -170,7 +167,7 @@ public class AlunoController{
 
 			//Tenta Salvar o Comentario
 			if (!comentarioDao.adicionar(new Comentario(
-					1,
+					matAluno,
 					idEnquete,
 					comentario
 				))) {
@@ -200,7 +197,7 @@ public class AlunoController{
 			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 
-			Enquete enquete = enqueteDao.buscar(idEnquete);
+			Enquete enquete = enqueteDao.buscar(idEnquete, matAluno);
 			Aluno aluno = alunoDao.buscar(matAluno);
 
 			List<Curso> cursos = enquete.getCursos();

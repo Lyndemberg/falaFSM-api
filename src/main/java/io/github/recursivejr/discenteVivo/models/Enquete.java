@@ -14,9 +14,10 @@ public class Enquete {
     private List<Resposta> respostas;
     private List<Curso> cursos;
     private List<Setor> setores;
+    private boolean respondida;
 
     public Enquete(int id, String emailAdmin, String nome, String descricao, String foto, List<Comentario> comentarios,
-                   List<Opcao> opcoes, List<Resposta> respostas, List<Curso> cursos, List<Setor> setores) {
+                   List<Opcao> opcoes, List<Resposta> respostas, List<Curso> cursos, List<Setor> setores, boolean respondida) {
         this.id = id;
         this.emailAdmin = emailAdmin;
         this.nome = nome;
@@ -27,6 +28,7 @@ public class Enquete {
         this.respostas = respostas;
         this.cursos = cursos;
         this.setores = setores;
+        this.respondida = respondida;
     }
 
     public Enquete() {
@@ -113,6 +115,14 @@ public class Enquete {
         this.setores = setores;
     }
 
+    public boolean isRespondida() {
+        return respondida;
+    }
+
+    public void setRespondida(boolean respondida) {
+        this.respondida = respondida;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -121,6 +131,7 @@ public class Enquete {
         Enquete enquete = (Enquete) o;
 
         if (id != enquete.id) return false;
+        if (respondida != enquete.respondida) return false;
         if (!emailAdmin.equals(enquete.emailAdmin)) return false;
         if (!nome.equals(enquete.nome)) return false;
         if (!descricao.equals(enquete.descricao)) return false;
@@ -144,6 +155,7 @@ public class Enquete {
         result = 31 * result + respostas.hashCode();
         result = 31 * result + cursos.hashCode();
         result = 31 * result + setores.hashCode();
+        result = 31 * result + (respondida ? 1 : 0);
         return result;
     }
 
@@ -160,6 +172,7 @@ public class Enquete {
                 ", respostas=" + respostas +
                 ", cursos=" + cursos +
                 ", setores=" + setores +
+                ", respondida=" + respondida +
                 '}';
     }
 }

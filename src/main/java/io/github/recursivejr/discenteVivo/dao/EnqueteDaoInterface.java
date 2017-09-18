@@ -8,8 +8,8 @@ public interface EnqueteDaoInterface {
 
     public boolean adicionar(Enquete enquete);
     public boolean remover(Enquete enquete);
-    public Enquete buscar(int idEnquete);
-    public List<Enquete> listar();
-    public List<Enquete> enquetesPorSetor(String nomeSetor);
-    public List<Enquete> enquetesPorCurso(String nomeCurso);
+    public Enquete buscar(int idEnquete, String matAluno);
+    public List<Enquete> listar(String matAluno);
+    public List<Enquete> enquetesPorSetor(String nomeSetor, String matAluno);
+    public List<Enquete> enquetesPorCurso(String nomeCurso, String matAluno);
 }

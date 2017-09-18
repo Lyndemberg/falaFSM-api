@@ -2,12 +2,12 @@ package io.github.recursivejr.discenteVivo.models;
 
 public class Comentario {
 
-    private int idComentario;
+    private String matriculaAluno;
     private int idEnquete;
     private String comentario;
 
-    public Comentario(int idComentario, int idEnquete, String comentario) {
-        this.idComentario = idComentario;
+    public Comentario(String matriculaAluno, int idEnquete, String comentario) {
+        this.matriculaAluno = matriculaAluno;
         this.idEnquete = idEnquete;
         this.comentario = comentario;
     }
@@ -16,12 +16,12 @@ public class Comentario {
 
     }
 
-    public int getIdComentario() {
-        return idComentario;
+    public String getMatriculaAluno() {
+        return matriculaAluno;
     }
 
-    public void setIdComentario(int idComentario) {
-        this.idComentario = idComentario;
+    public void setMatriculaAluno(String matriculaAluno) {
+        this.matriculaAluno = matriculaAluno;
     }
 
     public int getIdEnquete() {
@@ -41,31 +41,31 @@ public class Comentario {
     }
 
     @Override
+    public String toString() {
+        return "Comentario{" +
+                "matriculaAluno='" + matriculaAluno + '\'' +
+                ", idEnquete=" + idEnquete +
+                ", comentario='" + comentario + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Comentario that = (Comentario) o;
 
-        if (idComentario != that.idComentario) return false;
         if (idEnquete != that.idEnquete) return false;
+        if (!matriculaAluno.equals(that.matriculaAluno)) return false;
         return comentario.equals(that.comentario);
     }
 
     @Override
     public int hashCode() {
-        int result = idComentario;
+        int result = matriculaAluno.hashCode();
         result = 31 * result + idEnquete;
         result = 31 * result + comentario.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Comentario{" +
-                "idComentario=" + idComentario +
-                ", idEnquete=" + idEnquete +
-                ", comentario='" + comentario + '\'' +
-                '}';
     }
 }
