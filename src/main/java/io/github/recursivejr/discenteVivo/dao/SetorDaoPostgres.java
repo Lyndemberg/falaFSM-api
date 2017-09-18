@@ -59,7 +59,7 @@ public class SetorDaoPostgres extends ElementoDao implements SetorDaoInterface{
             	
             	EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
             	
-            	setor.setEnquetes(enqueteDao.enquetesPorSetor(setor.getNome()));
+            	setor.setEnquetes(enqueteDao.enquetesPorSetor(setor.getNome(), null));
                 
             	setores.add(setor);
             }
@@ -82,7 +82,7 @@ public class SetorDaoPostgres extends ElementoDao implements SetorDaoInterface{
                 setor.setNome(rs.getString("nome"));
                 
                 EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
-            	setor.setEnquetes(enqueteDao.enquetesPorSetor(setor.getNome()));
+            	setor.setEnquetes(enqueteDao.enquetesPorSetor(setor.getNome(), null));
             }
             stmt.close();
         } catch (SQLException | ClassNotFoundException ex) {

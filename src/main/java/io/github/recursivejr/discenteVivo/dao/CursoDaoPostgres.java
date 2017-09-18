@@ -115,7 +115,8 @@ public class CursoDaoPostgres extends ElementoDao implements CursoDaoInterface{
                 //Recupera Lista de Enquetes
                 List<Enquete> enquetes = new EnqueteDaoPostgres()
                                                 .enquetesPorCurso(
-                                                        rs.getString("Nome")
+                                                        rs.getString("Nome"),
+                                                        null
                                                 );
                 curso.setEnquetes(enquetes);
 

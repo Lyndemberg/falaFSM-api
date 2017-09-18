@@ -38,10 +38,7 @@ public class AlunoController{
 			RespostaDaoPostgres respostaDao = new RespostaDaoPostgres();
 
 			//Pega a matricula do aluno que esta respondendo a enquete pelo token de acesso
-			String matAluno = requestContext
-					.getSecurityContext()
-						.getUserPrincipal()
-							.getName();
+			String matAluno = FilterDetect.getToken(requestContext);
 
 			//Verifica se o Aluno pode Comentar nesta Enquete
 			if(!checkEnquete(matAluno, idEnquete))
@@ -80,10 +77,7 @@ public class AlunoController{
 				AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 
 				//Recebe a matricula pelo token
-				String matricula = requestContext
-						.getSecurityContext()
-							.getUserPrincipal()
-								.getName();
+				String matricula = FilterDetect.getToken(requestContext);
 
 				//Insere no Aluno a Matricula provida pelo Token
 				aluno.setMatricula(matricula);
@@ -124,10 +118,7 @@ public class AlunoController{
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 
 			//Recupera a matricula do aluno pelo token
-			String matricula =  requestContext
-					.getSecurityContext()
-						.getUserPrincipal()
-							.getName();
+			String matricula =  FilterDetect.getToken(requestContext);
 
 			//Retorna Reposta com codigo 200 de OK contendo o Objeto Aluno
 			Aluno aluno = alunoDao.buscar(matricula);

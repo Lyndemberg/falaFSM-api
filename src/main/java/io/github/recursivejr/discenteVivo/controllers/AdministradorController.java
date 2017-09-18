@@ -169,10 +169,7 @@ public class AdministradorController {
 
 			//Seta o email do admin que está criando a Enquete com base no token
 			enquete.setEmailAdmin(
-					requestContext
-							.getSecurityContext()
-							.getUserPrincipal()
-							.getName());
+					FilterDetect.getToken(requestContext));
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			if(enqueteDao.adicionar(enquete) == false)
@@ -253,10 +250,7 @@ public class AdministradorController {
             AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
 
             //Recupera o email do token
-            String email = requestContext
-                    .getSecurityContext()
-                    .getUserPrincipal()
-                    .getName();
+            String email = FilterDetect.getToken(requestContext);
 
             //Retorna uma resposta com codigo 200 de OK e o Objeto Administrador com o Email do Token
 			Administrador admin = adminDao.buscar(email);
