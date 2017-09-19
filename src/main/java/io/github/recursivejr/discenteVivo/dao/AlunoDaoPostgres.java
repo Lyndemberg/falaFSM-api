@@ -69,6 +69,7 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface{
         String sql = "UPDATE Aluno SET Email = ?, Nome = ?, Login = ?, Senha = ?, Cidade = ?, Rua = ?, Numero = ?" +
                 " WHERE Matricula ILIKE '" + aluno.getMatricula() + "';";
 
+        aluno.setCurso(null);
         return setAluno(sql, aluno);
     }
 
@@ -113,7 +114,12 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface{
             stmt.setString(5, aluno.getEndereco().getCidade());
             stmt.setString(6, aluno.getEndereco().getRua());
             stmt.setString(7, aluno.getEndereco().getNumero());
-            stmt.setString(8, aluno.getCurso());
+
+            //Caso o objeto aluno nao tenha curso entao o mesmo nao sera salvo
+                //Pois refere-se ao metodo Atualizar e um aluno nao pode Atualizar seu Curso
+            if (aluno.getCurso() != null)
+                stmt.setString(8, aluno.getCurso());
+
             stmt.executeUpdate();
 
             stmt.close();
