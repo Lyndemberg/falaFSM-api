@@ -54,7 +54,9 @@ public class CursoDaoPostgres extends ElementoDao implements CursoDaoInterface{
     public List<Curso> listar() {
         String sql = "SELECT * FROM Curso;";
 
-        return getCursos(sql, null);
+        //Retorna-se uma versao simples onde retorno apenas o nome e a descricao ao inves da
+            // versao completa :: return getCursos(sql, null);
+        return listCursos(sql);
     }
 
     @Override
@@ -128,6 +130,25 @@ public class CursoDaoPostgres extends ElementoDao implements CursoDaoInterface{
         }
         return cursos;
 
+    }
+
+    //Versao Simples onde nao retorno alunos e enquetes
+    private List<Curso> listCursos(String sql) {
+        List<Curso> cursos = new ArrayList<>();
+
+        try {
+            Statement stmt = getConexao().createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                Curso curso = new Curso();
+                curso.setNome(rs.getString("Nome"));
+                curso.setDescricao(rs.getString("Descricao"));
+            }
+            stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return cursos;
     }
 
 }
