@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import io.github.recursivejr.discenteVivo.models.Comentario;
 import io.github.recursivejr.discenteVivo.models.Relatorio;
 
 public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInterface {
@@ -16,71 +17,48 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
     }
 
 	@Override
-	public List<Relatorio> gerarRelatorio() {
-		String sql = "SELECT Id FROM Enquete;";
+    public Relatorio gerarRelatorio(String nomeEnquete) {
 
-		return getRelatios(sql);
+		String sql = String.format("SELECT resp.idEnquete as idEnquete, resp.resposta AS Resposta, count(*) AS QuantidadeVotos" +
+				" FROM RespondeEnquete resp WHERE resp.idEnquete = (SELECT idEnquete FROM Enquete WHERE Nome ILIKE '%s')" +
+				" GROUP BY resp.idEnquete, resp.resposta;");
+
+		return getRelatorio(sql);
 	}
-
-	@Override
-    public List<Relatorio> gerarRelatorio(String nomeEnquete) {
-    	
-    	String sql = "SELECT Id FROM Enquete WHERE Nome ILIKE " + nomeEnquete + ";";
-
-		return getRelatios(sql);
-    }
     
-    @Override    
-    public List<Relatorio> gerarRelatorio(int idEnquete) {
-    	
-    	String sql = "SELECT Id FROM Enquete WHERE idEnquete = " + idEnquete + ";";
+    @Override
+    public Relatorio gerarRelatorio(int idEnquete) {
 
-    	return getRelatios(sql);
+		String sql = String.format("SELECT resp.idEnquete AS idEnquete, resp.resposta AS Resposta," +
+				" count(*) AS QuantidadeVotos FROM RespondeEnquete resp" +
+				" WHERE resp.idEnquete = '%d' GROUP BY resp.idEnquete, resp.resposta;", idEnquete);
+
+    	return getRelatorio(sql);
     }
 
-    public List<Relatorio> getRelatios(String sql) {
-		List<Relatorio> relatorio = new ArrayList<>();
+    private Relatorio getRelatorio(String sql) {
+		Relatorio relatorio = null;
+
+		List<String> opcoes = new ArrayList<>();
+		List<Integer> votos = new ArrayList<>();
+		List<Comentario> comentarios = new ArrayList<>();
 
 		try {
 			Statement stmt = getConexao().createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 
-			if(rs.next()) {
-				String idEnquete = rs.getString("id");
-				Statement internalStmt = getConexao().createStatement();
-
-				//Recuperando as Respostas
-				String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = " + idEnquete + ";";
-				ResultSet rsRespostas = internalStmt.executeQuery(sqlRespostas);
-
-				while(rsRespostas.next()) {
-					//Se não houver nada no relatorio adiciona uma nova opção com 1 voto
-					if(relatorio.isEmpty()) {
-						relatorio.add(
-								new Relatorio(
-										rsRespostas.getString("Resposta"), 1));
-					} else {
-						//Se já há alguma opção verifica se a nova resposta bate com essa opção
-						//cria variavel opção
-						String opcao = rsRespostas.getString("Resposta");
-						boolean aux = false;
-						//Percorre todo o relatorio atras desta opção, se achar transforma variavel aux em true
-						for(Relatorio r: relatorio) {
-							if(r.getOpcao().equals(opcao)) {
-								r.setVotos(r.getVotos() + 1);
-								aux = true;
-							}
-						}
-						//Se perroceu todo o relatorio e nao achou a opção, ou seja, variavel aux == false
-						//entao cria-se uma nova opção no relatorio com 1 voto
-						if(aux == false)
-							relatorio.add(new Relatorio(opcao, 1));
-					}
-				}
-				internalStmt.close();
+			while (rs.next()) {
+				opcoes.add(rs.getString("Resposta"));
+				votos.add(rs.getInt("QuantidadeVotos"));
+				comentarios = new ComentarioDaoPostgres().listarPorEnquete(rs.getInt("idEnquete"));
 			}
-			stmt.close();
-		} catch (SQLException ex) {
+
+			relatorio.setOpcao(opcoes);
+			relatorio.setVotos(votos);
+			relatorio.setComentarios(comentarios);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.getLogger(ex.getMessage());
 		}
 		return relatorio;
