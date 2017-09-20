@@ -1,65 +1,73 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import java.util.List;
+
 public class Relatorio {
 
-	private String opcao;
-	private int votos;
+	private List<String> opcao;
+	private List<Integer> votos;
+	private List<Comentario> comentarios;
 
-	public Relatorio(String opcao, int votos) {
+	public Relatorio(List<String> opcao, List<Integer> votos, List<Comentario> comentarios) {
 		this.opcao = opcao;
 		this.votos = votos;
-	}
-	
-	public Relatorio() {
-		
+		this.comentarios = comentarios;
 	}
 
-	public String getOpcao() {
+	public Relatorio() {
+
+	}
+
+	public List<String> getOpcao() {
 		return opcao;
 	}
 
-	public void setOpcao(String opcao) {
+	public void setOpcao(List<String> opcao) {
 		this.opcao = opcao;
 	}
 
-	public int getVotos() {
+	public List<Integer> getVotos() {
 		return votos;
 	}
 
-	public void setVotos(int votos) {
+	public void setVotos(List<Integer> votos) {
 		this.votos = votos;
+	}
+
+	public List<Comentario> getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(List<Comentario> comentarios) {
+		this.comentarios = comentarios;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Relatorio relatorio = (Relatorio) o;
+
+		if (!opcao.equals(relatorio.opcao)) return false;
+		if (!votos.equals(relatorio.votos)) return false;
+		return comentarios.equals(relatorio.comentarios);
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((opcao == null) ? 0 : opcao.hashCode());
-		result = prime * result + votos;
+		int result = opcao.hashCode();
+		result = 31 * result + votos.hashCode();
+		result = 31 * result + comentarios.hashCode();
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Relatorio other = (Relatorio) obj;
-		if (opcao == null) {
-			if (other.opcao != null)
-				return false;
-		} else if (!opcao.equals(other.opcao))
-			return false;
-		if (votos != other.votos)
-			return false;
-		return true;
-	}
-
-	@Override
 	public String toString() {
-		return "Relatorio [opcao=" + opcao + ", votos=" + votos + "]";
-	}	
+		return "Relatorio{" +
+				"opcao=" + opcao +
+				", votos=" + votos +
+				", comentarios=" + comentarios +
+				'}';
+	}
 }
