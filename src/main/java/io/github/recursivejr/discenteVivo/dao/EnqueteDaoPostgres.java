@@ -133,7 +133,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
         //Testar se n da erro ao tentar buscar uma enquete q nao existe
 
-        String sql = "SELECT * FROM Enquete WHERE id = '" + idEnquete + "';";
+        String sql = "SELECT * FROM Enquete WHERE idEnquete = '" + idEnquete + "';";
 
         List<Enquete> enquetes = null;
 
@@ -156,7 +156,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     public List<Enquete> enquetesPorSetor(String nomeSetor, String matAluno) {
 
         String sql = "SELECT E.* FROM Enquete E, EnquetesSetor ES " +
-                "WHERE E.Id = ES.idEnquete AND ES.nomeSetor ILIKE '" + nomeSetor +"';";
+                "WHERE E.IdEnquete = ES.idEnquete AND ES.nomeSetor ILIKE '" + nomeSetor +"';";
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
         if (matAluno == null)
@@ -170,7 +170,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     public List<Enquete> enquetesPorCurso(String nomeCurso, String matAluno) {
 
         String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " +
-                "WHERE E.Id = EC.idEnquete AND EC.nomeCurso ILIKE '" + nomeCurso +"';";
+                "WHERE E.IdEnquete = EC.idEnquete AND EC.nomeCurso ILIKE '" + nomeCurso +"';";
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
         if (matAluno == null)
@@ -181,13 +181,13 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     private int buscarId(String nome) {
-        String sql = "SELECT * FROM Enquete WHERE nome ILIKE '" + nome + "';";
+        String sql = "SELECT idEnquete FROM Enquete WHERE nome ILIKE '" + nome + "';";
         int aux = -1;
         try {
             Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
-                aux = rs.getInt("id");
+                aux = rs.getInt("idEnquete");
             }
             stmt.close();
         } catch (SQLException ex) {
@@ -211,7 +211,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 List<Setor> setores = new ArrayList<>();
 
                 Enquete enquete = new Enquete();
-                enquete.setId(rs.getInt("id"));
+                enquete.setId(rs.getInt("idEnquete"));
                 enquete.setNome(rs.getString("nome"));
                 enquete.setDescricao(rs.getString("descricao"));
                 enquete.setFoto(rs.getString("foto"));
@@ -319,7 +319,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 List<Setor> setores = new ArrayList<>();
 
                 Enquete enquete = new Enquete();
-                enquete.setId(rs.getInt("id"));
+                enquete.setId(rs.getInt("idEnquete"));
                 enquete.setNome(rs.getString("nome"));
                 enquete.setDescricao(rs.getString("descricao"));
                 enquete.setFoto(rs.getString("foto"));
