@@ -155,8 +155,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     @Override
     public List<Enquete> enquetesPorSetor(String nomeSetor, String matAluno) {
 
-        String sql = "SELECT E.* FROM Enquete E, EnquetesSetor ES " +
-                "WHERE E.IdEnquete = ES.idEnquete AND ES.nomeSetor ILIKE '" + nomeSetor +"';";
+        String sql = "SELECT E.* FROM Enquete E NATURAL JOIN EnquetesSetor ES " +
+                "WHERE ES.nomeSetor ILIKE '" + nomeSetor +"';";
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
         if (matAluno == null)
@@ -169,8 +169,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     @Override
     public List<Enquete> enquetesPorCurso(String nomeCurso, String matAluno) {
 
-        String sql = "SELECT E.* FROM Enquete E, EnquetesCurso EC " +
-                "WHERE E.IdEnquete = EC.idEnquete AND EC.nomeCurso ILIKE '" + nomeCurso +"';";
+        String sql = "SELECT E.* FROM Enquete E NATURAL JOIN EnquetesCurso EC " +
+                "WHERE EC.nomeCurso ILIKE '" + nomeCurso +"';";
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
         if (matAluno == null)
