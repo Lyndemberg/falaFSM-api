@@ -6,7 +6,8 @@
 	Cidade VARCHAR(45) NOT NULL,
 	Rua VARCHAR(60) NOT NULL,
 	Numero VARCHAR(8) NOT NULL,
-	CONSTRAINT PK_Admin_Email PRIMARY KEY(Email)
+	CONSTRAINT PK_Admin_Email PRIMARY KEY(Email),
+	CONSTRAINT Verifica_Admin_Email CHECK (Email LIKE '%@%')
 );
 
 CREATE TABLE ALUNO(
@@ -19,7 +20,8 @@ CREATE TABLE ALUNO(
 	Rua VARCHAR(60) NOT NULL,
 	Numero VARCHAR(8) NOT NULL,
 	NomeCurso VARCHAR(45) NOT NULL,
-	CONSTRAINT PK_Aluno_Matricula PRIMARY KEY(Matricula)
+	CONSTRAINT PK_Aluno_Matricula PRIMARY KEY(Matricula),
+	CONSTRAINT Verifica_Aluno_Email CHECK (Email LIKE '%@%')
 );
 
 CREATE TABLE ENQUETE(
