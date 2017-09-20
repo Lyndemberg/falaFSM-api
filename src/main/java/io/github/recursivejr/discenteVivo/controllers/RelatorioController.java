@@ -20,67 +20,43 @@ import io.github.recursivejr.discenteVivo.models.Relatorio;
 @Path("relatorio")
 public class RelatorioController {
 	
-	@GET
-	@Security
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("gerarRelatorios/")
-    public List<Relatorio> gerarRelatorios(@Context ContainerRequestContext requestContext) {
-
-	    List<Relatorio> relatorios = getRelatios(null, requestContext);
-	    System.gc();
-	    return relatorios;
-    }
-
     @GET
     @Security
     @Produces(MediaType.APPLICATION_JSON)
     @Path("gerarRelatorios/enquete/{param}/")
     //Variavel param pode ser a Id da Enquete ou o Nome da Enquete
-    public List<Relatorio> gerarRelatorios(@PathParam("param") String param, @Context ContainerRequestContext requestContext) {
+    public Response gerarRelatorios(@PathParam("param") String param, @Context ContainerRequestContext requestContext) {
 
-        List<Relatorio> relatorios = getRelatios(param, requestContext);
-        System.gc();
-        return relatorios;
-    }
-
-    private List<Relatorio> getRelatios(String param, ContainerRequestContext requestContext) {
-
-        //Cria uma lista de relatorios contando nada
-        List<Relatorio> relatorios = null;
+        //Cria um Relatorio contando nada
+        Relatorio relatorio = null;
 
         //Checa se e Administrador, se nao for retorna UNAUTHORIZED
-        if (!FilterDetect.checkAdmin(requestContext)) {
-            Response.status(Response.Status.UNAUTHORIZED).build();
-            return relatorios;
-        }
+        if (!FilterDetect.checkAdmin(requestContext))
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+
 
         try {
             //Intancia um relatorioDaoPostgres usando a fabrica acessando somente os metodos definidos na Interface
             RelatorioDaoInterface relatorioDao = new FabricaDaoPostgres().criarRelatorioDao();
 
-            //Se for null entao nao foi recebido nenhum parametro logo deve-se retornar todos os relatorios
-            if(param == null)
-                //A Lista de Relatorios recebe todos os relatorios pelo Objeto RelatorioDaoPostgres
-                relatorios = relatorioDao.gerarRelatorio();
-            //caso param nao seja null entao foi passado algum parametro dai gera-se apenas relatorios de uma enquete esppecifica
-            else {
-                try {
-                    //tenta gerar os relatorios com base no ID, se ao converter o param de String para Integer retornar erro
+           try {
+               //tenta gerar os relatorios com base no ID, se ao converter o param de String para Integer retornar erro
                     //entao o param contem letras e deve gerar os relatorios com base no nome
-                    relatorios = relatorioDao.gerarRelatorio(Integer.parseInt(param));
-                } catch (NumberFormatException nFE) {
-                    //caso tenha sido gerado uma Exception na conversao para Integer entao trata-se o param como o nome da enquete
+               relatorio = relatorioDao.gerarRelatorio(Integer.parseInt(param));
+           } catch (NumberFormatException nFE) {
+                //caso tenha sido gerado uma Exception na conversao para Integer entao trata-se o param como o nome da enquete
                     //e gera-se os relatorios com base nela
-                    relatorios = relatorioDao.gerarRelatorio(param);
-                }
-            }
+                relatorio = relatorioDao.gerarRelatorio(param);
+           }
         } catch (Exception ex) {
             ex.printStackTrace();
+            System.gc();
             Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        System.gc();
         //Sempre retorna relatorios sendo ele null ou preenchido
-        return relatorios;
+        return Response.ok(relatorio).build();
     }
 
 }
