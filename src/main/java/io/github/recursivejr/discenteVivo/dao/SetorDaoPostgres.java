@@ -56,15 +56,15 @@ public class SetorDaoPostgres extends ElementoDao implements SetorDaoInterface{
             while(rs.next()){
             	Setor setor = new Setor();
             	setor.setNome(rs.getString("nome"));
-            	
-            	EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
-            	
-            	setor.setEnquetes(enqueteDao.enquetesPorSetor(setor.getNome(), null));
+
+//            	NAO HA NECESSIDADE DE RETORNAR AS ENQUETES POR ENQUANTO
+//            	EnqueteDaoPostgres enqueteDao = new EnqueteDaoPostgres();
+//            	setor.setEnquetes(enqueteDao.enquetesPorSetor(setor.getNome(), null));
                 
             	setores.add(setor);
             }
             stmt.close();
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return setores;
