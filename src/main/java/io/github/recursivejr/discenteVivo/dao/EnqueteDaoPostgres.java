@@ -314,7 +314,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
             while(rs.next()) {
                 List<Comentario> comentarios = new ArrayList<>();
                 List<Opcao> opcoes = new ArrayList<>();
-                List<Resposta> respostas = new ArrayList<>();
+                List<Resposta> respostas = null;
                 List<Curso> cursos = new ArrayList<>();
                 List<Setor> setores = new ArrayList<>();
 
@@ -357,20 +357,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 }
                 enquete.setOpcoes(opcoes);
 
-                //Percorre todas as Respostas e adiciona cada uma ao Arraylist desta enquete
-                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = '" + enquete.getId() + "';";
-                rsLista = internalStmt.executeQuery(sqlRespostas);
-                while (rsLista.next()) {
-
-                    Resposta resposta = new Resposta(
-                            rsLista.getInt("IdEnquete"),
-                            rsLista.getString("Resposta"),
-                            rsLista.getString("matriculaAluno")
-                    );
-
-                    respostas.add(resposta);
-                }
-                enquete.setRespostas(respostas);
+                //Nao e necessario recuperar as Respostas das Enquetes para este Metodo
 
                 //Percorre todos os Cursos Associados a esta Enquete e adiciona-os ao ArrayList de Retorno
                 String sqlCursos = "SELECT NomeCurso FROM EnquetesCurso WHERE idEnquete = '"+ enquete.getId() +"';";
