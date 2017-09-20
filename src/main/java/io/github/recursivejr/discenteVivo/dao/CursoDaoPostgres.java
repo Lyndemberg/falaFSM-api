@@ -140,9 +140,12 @@ public class CursoDaoPostgres extends ElementoDao implements CursoDaoInterface{
             Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                Curso curso = new Curso();
-                curso.setNome(rs.getString("Nome"));
-                curso.setDescricao(rs.getString("Descricao"));
+                cursos.add(new Curso(
+                        rs.getString("Nome"),
+                        rs.getString("Descricao"),
+                        null,
+                        null
+                ));
             }
             stmt.close();
         } catch (SQLException ex) {
