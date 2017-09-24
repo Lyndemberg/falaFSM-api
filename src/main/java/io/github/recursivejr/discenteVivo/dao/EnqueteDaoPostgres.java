@@ -118,14 +118,20 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     @Override
     public List<Enquete> listar(String matAluno) {
 
-        String sql = "SELECT * FROM Enquete;";
-
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
-        if (matAluno == null)
+        if (matAluno == null) {
+            //Se a matricula for null entao ele pega todos as Enquetes Salvas
+            String sql = "SELECT * FROM Enquete;";
             return getAllEnquetes(sql);
-        else
+        } else {
             //caso matAluno nao seja null entao filtra por aluno
+                //recebendo apenas as enquetes que nao tem nenhum curso pois sao para toda a universidade
+                    //e as enquetes do seu curso especifico
+            String sql = String.format("SELECT E.* FROM Enquete E NATURAL LEFT JOIN EnquetesCurso EC" +
+                    " WHERE EC.NomeCurso IS NULL OR EC.NomeCurso ILIKE" +
+                    " (SELECT NomeCurso FROM Aluno WHERE Matricula ILIKE '%s');", matAluno);
             return getEnquetes(sql, matAluno);
+        }
     }
 
     @Override
@@ -133,7 +139,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
         //Testar se n da erro ao tentar buscar uma enquete q nao existe
 
-        String sql = "SELECT * FROM Enquete WHERE idEnquete = '" + idEnquete + "';";
+        String sql = String.format("SELECT * FROM Enquete WHERE idEnquete = '%d';", matAluno);
 
         List<Enquete> enquetes = null;
 
@@ -155,8 +161,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     @Override
     public List<Enquete> enquetesPorSetor(String nomeSetor, String matAluno) {
 
-        String sql = "SELECT E.* FROM Enquete E NATURAL JOIN EnquetesSetor ES " +
-                "WHERE ES.nomeSetor ILIKE '" + nomeSetor +"';";
+        String sql = String.format("SELECT E.* FROM Enquete E NATURAL JOIN EnquetesSetor ES " +
+                "WHERE ES.nomeSetor ILIKE '%s';", nomeSetor);
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
         if (matAluno == null)
@@ -169,8 +175,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     @Override
     public List<Enquete> enquetesPorCurso(String nomeCurso, String matAluno) {
 
-        String sql = "SELECT E.* FROM Enquete E NATURAL JOIN EnquetesCurso EC " +
-                "WHERE EC.nomeCurso ILIKE '" + nomeCurso +"';";
+        String sql = String.format("SELECT E.* FROM Enquete E NATURAL JOIN EnquetesCurso EC " +
+                "WHERE EC.nomeCurso ILIKE '%s';", nomeCurso);
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
         if (matAluno == null)
@@ -181,7 +187,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     private int buscarId(String nome) {
-        String sql = "SELECT idEnquete FROM Enquete WHERE nome ILIKE '" + nome + "';";
+        String sql = String.format("SELECT idEnquete FROM Enquete WHERE nome ILIKE '%s';", nome);
         int aux = -1;
         try {
             Statement stmt = getConexao().createStatement();
@@ -220,8 +226,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 Statement internalStmt = getConexao().createStatement();
 
                 //Percorre todos os comentarios e recupera apenas o comentario deste aluno
-                String sqlComentarios = "SELECT * FROM ComentaEnquete WHERE IDEnquete = '" + enquete.getId() + "'" +
-                        " and MatriculaAluno ILIKE '" + matAluno + "';";
+                String sqlComentarios = String.format("SELECT * FROM ComentaEnquete WHERE IDEnquete = '%d'" +
+                        " and MatriculaAluno ILIKE '%s';", enquete.getId(), matAluno);
                 ResultSet rsLista = internalStmt.executeQuery(sqlComentarios);
                 while (rsLista.next()) {
 
@@ -236,7 +242,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 enquete.setComentarios(comentarios);
 
                 //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
-                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = '" + enquete.getId() + "';";
+                String sqlOpcoes = String.format("SELECT * FROM Opcoes WHERE IDEnquete = '%d';", enquete.getId());
                 rsLista = internalStmt.executeQuery(sqlOpcoes);
                 while (rsLista.next()) {
 
@@ -251,8 +257,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 enquete.setOpcoes(opcoes);
 
                 //Percorre todas as Respostas e retorna a(s) resposta(s) deste aluno
-                String sqlRespostas = "SELECT * FROM RespondeEnquete WHERE IDEnquete = '" + enquete.getId() + "'" +
-                        " and MatriculaAluno ILIKE '" + matAluno + "';";
+                String sqlRespostas = String.format("SELECT * FROM RespondeEnquete WHERE IDEnquete = '%d'" +
+                        " and MatriculaAluno ILIKE '%s';", enquete.getId(), matAluno);
                 rsLista = internalStmt.executeQuery(sqlRespostas);
                 while (rsLista.next()) {
 
@@ -267,7 +273,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 enquete.setRespostas(respostas);
 
                 //Percorre todos os Cursos Associados a esta Enquete e adiciona-os ao ArrayList de Retorno
-                String sqlCursos = "SELECT NomeCurso FROM EnquetesCurso WHERE idEnquete = '"+ enquete.getId() +"';";
+                String sqlCursos = String.format("SELECT NomeCurso FROM EnquetesCurso" +
+                        " WHERE idEnquete = '%d';", enquete.getId());
                 rsLista = internalStmt.executeQuery(sqlCursos);
                 while (rsLista.next()) {
 
@@ -281,7 +288,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 enquete.setCursos(cursos);
 
                 //Percorre todos os Setores Associados a esta Enquete e adiciona-os ao ArrayList de Retorno
-                String sqlSetores = "SELECT NomeSetor FROM EnquetesSetor WHERE idEnquete = '" + enquete.getId() + "';";
+                String sqlSetores = String.format("SELECT NomeSetor FROM EnquetesSetor" +
+                        " WHERE idEnquete = '%d';", enquete.getId());
                 rsLista = internalStmt.executeQuery(sqlSetores);
                 while (rsLista.next()) {
 
