@@ -50,6 +50,7 @@ public class AdministradorController {
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -112,6 +113,7 @@ public class AdministradorController {
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -185,6 +187,7 @@ public class AdministradorController {
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();

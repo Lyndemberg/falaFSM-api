@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

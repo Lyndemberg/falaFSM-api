@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.dao;
 
-import java.io.File;
 import java.util.List;
 
 import io.github.recursivejr.discenteVivo.models.Enquete;

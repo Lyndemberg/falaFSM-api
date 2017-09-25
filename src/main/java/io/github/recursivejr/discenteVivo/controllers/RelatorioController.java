@@ -1,7 +1,5 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
