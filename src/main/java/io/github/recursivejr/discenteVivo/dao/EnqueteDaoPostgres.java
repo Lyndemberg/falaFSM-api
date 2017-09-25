@@ -17,13 +17,12 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
     @Override
     public boolean  adicionar(Enquete enquete) {
-        String sql = "INSERT INTO Enquete (NOME, DESCRICAO, FOTO, EMAILADMIN) VALUES (?,?,?,?);";
+        String sql = "INSERT INTO Enquete (NOME, DESCRICAO, EMAILADMIN) VALUES (?,?,?);";
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, enquete.getNome());
             stmt.setString(2, enquete.getDescricao());
-            stmt.setString(3, enquete.getFoto());
-            stmt.setString(4, enquete.getEmailAdmin());
+            stmt.setString(3, enquete.getEmailAdmin());
 
             stmt.executeUpdate();
 
@@ -202,6 +201,23 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
         return aux;
     }
 
+    @Override
+    public boolean atualizarFoto(String foto, String nomeEnquete) {
+        String sql = "UPDATE Enquete SET Foto ILIKE ? WHERE Nome ILIKE ?";
+
+        try {
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
+            stmt.setString(1, foto);
+            stmt.setString(2, nomeEnquete);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
     private List<Enquete> getEnquetes(String sql, String matAluno){
         List<Enquete> enquetes = new ArrayList<>();
 
@@ -220,7 +236,6 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 enquete.setId(rs.getInt("idEnquete"));
                 enquete.setNome(rs.getString("nome"));
                 enquete.setDescricao(rs.getString("descricao"));
-                enquete.setFoto(rs.getString("foto"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
                 Statement internalStmt = getConexao().createStatement();
@@ -330,7 +345,6 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 enquete.setId(rs.getInt("idEnquete"));
                 enquete.setNome(rs.getString("nome"));
                 enquete.setDescricao(rs.getString("descricao"));
-                enquete.setFoto(rs.getString("foto"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
                 Statement internalStmt = getConexao().createStatement();
