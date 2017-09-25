@@ -1,5 +1,8 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -18,6 +21,7 @@ import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Enquete;
+import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 
 @Path("enquete")
 public class EnqueteController {
@@ -151,6 +155,7 @@ public class EnqueteController {
 			enquetesDao = new FabricaDaoPostgres().criarEnqueteDao();
 		} catch (Exception ex) {
 			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -175,4 +180,43 @@ public class EnqueteController {
 		return Response.ok(enquetes).build();
 	}
 
+	@GET
+	@Produces("image/*")
+	@Path("enquete/foto/{idEnquete}")
+	public Response getImagem(@PathParam("idEnquete") int idEnquete) {
+
+		String stringFoto = null;
+
+		//Tenta Criar uma enqueteDao
+		try {
+			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+
+			//Recupera a foto da enquete do BD em Base64
+			stringFoto = enqueteDao.retornarFoto(idEnquete);
+
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		//Limpa objeto EnqueteDao
+		System.gc();
+
+		//Se variavel StringFoto for nula entao esta enquete nao possui Foto, logo retorno Codigo 204 de OK mas No Content
+		if (stringFoto == null)
+			return Response.status(Response.Status.NO_CONTENT).build();
+
+		//Se nao for null entao decodifica a enquete e retorna ela com o codigo 200
+		try {
+			File foto = FotoManagement.decodeFoto(stringFoto);
+			return Response.ok(foto).build();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
 }
