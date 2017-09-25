@@ -1,5 +1,8 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,6 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.sun.org.apache.regexp.internal.RE;
 import io.github.recursivejr.discenteVivo.dao.*;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
@@ -17,6 +21,7 @@ import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Aluno;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 import io.github.recursivejr.discenteVivo.models.Opcao;
+import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 
 @Path("administrador")
 public class AdministradorController {
@@ -45,6 +50,7 @@ public class AdministradorController {
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -107,6 +113,7 @@ public class AdministradorController {
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -180,6 +187,7 @@ public class AdministradorController {
 			return Response.status(Response.Status.OK).build();
 
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -242,7 +250,7 @@ public class AdministradorController {
 
         //Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
         if (!FilterDetect.checkAdmin(requestContext))
-            Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED).build();
 
         //Caso token seja válido tenta recuperar o Perfil
         try {
@@ -264,4 +272,44 @@ public class AdministradorController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
+
+    @PUT
+	@Security
+	@Consumes("image/*")
+	@Path("enquete/enviarFoto/{nomeEnquete}")
+	public Response setFotoEnquete(File foto, @PathParam("nomeEnquete") String nomeEnquete,
+								   @Context ContainerRequestContext requestContext) {
+
+		String stringFoto = null;
+
+		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
+		if (!FilterDetect.checkAdmin(requestContext))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+
+		//Caso token seja válido tenta Converter a imagem em Base64
+		try {
+			stringFoto = FotoManagement.encodeFoto(foto);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
+		//Tenta Salvar a Imagem em Base64 no Banco de Dados
+		try {
+			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+
+			if (enqueteDao.atualizarFoto(stringFoto, nomeEnquete)) {
+				System.gc();
+				return Response.ok().build();
+			} else
+				throw new SQLException("Erro ao Atualizar Foto");
+
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 }
