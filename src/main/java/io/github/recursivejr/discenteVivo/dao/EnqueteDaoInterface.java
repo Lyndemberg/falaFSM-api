@@ -1,5 +1,6 @@
 package io.github.recursivejr.discenteVivo.dao;
 
+import java.io.File;
 import java.util.List;
 
 import io.github.recursivejr.discenteVivo.models.Enquete;
@@ -13,4 +14,5 @@ public interface EnqueteDaoInterface {
     public List<Enquete> enquetesPorSetor(String nomeSetor, String matAluno);
     public List<Enquete> enquetesPorCurso(String nomeCurso, String matAluno);
     public boolean atualizarFoto(String foto, String nomeEnquete);
+    public String retornarFoto(int idEnquete);
 }

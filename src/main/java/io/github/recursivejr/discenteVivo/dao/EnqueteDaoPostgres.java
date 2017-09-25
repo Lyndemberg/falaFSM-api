@@ -1,5 +1,6 @@
 package io.github.recursivejr.discenteVivo.dao;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -203,12 +204,15 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
     @Override
     public boolean atualizarFoto(String foto, String nomeEnquete) {
-        String sql = "UPDATE Enquete SET Foto ILIKE ? WHERE Nome ILIKE ?";
+        String sql = "UPDATE Enquete SET Foto = ? WHERE Nome ILIKE ?";
 
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, foto);
             stmt.setString(2, nomeEnquete);
+
+            stmt.executeUpdate();
+            stmt.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -216,6 +220,28 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
         }
 
         return true;
+    }
+
+    @Override
+    public String retornarFoto(int idEnquete) {
+        String foto = null;
+        String sql = "SELECT Foto FROM Enquete WHERE idEnquete = ?";
+
+        try {
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
+            stmt.setInt(1, idEnquete);
+
+            ResultSet rs = stmt.executeQuery();
+
+            foto = rs.getString("Foto");
+            rs.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return foto;
     }
 
     private List<Enquete> getEnquetes(String sql, String matAluno){
