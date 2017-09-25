@@ -283,7 +283,7 @@ public class AdministradorController {
 		if (!FilterDetect.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
-		//Caso token seja válido tenta Setar a imagem
+		//Caso token seja válido tenta Converter a imagem em Base64
 		try {
 			stringFoto = FotoManagement.encodeFoto(foto);
 		} catch (IOException ex) {
@@ -292,17 +292,20 @@ public class AdministradorController {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 
+		//Tenta Salvar a Imagem em Base64 no Banco de Dados
 		try {
 			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
 
-			if (enqueteDao.atualizarFoto(stringFoto, nomeEnquete))
+			if (enqueteDao.atualizarFoto(stringFoto, nomeEnquete)) {
+				System.gc();
 				return Response.ok().build();
-			else
+			} else
 				throw new SQLException("Erro ao Atualizar Foto");
 
 		} catch (SQLException | ClassNotFoundException ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
