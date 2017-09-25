@@ -139,7 +139,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
         //Testar se n da erro ao tentar buscar uma enquete q nao existe
 
-        String sql = String.format("SELECT * FROM Enquete WHERE idEnquete = '%d';", matAluno);
+        String sql = String.format("SELECT * FROM Enquete WHERE idEnquete = '%s';", matAluno);
 
         List<Enquete> enquetes = null;
 
