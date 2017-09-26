@@ -12,6 +12,6 @@ public interface EnqueteDaoInterface {
     public List<Enquete> listar(String matAluno);
     public List<Enquete> enquetesPorSetor(String nomeSetor, String matAluno);
     public List<Enquete> enquetesPorCurso(String nomeCurso, String matAluno);
-    public boolean atualizarFoto(String foto, String nomeEnquete);
+    public boolean atualizarFoto(String foto, int idEnquete);
     public String retornarFoto(int idEnquete);
 }

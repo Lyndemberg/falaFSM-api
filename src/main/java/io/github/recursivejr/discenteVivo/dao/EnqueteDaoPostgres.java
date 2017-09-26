@@ -203,13 +203,13 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     @Override
-    public boolean atualizarFoto(String foto, String nomeEnquete) {
-        String sql = "UPDATE Enquete SET Foto = ? WHERE Nome ILIKE ?";
+    public boolean atualizarFoto(String foto, int idEnquete) {
+        String sql = "UPDATE Enquete SET Foto = ? WHERE idEnquete = ?";
 
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, foto);
-            stmt.setString(2, nomeEnquete);
+            stmt.setInt(2, idEnquete);
 
             stmt.executeUpdate();
             stmt.close();

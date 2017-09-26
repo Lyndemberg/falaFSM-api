@@ -278,8 +278,8 @@ public class AdministradorController {
     @PUT
 	@Security
 	@Consumes("image/jpeg")
-	@Path("enquete/enviarFoto/{nomeEnquete}")
-	public Response setFotoEnquete(File foto, @PathParam("nomeEnquete") String nomeEnquete,
+	@Path("enquete/enviarFoto/{idEnquete}")
+	public Response setFotoEnquete(File foto, @PathParam("idEnquete") int idEnquete,
 								   @Context ContainerRequestContext requestContext) {
 
 		String stringFoto = null;
@@ -301,7 +301,7 @@ public class AdministradorController {
 		try {
 			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
 
-			if (enqueteDao.atualizarFoto(stringFoto, nomeEnquete)) {
+			if (enqueteDao.atualizarFoto(stringFoto, idEnquete)) {
 				System.gc();
 				return Response.ok().build();
 			} else
