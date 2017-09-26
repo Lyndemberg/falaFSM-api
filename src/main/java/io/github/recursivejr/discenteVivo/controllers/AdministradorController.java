@@ -162,6 +162,7 @@ public class AdministradorController {
 	@POST
 	@Security
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	@Path("enquete/cadastrarEnquete/")
 	public Response cadastrarEnquete(Enquete enquete, @Context ContainerRequestContext requestContext) {
 
@@ -179,12 +180,13 @@ public class AdministradorController {
 					FilterDetect.getToken(requestContext));
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
-			if(enqueteDao.adicionar(enquete) == false)
+			int idEnquete = enqueteDao.adicionar(enquete);
+			if(idEnquete == 0)
 				throw new Exception("ERRO DE SQL");
 
-			//Se tudo certo retorna status 200
+			//Se tudo certo retorna status 200 de OK com a Id da Enquete Salva
 			System.gc();
-			return Response.status(Response.Status.OK).build();
+			return Response.ok(idEnquete).build();
 
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -16,7 +16,9 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     @Override
-    public boolean  adicionar(Enquete enquete) {
+    public Integer  adicionar(Enquete enquete) {
+        Integer idEnquete = null;
+
         String sql = "INSERT INTO Enquete (NOME, DESCRICAO, EMAILADMIN) VALUES (?,?,?);";
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
@@ -27,7 +29,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
             stmt.executeUpdate();
 
             //Recupera o valor do Id desta Enquete no BD para ser usada nas proximas Querys
-            final int IDENQUETE = buscarId(enquete.getNome());
+            idEnquete = buscarId(enquete.getNome());
 
             //Cria um ArrayList de Opçoes e Verifica se Ha Opçoes que devem ser Salvas nesta Enquete
             List<Opcao> opcoes = new ArrayList<>();
@@ -42,7 +44,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
                 //Perccore todas as opcoes salvando eles no BD
                 for (int i = 0; i < opcoes.size(); i++) {
-                    stmt.setInt(1,IDENQUETE);
+                    stmt.setInt(1, idEnquete);
                     stmt.setString(2, opcoes.get(i).getOpcao());
                     stmt.executeUpdate();
                 }
@@ -62,7 +64,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
                 //Perccore todas os Cursos salvando eles no BD
                 for (int i = 0; i < cursos.size(); i++) {
-                    stmt.setInt(1,IDENQUETE);
+                    stmt.setInt(1, idEnquete);
                     stmt.setString(2, cursos.get(i).getNome());
                     stmt.executeUpdate();
                 }
@@ -82,7 +84,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
                 //Perccore todas os Setores salvando eles no BD
                 for (int i = 0; i < setores.size(); i++) {
-                    stmt.setInt(1,IDENQUETE);
+                    stmt.setInt(1, idEnquete);
                     stmt.setString(2, setores.get(i).getNome());
                     stmt.executeUpdate();
                 }
@@ -91,9 +93,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
             stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return false;
         }
-        return true;
+        return idEnquete;
     }
 
     @Override
