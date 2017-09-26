@@ -180,7 +180,7 @@ public class EnqueteController {
 	}
 
 	@GET
-	@Produces("image/*")
+	@Produces("image/jpeg")
 	@Path("enquete/foto/{idEnquete}")
 	public Response getImagem(@PathParam("idEnquete") int idEnquete) {
 

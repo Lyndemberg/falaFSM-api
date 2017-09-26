@@ -224,22 +224,21 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     @Override
     public String retornarFoto(int idEnquete) {
         String foto = null;
-        String sql = "SELECT Foto FROM Enquete WHERE idEnquete = ?";
+        String sql = String.format("SELECT Foto FROM Enquete WHERE idEnquete = %d", idEnquete);
 
         try {
-            PreparedStatement stmt = getConexao().prepareStatement(sql);
-            stmt.setInt(1, idEnquete);
+            Statement stmt = getConexao().createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
 
-            ResultSet rs = stmt.executeQuery();
+            if(rs.next())
+                foto = rs.getString("Foto");
 
-            foto = rs.getString("Foto");
             rs.close();
             stmt.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return foto;
     }
 

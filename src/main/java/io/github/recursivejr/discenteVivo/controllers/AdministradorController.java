@@ -275,7 +275,7 @@ public class AdministradorController {
 
     @PUT
 	@Security
-	@Consumes("image/*")
+	@Consumes("image/jpeg")
 	@Path("enquete/enviarFoto/{nomeEnquete}")
 	public Response setFotoEnquete(File foto, @PathParam("nomeEnquete") String nomeEnquete,
 								   @Context ContainerRequestContext requestContext) {
