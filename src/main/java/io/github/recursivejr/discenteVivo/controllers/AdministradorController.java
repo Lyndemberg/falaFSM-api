@@ -17,10 +17,7 @@ import io.github.recursivejr.discenteVivo.dao.*;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
-import io.github.recursivejr.discenteVivo.models.Administrador;
-import io.github.recursivejr.discenteVivo.models.Aluno;
-import io.github.recursivejr.discenteVivo.models.Enquete;
-import io.github.recursivejr.discenteVivo.models.Opcao;
+import io.github.recursivejr.discenteVivo.models.*;
 import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 
 @Path("administrador")
@@ -49,6 +46,10 @@ public class AdministradorController {
 			System.gc();
 			return Response.status(Response.Status.OK).build();
 
+		//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+		//Cria-se um Log
+		//Limpa a Memoria
+		//Retorna Erro do Servidor ao Cliente
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -81,6 +82,10 @@ public class AdministradorController {
 			System.gc();
 			return Response.status(Response.Status.OK).build();
 
+		//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+		//Cria-se um Log
+		//Limpa a Memoria
+		//Retorna Erro do Servidor ao Cliente
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -112,6 +117,10 @@ public class AdministradorController {
 			System.gc();
 			return Response.status(Response.Status.OK).build();
 
+		//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+		//Cria-se um Log
+		//Limpa a Memoria
+		//Retorna Erro do Servidor ao Cliente
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -146,6 +155,10 @@ public class AdministradorController {
 				System.gc();
                 return Response.status(Response.Status.OK).build();
 
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
             }catch (Exception ex) {
                 ex.printStackTrace();
                 Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -188,6 +201,10 @@ public class AdministradorController {
 			System.gc();
 			return Response.ok(idEnquete).build();
 
+		//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+		//Cria-se um Log
+		//Limpa a Memoria
+		//Retorna Erro do Servidor ao Cliente
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -234,6 +251,10 @@ public class AdministradorController {
 				System.gc();
 				return Response.status(Response.Status.OK).build();
 
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -267,6 +288,10 @@ public class AdministradorController {
 			System.gc();
             return Response.ok(admin).build();
 
+        //Caso disparado uma Exception entao Mostro a Exception ao Terminal
+		// Cria-se um Log
+		//Limpa a Memoria
+		//Retorna Erro do Servidor ao Cliente
         } catch (Exception ex) {
             ex.printStackTrace();
             Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -291,6 +316,8 @@ public class AdministradorController {
 		//Caso token seja válido tenta Converter a imagem em Base64
 		try {
 			stringFoto = FotoManagement.encodeFoto(foto);
+
+			//Caso de IOExcetion ao tentar Converter a Foto entao Retorna Bad Request
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -301,12 +328,19 @@ public class AdministradorController {
 		try {
 			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
 
+			//Se ao atualizar a Foto Retornar True entao Retorna Codigo 200
 			if (enqueteDao.atualizarFoto(stringFoto, idEnquete)) {
 				System.gc();
+
+				//Caso ocorra tudo corretamente returna Codigo 200 de OK
 				return Response.ok().build();
 			} else
 				throw new SQLException("Erro ao Atualizar Foto");
 
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
 		} catch (SQLException | ClassNotFoundException ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
@@ -314,4 +348,87 @@ public class AdministradorController {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
+	@POST
+	@Security
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("curso/cadastrarCurso/")
+	public Response cadastrarCurso(Curso curso, @Context ContainerRequestContext requestContext) {
+
+		//Checa o Token para verificar se ele e valido e se pertence a um admin
+			//caso retorne false entao Retorna ao Cliente 401 de Nao Autorizado
+		if (!FilterDetect.checkAdmin(requestContext))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+
+		//Verifica se o Objeto Curso foi devidamente Preenchido pelo Cliente
+			//Caso nao Retorna Bad_Request para o Cliente
+		if(curso.getNome().isEmpty() || curso.getDescricao().isEmpty())
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		//Caso Tudo Esteja Valido Tenta Salvar O Curso
+		try {
+			//Cria um cursoDao com base na Interface
+			CursoDaoInterface cursoDao = new FabricaDaoPostgres().criarCursoDao();
+
+			//Se ao adicionar o Curso retornar True entao Retorna Codigo 200 de Ok para o Cliente
+			//Caso Retorne False entao Ocorreu erro de SQL logo disparo uma Exception
+			if (cursoDao.adicionar(curso)) {
+				System.gc();
+				return Response.status(Response.Status.OK).build();
+			} else
+				throw new SQLException("Erro de SQL ao Adicionar o Curso : " + curso.toString());
+
+		//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+		//Cria-se um Log
+		//Limpa a Memoria
+		//Retorna Erro do Servidor ao Cliente
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@POST
+	@Security
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("setor/cadastrarSetor/")
+	public Response cadastrarSetor(Setor setor, @Context ContainerRequestContext requestContext) {
+
+		//Verifica se o Token e Valido e Se o Token Pertence a um Admministrador
+			//Caso Nao Entao Retorna ao Cliente Nao_Autorizado
+		if (!FilterDetect.checkAdmin(requestContext))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+
+		//Verifica se o Objeto Setor foi Devidamente Preenchido
+			//Caso nao entao Retorna Bad_Request para o Cliente
+		if(setor.getNome().isEmpty())
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		//Caso tudo Seja Validado entao Tenta Salvar o Setor
+		try {
+			//Cria um Objeto setorDao com base na Interface
+			SetorDaoInterface setorDao = new FabricaDaoPostgres().criarSetorDao();
+
+			//Se ao adicionar o Setor retornar True entao Retorna Codigo 200 de Ok para o Cliente
+			//Caso Retorne False entao Ocorreu erro de SQL logo disparo uma Exception
+			if (setorDao.adicionar(setor)) {
+				System.gc();
+				return Response.status(Response.Status.OK).build();
+			} else
+				throw new SQLException("Erro de SQL ao Adicionar o Setor : " + setor.toString());
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
 }
