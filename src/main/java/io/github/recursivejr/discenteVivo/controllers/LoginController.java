@@ -96,7 +96,6 @@ public class LoginController {
 			
 			
 		} catch (IllegalArgumentException ex) {
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
 			return null;
 		}		

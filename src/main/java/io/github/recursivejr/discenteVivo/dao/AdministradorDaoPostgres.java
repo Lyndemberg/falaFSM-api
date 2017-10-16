@@ -71,29 +71,25 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
     public Administrador login(String login, String senha) throws Exception {
 
         Administrador admin = null;
-    	senha = Encryption.encrypt(senha);
     	
-    	String sql = "SELECT Email FROM Administrador WHERE Login ILIKE ? AND Senha ILIKE ?;";
+    	String sql = "SELECT Email,Senha FROM Administrador WHERE Login ILIKE ?;";
     	PreparedStatement stmt;
-		try {
-			stmt = getConexao().prepareStatement(sql);
+		stmt = getConexao().prepareStatement(sql);
 
-			stmt.setString(1, login);
-			stmt.setString(2, senha);
+		stmt.setString(1, login);
 
-			ResultSet rs = stmt.executeQuery();
+		ResultSet rs = stmt.executeQuery();
 			
-			if(!rs.next()) {
-				throw new Exception("Credenciais Inválidas");
-			}
-			
-			admin = buscar(rs.getString("email"));
-			
-			stmt.close();
-		} catch (SQLException ex) {
-			Logger.getLogger(ex.getMessage());
-			throw ex;
-		}
+		if(!rs.next())
+		    throw new Exception("Credenciais Inválidas");
+
+
+		if(Encryption.checkPassword(senha, rs.getString("Senha")))
+		    admin = buscar(rs.getString("Email"));
+        else
+            throw new Exception("Credenciais Inválidas");
+
+        stmt.close();
 		return admin;
     }
 
@@ -104,7 +100,7 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
             stmt.setString(1, administrador.getEmail());
             stmt.setString(2, administrador.getNome());
             stmt.setString(3, administrador.getLogin());
-            stmt.setString(4, Encryption.encrypt(administrador.getSenha()));//Senha Criptografada em md5
+            stmt.setString(4, Encryption.encrypt(administrador.getSenha()));//Senha Criptografada pelo BCrypt
             stmt.setString(5, administrador.getEndereco().getCidade());
             stmt.setString(6, administrador.getEndereco().getRua());
             stmt.setString(7, administrador.getEndereco().getNumero());

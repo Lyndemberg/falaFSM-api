@@ -77,30 +77,25 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface{
     public Aluno login(String login, String senha) throws Exception {
 
         Aluno aluno = null;
-        senha = Encryption.encrypt(senha);
     	
-    	String sql = "SELECT Matricula FROM Aluno WHERE Login ILIKE ? AND SENHA ILIKE ?;";
+    	String sql = "SELECT Matricula,Senha FROM Aluno WHERE Login ILIKE ?;";
     	PreparedStatement stmt;
-		try {
-			stmt = getConexao().prepareStatement(sql);
 
-			stmt.setString(1, login);
-			stmt.setString(2, senha);
+    	stmt = getConexao().prepareStatement(sql);
 
-			ResultSet rs = stmt.executeQuery();
-			
-			if(!rs.next()) {
-				throw new Exception("Credenciais Inválidas");
-			}
+		stmt.setString(1, login);
 
-			aluno = buscar(rs.getString("matricula"));
+		ResultSet rs = stmt.executeQuery();
 			
-			stmt.close();
-			
-		} catch (SQLException ex) {
-			Logger.getLogger(ex.getMessage());
-			throw ex;
-		}
+		if(!rs.next())
+		    throw new Exception("Credenciais Inválidas");
+
+		if(Encryption.checkPassword(senha,rs.getString("Senha")))
+		    aluno = buscar(rs.getString("matricula"));
+		else
+            throw new Exception("Credenciais Inválidas");
+
+		stmt.close();
 		return aluno;
     }
 
