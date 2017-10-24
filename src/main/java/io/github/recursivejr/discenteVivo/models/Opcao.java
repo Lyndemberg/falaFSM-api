@@ -1,27 +1,17 @@
 package io.github.recursivejr.discenteVivo.models;
 
 public class Opcao {
-	
-	private int idOpcao;
+
 	private int idEnquete;
 	private String opcao;
 	
-	public Opcao(int idOpcao, int idEnquete, String opcao) {
-		this.idOpcao = idOpcao;
+	public Opcao(int idEnquete, String opcao) {
 		this.idEnquete = idEnquete;
 		this.opcao = opcao;
 	}
 	
 	public Opcao() {
 		
-	}
-
-	public int getIdOpcao() {
-		return idOpcao;
-	}
-
-	public void setIdOpcao(int idOpcao) {
-		this.idOpcao = idOpcao;
 	}
 
 	public int getIdEnquete() {
@@ -45,7 +35,6 @@ public class Opcao {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + idEnquete;
-		result = prime * result + idOpcao;
 		result = prime * result + ((opcao == null) ? 0 : opcao.hashCode());
 		return result;
 	}
@@ -61,8 +50,6 @@ public class Opcao {
 		Opcao other = (Opcao) obj;
 		if (idEnquete != other.idEnquete)
 			return false;
-		if (idOpcao != other.idOpcao)
-			return false;
 		if (opcao == null) {
 			if (other.opcao != null)
 				return false;
@@ -73,7 +60,7 @@ public class Opcao {
 
 	@Override
 	public String toString() {
-		return "Opcao [idOpcao=" + idOpcao + ", idEnquete=" + idEnquete + ", opcao=" + opcao + "]";
+		return "Opcao [idEnquete=" + idEnquete + ", opcao=" + opcao + "]";
 	}
 
 }

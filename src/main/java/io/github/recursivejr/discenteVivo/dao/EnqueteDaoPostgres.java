@@ -98,11 +98,14 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     @Override
-    public boolean remover(Enquete enquete) {
-        String sql = "DELETE FROM ComentaEnquete WHERE IDEnquete ILIKE '" + enquete.getId() + "';"
-                + "DELETE FROM Opcoes WHERE IDEnquete ILIKE '" + enquete.getId() + "'';"
-                + "DELETE FROM RespondeEnquete WHERE IDEnquete ILIKE '" + enquete.getId() + "';"
-                + "DELETE FROM Enquete WHERE ID ILIKE '" + enquete.getId() + "';";
+    public boolean remover(int idEnquete) {
+        String sql = String.format("DELETE FROM EnquetesSetor WHERE IdEnquete = %n;"
+                + "DELETE FROM EnquetesCurso WHERE IdEnquete = %n;"
+                + "DELETE FROM ComentaEnquete WHERE IdEnquete = %n;"
+                + "DELETE FROM Opcoes WHERE IdEnquete = %n;"
+                + "DELETE FROM RespondeEnquete WHERE IdEnquete = %n;"
+                + "DELETE FROM Enquete WHERE Id = %n;",
+                idEnquete, idEnquete, idEnquete, idEnquete, idEnquete, idEnquete);
         try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
@@ -112,6 +115,65 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
             ex.printStackTrace();
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean atualizar(Enquete enquete) {
+        String sql = "DELETE FROM Opcoes WHERE IdEnquete = ?"
+                + "DELETE FROM EnquetesSetor WHERE IdEnquete = ?;"
+                + "DELETE FROM EnquetesCurso WHERE IdEnquete = ?;"
+                + "UPDATE Enquete SET Nome = ?, Descricao = ?, emailAdmin = ? WHERE IdEnquete = ?;";
+
+
+        try {
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
+
+            stmt.setInt(1, enquete.getId());
+            stmt.setInt(2, enquete.getId());
+            stmt.setInt(3, enquete.getId());
+            stmt.setString(4, enquete.getNome());
+            stmt.setString(5, enquete.getDescricao());
+            stmt.setString(6, enquete.getEmailAdmin());
+            stmt.setInt(7, enquete.getId());
+
+
+            stmt.executeUpdate(sql);
+
+            sql = "INSERT INTO EnquetesCurso(NomeCurso, IdEnquete) VALUES (?,?);";
+            PreparedStatement stmtCurso = getConexao().prepareStatement(sql);
+            for (Curso curso : enquete.getCursos()) {
+                stmtCurso.setString(1, curso.getNome());
+                stmtCurso.setInt(2, enquete.getId());
+                stmtCurso.executeUpdate(sql);
+            }
+
+            sql = "INSERT INTO EnquetesSetor(NomeSetor, IdEnquete) VALUES (?,?);";
+            PreparedStatement stmtSetor = getConexao().prepareStatement(sql);
+            for (Setor setor : enquete.getSetores()) {
+                stmtSetor.setString(1, setor.getNome());
+                stmtSetor.setInt(2, enquete.getId());
+                stmtSetor.executeUpdate(sql);
+            }
+
+            sql = "INSERT INTO Opcoes(Opcao, IdEnquete) VALUES (?,?)";
+            PreparedStatement stmtOpcoes = getConexao().prepareStatement(sql);
+            for (Opcao opcao : enquete.getOpcoes()) {
+                stmtOpcoes.setString(1, opcao.getOpcao());
+                stmtOpcoes.setInt(2, enquete.getId());
+                stmtOpcoes.executeUpdate(sql);
+            }
+
+            stmt.close();
+            stmtCurso.close();
+            stmtSetor.close();
+            stmtOpcoes.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
         return true;
     }
 
@@ -287,7 +349,6 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 while (rsLista.next()) {
 
                     Opcao opcao = new Opcao(
-                            rsLista.getInt("ID"),
                             rsLista.getInt("IdEnquete"),
                             rsLista.getString("Opcao")
                     );
@@ -395,7 +456,6 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 while (rsLista.next()) {
 
                     Opcao opcao = new Opcao(
-                            rsLista.getInt("ID"),
                             rsLista.getInt("IdEnquete"),
                             rsLista.getString("Opcao")
                     );

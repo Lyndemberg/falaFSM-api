@@ -349,6 +349,52 @@ public class AdministradorController {
 		}
 	}
 
+	@DELETE
+	@Security
+	@Path("enquete/deletar/{idEnquete}")
+	public Response removerEnquete(@PathParam("idEnquete") int idEnquete,
+								   @Context ContainerRequestContext requestContext) {
+
+		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
+		if (!FilterDetect.checkAdmin(requestContext))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+
+
+		//Caso token seja válido tenta salvar a enquete no BD
+		try {
+			//Cria um EnqueteDao com base na interface
+			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+
+			//Seta o email do admin que está criando a Enquete com base no token
+			enquete.setEmailAdmin(
+					FilterDetect.getToken(requestContext));
+
+			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
+			int idEnquete = enqueteDao.adicionar(enquete);
+			if(idEnquete == 0)
+				throw new Exception("ERRO DE SQL");
+
+			//Se tudo certo retorna status 200 de OK com a Id da Enquete Salva
+			System.gc();
+			return Response.ok(idEnquete).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
+
+
+
+		return null;
+	}
+
 	@POST
 	@Security
 	@Consumes(MediaType.APPLICATION_JSON)
