@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
@@ -349,16 +350,15 @@ public class AdministradorController {
 		}
 	}
 
-	@DELETE
-	@Security
-	@Path("enquete/deletar/{idEnquete}")
-	public Response removerEnquete(@PathParam("idEnquete") int idEnquete,
-								   @Context ContainerRequestContext requestContext) {
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("enquete/atualizar/{idEnquete}")
+	public Response atualizarEnquete(Enquete enquete, @PathParam("idEnquete") int idEnquete,
+								 @Context ContainerRequestContext requestContext) {
 
 		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
 		if (!FilterDetect.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
-
 
 		//Caso token seja válido tenta salvar a enquete no BD
 		try {
@@ -369,10 +369,13 @@ public class AdministradorController {
 			enquete.setEmailAdmin(
 					FilterDetect.getToken(requestContext));
 
-			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
-			int idEnquete = enqueteDao.adicionar(enquete);
-			if(idEnquete == 0)
-				throw new Exception("ERRO DE SQL");
+			//Seta o Id da Enquete com o Id passado na Requisiçao Removendo a Necessidade
+				//da Enquete ja Estar preenchida com o Id
+			enquete.setId(idEnquete);
+
+			//Tenta Atualizara a Enquete, Caso Retorne False Entao Dispara uma Exception de Erro de SQL
+			if (!enqueteDao.atualizar(enquete))
+				throw new Exception("Erro de SQL");
 
 			//Se tudo certo retorna status 200 de OK com a Id da Enquete Salva
 			System.gc();
@@ -389,10 +392,43 @@ public class AdministradorController {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 
+	}
+
+	@DELETE
+	@Security
+	@Path("enquete/deletar/{idEnquete}")
+	public Response removerEnquete(@PathParam("idEnquete") int idEnquete,
+								   @Context ContainerRequestContext requestContext) {
+
+		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
+		if (!FilterDetect.checkAdmin(requestContext))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 
+		//Caso token seja válido tenta salvar a enquete no BD
+		try {
+			//Cria um EnqueteDao com base na interface
+			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
 
-		return null;
+			//Tenta Remover a Enquete, se o EnqueteDao Retornar False Entao ocorreu Algum Erro Entao
+				//Dispara uma SQLException
+			if(!enqueteDao.remover(idEnquete))
+				throw new SQLException("ERRO DE SQL");
+
+			//Se tudo certo retorna status 200 de OK com a Id da Enquete Salva
+			System.gc();
+			return Response.ok(idEnquete).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
 	}
 
 	@POST
