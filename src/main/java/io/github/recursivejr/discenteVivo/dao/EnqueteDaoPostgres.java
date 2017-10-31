@@ -99,16 +99,22 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
     @Override
     public boolean remover(int idEnquete) {
-        String sql = String.format("DELETE FROM EnquetesSetor WHERE IdEnquete = %n;"
-                + "DELETE FROM EnquetesCurso WHERE IdEnquete = %n;"
-                + "DELETE FROM ComentaEnquete WHERE IdEnquete = %n;"
-                + "DELETE FROM Opcoes WHERE IdEnquete = %n;"
-                + "DELETE FROM RespondeEnquete WHERE IdEnquete = %n;"
-                + "DELETE FROM Enquete WHERE Id = %n;",
-                idEnquete, idEnquete, idEnquete, idEnquete, idEnquete, idEnquete);
+        String sql = "DELETE FROM EnquetesSetor WHERE IdEnquete = ?;"
+                + "DELETE FROM EnquetesCurso WHERE IdEnquete = ?;"
+                + "DELETE FROM ComentaEnquete WHERE IdEnquete = ?;"
+                + "DELETE FROM Opcoes WHERE IdEnquete = ?;"
+                + "DELETE FROM RespondeEnquete WHERE IdEnquete = ?;"
+                + "DELETE FROM Enquete WHERE IdEnquete = ?;";
         try {
-            Statement stmt = getConexao().createStatement();
-            stmt.executeUpdate(sql);
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
+            stmt.setInt(1, idEnquete);
+            stmt.setInt(2, idEnquete);
+            stmt.setInt(3, idEnquete);
+            stmt.setInt(4, idEnquete);
+            stmt.setInt(5, idEnquete);
+            stmt.setInt(6, idEnquete);
+
+            stmt.executeUpdate();
 
             stmt.close();
         } catch (SQLException ex) {
