@@ -19,12 +19,13 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     public Integer  adicionar(Enquete enquete) {
         Integer idEnquete = null;
 
-        String sql = "INSERT INTO Enquete (NOME, DESCRICAO, EMAILADMIN) VALUES (?,?,?);";
+        String sql = "INSERT INTO Enquete (NOME, DESCRICAO, EMAILADMIN, FOTO) VALUES (?,?,?,?);";
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, enquete.getNome());
             stmt.setString(2, enquete.getDescricao());
             stmt.setString(3, enquete.getEmailAdmin());
+            stmt.setString(4, enquete.getFoto());
 
             stmt.executeUpdate();
 
