@@ -329,6 +329,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 Enquete enquete = new Enquete();
                 enquete.setId(rs.getInt("idEnquete"));
                 enquete.setNome(rs.getString("nome"));
+                enquete.setFoto(rs.getString("foto"));
                 enquete.setDescricao(rs.getString("descricao"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
