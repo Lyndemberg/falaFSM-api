@@ -1,19 +1,19 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import java.util.Objects;
+
 public abstract class Usuario {
 
     private String nome;
     private String email;
     private String login;
     private String senha;
-    private Endereco endereco;
 
-    public Usuario(String nome, String email, String login, String senha, Endereco endereco) {
+    public Usuario(String nome, String email, String login, String senha) {
         this.nome = nome;
         this.email = email;
         this.login = login;
         this.senha = senha;
-        this.endereco = endereco;
     }
 
     public Usuario() {
@@ -51,26 +51,15 @@ public abstract class Usuario {
         this.senha = senha;
     }
 
-    public Endereco getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Usuario usuario = (Usuario) o;
-
-        if (!nome.equals(usuario.nome)) return false;
-        if (!email.equals(usuario.email)) return false;
-        if (!login.equals(usuario.login)) return false;
-        if (!senha.equals(usuario.senha)) return false;
-        return endereco.equals(usuario.endereco);
+        return Objects.equals(nome, usuario.nome) &&
+                Objects.equals(email, usuario.email) &&
+                Objects.equals(login, usuario.login) &&
+                Objects.equals(senha, usuario.senha);
     }
 
     @Override
@@ -79,7 +68,6 @@ public abstract class Usuario {
         result = 31 * result + email.hashCode();
         result = 31 * result + login.hashCode();
         result = 31 * result + senha.hashCode();
-        result = 31 * result + endereco.hashCode();
         return result;
     }
 
@@ -90,7 +78,6 @@ public abstract class Usuario {
                 ", email='" + email + '\'' +
                 ", login='" + login + '\'' +
                 ", senha='" + senha + '\'' +
-                ", endereco=" + endereco +
                 '}';
     }
 
@@ -99,7 +86,7 @@ public abstract class Usuario {
         try {
             //Se alguma coisa estiver vazia retorna true
             if (getNome().isEmpty() || getEmail().isEmpty() || getLogin().isEmpty()
-                    || getSenha().isEmpty() || getEndereco().isEmpty()) {
+                    || getSenha().isEmpty()) {
                 return true;
             } else {
                 //Se tudo estiver preenchido entao retorna false

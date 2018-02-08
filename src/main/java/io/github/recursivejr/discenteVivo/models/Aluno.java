@@ -5,9 +5,9 @@ public class Aluno extends Usuario {
     private String matricula;
     private String curso;
 
-    public Aluno(String nome, String email, String login, String senha, Endereco endereco,
+    public Aluno(String nome, String email, String login, String senha,
                  String matricula, String curso) {
-        super(nome, email, login, senha, endereco);
+        super(nome, email, login, senha);
         this.matricula = matricula;
         this.curso = curso;
     }
