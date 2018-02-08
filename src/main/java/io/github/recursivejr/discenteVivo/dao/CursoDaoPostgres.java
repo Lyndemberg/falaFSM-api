@@ -9,7 +9,6 @@ import java.util.List;
 
 import io.github.recursivejr.discenteVivo.models.Aluno;
 import io.github.recursivejr.discenteVivo.models.Curso;
-import io.github.recursivejr.discenteVivo.models.Endereco;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 
 public class CursoDaoPostgres extends ElementoDao implements CursoDaoInterface{
@@ -103,11 +102,6 @@ public class CursoDaoPostgres extends ElementoDao implements CursoDaoInterface{
                             rsListas.getString("Email"),
                             rsListas.getString("Login"),
                             rsListas.getString("Senha"),
-                            new Endereco(
-                                    rsListas.getString("Cidade"),
-                                    rsListas.getString("Rua"),
-                                    rsListas.getString("Numero")
-                            ),
                             rsListas.getString("Matricula"),
                             rsListas.getString("NomeCurso")
                     ));

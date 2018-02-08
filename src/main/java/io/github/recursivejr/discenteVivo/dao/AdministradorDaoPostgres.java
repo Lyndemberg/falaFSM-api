@@ -6,10 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import io.github.recursivejr.discenteVivo.models.Administrador;
-import io.github.recursivejr.discenteVivo.models.Endereco;
 import io.github.recursivejr.discenteVivo.resources.Encryption;
 
 public class AdministradorDaoPostgres extends ElementoDao implements AdministradorDaoInterface{
@@ -20,7 +18,7 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
     
     @Override
     public boolean adicionar(Administrador administrador) {
-        String sql = "INSERT INTO Administrador(EMAIL,NOME,LOGIN,SENHA,CIDADE,RUA,NUMERO) VALUES (?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO Administrador(EMAIL,NOME,LOGIN,SENHA) VALUES (?,?,?,?);";
         
         return setAdmin(sql, administrador);
     }
@@ -61,7 +59,7 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
 
     @Override
     public boolean atualizar(Administrador administrador) {
-        String sql = "UPDATE Administrador SET Email = ?, Nome = ?,Login = ?,Senha = ?,Cidade = ?,Rua= ?,Numero = ? "
+        String sql = "UPDATE Administrador SET Email = ?, Nome = ?,Login = ?,Senha = ? "
         + "WHERE Email ILIKE ?;";
 
         return setAdmin(sql, administrador);
@@ -101,9 +99,6 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
             stmt.setString(2, administrador.getNome());
             stmt.setString(3, administrador.getLogin());
             stmt.setString(4, Encryption.encrypt(administrador.getSenha()));//Senha Criptografada pelo BCrypt
-            stmt.setString(5, administrador.getEndereco().getCidade());
-            stmt.setString(6, administrador.getEndereco().getRua());
-            stmt.setString(7, administrador.getEndereco().getNumero());
 
             if (sql.contains("ILIKE"))
                 stmt.setString(8, administrador.getEmail());
@@ -134,15 +129,6 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
                 administrador.setNome(rs.getString("nome"));
                 administrador.setLogin(rs.getString("login"));
                 administrador.setSenha(rs.getString("senha"));
-
-                //Cria objeto Endereço e o atribui ao Administrador
-                administrador.setEndereco(
-                        new Endereco(
-                                rs.getString("cidade"),
-                                rs.getString("numero"),
-                                rs.getString("rua")
-                        )
-                );
 
                 administradores.add(administrador);
             }
