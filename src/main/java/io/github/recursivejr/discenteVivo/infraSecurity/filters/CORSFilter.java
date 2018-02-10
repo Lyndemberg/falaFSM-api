@@ -1,4 +1,4 @@
-package io.github.recursivejr.discenteVivo.infraSecurity;
+package io.github.recursivejr.discenteVivo.infraSecurity.filters;
 
 import java.io.IOException;
 

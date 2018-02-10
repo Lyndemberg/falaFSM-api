@@ -3,7 +3,7 @@ package io.github.recursivejr.discenteVivo;
 import javax.ws.rs.ApplicationPath;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import io.github.recursivejr.discenteVivo.infraSecurity.CORSFilter;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.CORSFilter;
 
 
 @ApplicationPath("rest")

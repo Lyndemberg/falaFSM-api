@@ -1,6 +1,6 @@
 package io.github.recursivejr.discenteVivo.infraSecurity.filters;
 
-import io.github.recursivejr.discenteVivo.controllers.LoginController;
+import io.github.recursivejr.discenteVivo.infraSecurity.AcessControll;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
@@ -75,8 +75,7 @@ public class FilterSecurityAuthorization implements ContainerRequestFilter {
             return;
 
         boolean temPermissao = false;
-        NivelAcesso nivelPermissaoUsuario = new LoginController()
-                                                    .buscarNivelPermissao(login);
+        NivelAcesso nivelPermissaoUsuario = AcessControll.buscarNivelPermissao(login);
 
         for (NivelAcesso nivelPermissao : niveisAcesso) {
             if (nivelPermissao.equals(nivelPermissaoUsuario)) {
