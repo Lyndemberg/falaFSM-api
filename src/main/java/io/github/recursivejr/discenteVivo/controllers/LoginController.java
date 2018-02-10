@@ -13,6 +13,7 @@ import javax.xml.bind.DatatypeConverter;
 import io.github.recursivejr.discenteVivo.dao.Interface.AdministradorDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
+import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Aluno;
 import io.jsonwebtoken.Claims;
@@ -110,6 +111,15 @@ public class LoginController {
 		} catch(Exception ex) {
 				throw ex;
 		}
+	}
+
+	public NivelAcesso buscarNivelPermissao(String login) {
+
+		if (login.contains("@"))
+			return NivelAcesso.NIVEL_1;
+		else
+			return NivelAcesso.NIVEL_2;
+
 	}
 
 }
