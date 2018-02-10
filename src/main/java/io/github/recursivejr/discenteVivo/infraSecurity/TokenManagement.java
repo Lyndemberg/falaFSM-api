@@ -55,14 +55,14 @@ public class TokenManagement {
         }
     }
 
-    public String getToken(SecurityContext securityContext) {
+    public static String getToken(SecurityContext securityContext) {
 
         return securityContext
                 .getUserPrincipal()
                 .getName();
     }
 
-    public String getToken(ContainerRequestContext requestContext) {
+    public static String getToken(ContainerRequestContext requestContext) {
 
         return requestContext
                 .getSecurityContext()

@@ -8,41 +8,41 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.ComentarioDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.postgres.RespostaDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
+import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
+import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.*;
+import jdk.nashorn.internal.parser.Token;
 
 @Path("aluno")
 public class AlunoController{
 
 	@POST
-	@Security
+	@Security(NivelAcesso.NIVEL_2)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("responder/{idEnquete}/{resposta}/")
-	public Response responderEnquete(@PathParam("idEnquete") int idEnquete, @PathParam("resposta") String resposta,
-			@Context ContainerRequestContext requestContext) {
+	public Response responderEnquete(@PathParam("idEnquete") int idEnquete,
+									 @PathParam("resposta") String resposta,
+									 @Context SecurityContext securityContext) {
 
-		//Verifica se e um Aluno, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterSecurityAuthentication.checkAluno(requestContext))
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		
-		//Caso token seja válido tenta salvar a nova resposta no BD
 		try {
 			//Cria um EnqueteDaoPostgres
 			RespostaDaoPostgres respostaDao = new RespostaDaoPostgres();
 
 			//Pega a matricula do aluno que esta respondendo a enquete pelo token de acesso
-			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
+			String matAluno = TokenManagement.getToken(securityContext);
 
 			//Verifica se o Aluno pode Comentar nesta Enquete
 			if(!checkEnquete(matAluno, idEnquete))
-				return Response.status(Response.Status.UNAUTHORIZED).build();
+				return Response.status(Response.Status.FORBIDDEN).build();
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			Resposta resp = new Resposta(idEnquete, resposta, matAluno);
@@ -62,63 +62,56 @@ public class AlunoController{
 	}
 
 	@PUT
-	@Security
+	@Security(NivelAcesso.NIVEL_2)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("atualizarPerfil/")
-	public Response atualizarPerfil(Aluno aluno, @Context ContainerRequestContext requestContext) {
+	public Response atualizarPerfil(Aluno aluno, @Context SecurityContext securityContext) {
 
-		//Verifica se o token e valido para um aluno
-		if (!FilterSecurityAuthentication.checkAluno(requestContext))
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-
-		//Caso seja token seja valido verifica se o Aluno foi totalmente Preenchido
-		if(!aluno.isEmpty()) {
-			try {
-				AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
-
-				//Recebe a matricula pelo token
-				String matricula = FilterSecurityAuthentication.getToken(requestContext);
-
-				//Insere no Aluno a Matricula provida pelo Token
-				aluno.setMatricula(matricula);
-
-				//Se ao tentar salvar retornar false entao houve erro durante a execucao do SQL
-				if(alunoDao.atualizar(aluno) == false)
-					throw new Exception("ERRO DE SQL");
-
-				//Se tudo foi executado corretamente retorna codigo 200 de OK para o cliente
-				System.gc();
-				return Response.status(Response.Status.OK).build();
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
-				System.gc();
-				return Response.status(Response.Status.BAD_REQUEST).build();
-			}
-		} else {
+		//verifica se o Aluno foi totalmente Preenchido
 			//Se aluno estiver vazio retorna diretamente BAD REQUEST para o cliente
+		if(aluno.isEmpty())
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		//Se o Aluno foi preenchido corretamente entao Tenta Atualizar
+		try {
+			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+
+			//Recebe a matricula pelo token
+			String matricula = TokenManagement.getToken(securityContext);
+
+			//Insere no Aluno a Matricula provida pelo Token
+			aluno.setMatricula(matricula);
+
+			//Se ao tentar salvar retornar false entao houve erro durante a execucao do SQL
+			if(alunoDao.atualizar(aluno) == false)
+				throw new Exception("ERRO DE SQL");
+
+			//Se tudo foi executado corretamente retorna codigo 200 de OK para o cliente
+			System.gc();
+			return Response.status(Response.Status.OK).build();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
+
 	}
 
 	@GET
-	@Security
+	@Security(NivelAcesso.NIVEL_2)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("perfil/")
-	public Response getPerfil(@Context ContainerRequestContext requestContext) {
+	public Response getPerfil(@Context SecurityContext securityContext) {
 
-		//Verifica se o token e valido para um aluno
-		if(!FilterSecurityAuthentication.checkAluno(requestContext))
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-
-		//Caso seja entao recupera o perfil com base na matricula do token
+		//Recupera o perfil com base na matricula do token
 		try {
 			//Cria Objeto AlunoDao com base na interface
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 
 			//Recupera a matricula do aluno pelo token
-			String matricula =  FilterSecurityAuthentication.getToken(requestContext);
+			String matricula =  TokenManagement.getToken(securityContext);
 
 			//Retorna Reposta com codigo 200 de OK contendo o Objeto Aluno
 			Aluno aluno = alunoDao.buscar(matricula);
@@ -134,37 +127,35 @@ public class AlunoController{
 	}
 
 	@POST
-	@Security
+	@Security(NivelAcesso.NIVEL_2)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("comentar/{idEnquete}/{comentario}/")
-	public Response enviarComentario(@PathParam("idEnquete") int idEnquete, @PathParam("comentario") String comentario,
-									 @Context ContainerRequestContext requestContext) {
+	public Response enviarComentario(@PathParam("idEnquete") int idEnquete,
+									 @PathParam("comentario") String comentario,
+									 @Context SecurityContext securityContext) {
 
-		//Verifica se e um Aluno tentando enviar um comentario
-		if(!FilterSecurityAuthentication.checkAluno(requestContext))
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-
-		//Caso seja tenta enviar o Comentario
 		try {
 			//Cria um comentarioDao com base na Interface
 			ComentarioDaoInterface comentarioDao = new FabricaDaoPostgres().criarComentarioDao();
 
 			//Recupera a Matricula do Aluno com base no token
-			String matAluno =  FilterSecurityAuthentication.getToken(requestContext);
+			String matAluno = TokenManagement.getToken(securityContext);
 
 			//Verifica se o Aluno pode Comentar nesta Enquete
 			if(!checkEnquete(matAluno, idEnquete))
-				return Response.status(Response.Status.UNAUTHORIZED).build();
+				return Response.status(Response.Status.FORBIDDEN).build();
 
-			//Tenta Salvar o Comentario
-			if (!comentarioDao.adicionar(new Comentario(
+			//Cria um Objeto Comentario
+			Comentario objComentario = new Comentario(
 					matAluno,
 					idEnquete,
 					comentario
-				))) {
+			);
+
+			//Tenta Salvar o Comentario
+			if (!comentarioDao.adicionar(objComentario))
 				//Caso return false entao houve problema de SQL
 				throw new Exception("ERRO DE SQL");
-			}
 
 			//Se o comentario for enviado com sucesso retorna Codigo 200 de OK
 			System.gc();
