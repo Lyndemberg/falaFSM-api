@@ -1,6 +1,6 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import io.github.recursivejr.discenteVivo.dao.SetorDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.Interface.SetorDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;

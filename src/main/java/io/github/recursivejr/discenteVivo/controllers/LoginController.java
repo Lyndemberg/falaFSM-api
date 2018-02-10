@@ -10,8 +10,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 
-import io.github.recursivejr.discenteVivo.dao.AdministradorDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.Interface.AdministradorDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Aluno;

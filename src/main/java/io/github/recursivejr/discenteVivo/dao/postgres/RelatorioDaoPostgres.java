@@ -1,4 +1,4 @@
-package io.github.recursivejr.discenteVivo.dao;
+package io.github.recursivejr.discenteVivo.dao.postgres;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import io.github.recursivejr.discenteVivo.dao.ElementoDao;
+import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
 import io.github.recursivejr.discenteVivo.models.Comentario;
 import io.github.recursivejr.discenteVivo.models.Relatorio;
 

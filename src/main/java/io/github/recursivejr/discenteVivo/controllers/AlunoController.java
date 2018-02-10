@@ -9,10 +9,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.github.recursivejr.discenteVivo.dao.AlunoDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.ComentarioDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.EnqueteDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.RespostaDaoPostgres;
+import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.Interface.ComentarioDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.postgres.RespostaDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;

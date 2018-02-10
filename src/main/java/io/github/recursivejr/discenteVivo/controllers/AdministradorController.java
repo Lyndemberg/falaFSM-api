@@ -6,15 +6,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.sun.org.apache.regexp.internal.RE;
-import io.github.recursivejr.discenteVivo.dao.*;
+import io.github.recursivejr.discenteVivo.dao.Interface.*;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;

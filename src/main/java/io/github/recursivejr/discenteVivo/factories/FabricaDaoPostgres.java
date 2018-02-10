@@ -2,7 +2,7 @@ package io.github.recursivejr.discenteVivo.factories;
 
 import java.sql.SQLException;
 
-import io.github.recursivejr.discenteVivo.dao.*;
+import io.github.recursivejr.discenteVivo.dao.postgres.*;
 
 public class FabricaDaoPostgres implements FabricaDaoInterface {
 

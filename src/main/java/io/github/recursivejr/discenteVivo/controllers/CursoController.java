@@ -1,6 +1,6 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import io.github.recursivejr.discenteVivo.dao.CursoDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.Interface.CursoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
@@ -13,7 +13,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.awt.*;
 import java.util.List;
 import java.util.logging.Logger;
 

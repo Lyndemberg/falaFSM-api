@@ -1,4 +1,4 @@
-package io.github.recursivejr.discenteVivo.dao;
+package io.github.recursivejr.discenteVivo.dao.Interface;
 
 import java.util.List;
 

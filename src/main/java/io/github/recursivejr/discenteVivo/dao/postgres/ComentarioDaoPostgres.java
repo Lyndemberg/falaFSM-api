@@ -1,12 +1,14 @@
-package io.github.recursivejr.discenteVivo.dao;
+package io.github.recursivejr.discenteVivo.dao.postgres;
 
+import io.github.recursivejr.discenteVivo.dao.ElementoDao;
+import io.github.recursivejr.discenteVivo.dao.Interface.ComentarioDaoInterface;
 import io.github.recursivejr.discenteVivo.models.Comentario;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoInterface{
+public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoInterface {
 
     public ComentarioDaoPostgres() throws SQLException, ClassNotFoundException {
         super();

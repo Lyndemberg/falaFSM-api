@@ -1,4 +1,4 @@
-package io.github.recursivejr.discenteVivo.dao;
+package io.github.recursivejr.discenteVivo.dao.postgres;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,9 +7,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.recursivejr.discenteVivo.dao.ElementoDao;
+import io.github.recursivejr.discenteVivo.dao.Interface.OpcaoDaoInterface;
 import io.github.recursivejr.discenteVivo.models.Opcao;
 
-public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface{
+public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
 
     public OpcaoDaoPostgres() throws SQLException, ClassNotFoundException {
         super();
