@@ -86,7 +86,8 @@ CREATE TABLE ENQUETESSETOR(
 CREATE INDEX Administrador_Email ON ADMINISTRADOR(Email);
 CREATE INDEX Matricula_Aluno ON ALUNO(Matricula);
 CREATE INDEX Id_Enquete ON ENQUETE(idEnquete);
-CREATE INDEX Id_Opcao ON OPCOES(Id);
+CREATE INDEX Id_Opcao_idEnquete ON OPCOES(IdEnquete);
+CREATE INDEX Id_Opcao_Opcao ON OPCOES(Opcao);
 CREATE INDEX Nome_Curso ON CURSO(Nome);
 CREATE INDEX Nome_Setor ON SETOR(Nome);
 CREATE INDEX MatriculaAluno_ComentaEnquete ON COMENTAENQUETE(matriculaAluno);
