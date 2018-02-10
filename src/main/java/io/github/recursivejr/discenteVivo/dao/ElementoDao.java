@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ElementoDao {
+public abstract class ElementoDao {
 
     private final Connection conn;
 

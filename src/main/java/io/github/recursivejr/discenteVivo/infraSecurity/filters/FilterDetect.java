@@ -1,4 +1,4 @@
-package io.github.recursivejr.discenteVivo.infraSecurity;
+package io.github.recursivejr.discenteVivo.infraSecurity.filters;
 
 import java.io.IOException;
 
@@ -16,6 +16,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
 import io.github.recursivejr.discenteVivo.controllers.LoginController;
+import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.jsonwebtoken.Claims;
 
 @Security

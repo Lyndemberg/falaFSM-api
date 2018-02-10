@@ -2,7 +2,7 @@ package io.github.recursivejr.discenteVivo.controllers;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.CursoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Curso;
 

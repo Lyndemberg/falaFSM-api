@@ -1,5 +1,7 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import io.github.recursivejr.discenteVivo.models.abstrato.Usuario;
+
 public class Aluno extends Usuario {
 
     private String matricula;

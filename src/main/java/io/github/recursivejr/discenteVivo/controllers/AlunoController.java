@@ -14,7 +14,7 @@ import io.github.recursivejr.discenteVivo.dao.Interface.ComentarioDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.postgres.RespostaDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.*;
 

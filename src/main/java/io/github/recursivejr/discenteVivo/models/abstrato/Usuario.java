@@ -1,4 +1,4 @@
-package io.github.recursivejr.discenteVivo.models;
+package io.github.recursivejr.discenteVivo.models.abstrato;
 
 import java.util.Objects;
 

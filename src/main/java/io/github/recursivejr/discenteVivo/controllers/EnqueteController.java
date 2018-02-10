@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterDetect;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 import io.github.recursivejr.discenteVivo.resources.FotoManagement;
