@@ -6,6 +6,7 @@ import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 
 import javax.annotation.Priority;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -46,7 +47,7 @@ public class FilterSecurityAuthorization implements ContainerRequestFilter {
             else
                 checarPermissoes(nivelAcessoMetodo, token);
 
-        } catch (Exception ex) {
+        } catch (NotAuthorizedException ex) {
             requestContext.abortWith(
                     Response.status(Response.Status.FORBIDDEN).build());
         }
@@ -67,29 +68,25 @@ public class FilterSecurityAuthorization implements ContainerRequestFilter {
         }
     }
 
-    private void checarPermissoes(List<NivelAcesso> niveisAcesso, String login) throws Exception {
+    private void checarPermissoes(List<NivelAcesso> niveisAcesso, String login)
+            throws NotAuthorizedException {
 
-        try {
-            if (niveisAcesso.isEmpty())
-                return;
+        if (niveisAcesso.isEmpty())
+            return;
 
-            boolean temPermissao = false;
-            NivelAcesso nivelPermissaoUsuario = new LoginController()
+        boolean temPermissao = false;
+        NivelAcesso nivelPermissaoUsuario = new LoginController()
                                                     .buscarNivelPermissao(login);
 
-            for (NivelAcesso nivelPermissao : niveisAcesso) {
-                if (nivelPermissao.equals(nivelPermissaoUsuario)) {
-                    temPermissao = true;
-                    break;
-                }
+        for (NivelAcesso nivelPermissao : niveisAcesso) {
+            if (nivelPermissao.equals(nivelPermissaoUsuario)) {
+                temPermissao = true;
+                break;
             }
-
-            if (!temPermissao)
-                throw new Exception("Voce não possui o nível de permissão para esse método");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
         }
+
+        if (!temPermissao)
+            throw new NotAuthorizedException(login + " não possui o nível de permissão para esse método");
+
     }
 }

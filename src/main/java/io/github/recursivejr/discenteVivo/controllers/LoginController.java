@@ -115,6 +115,13 @@ public class LoginController {
 
 	public NivelAcesso buscarNivelPermissao(String login) {
 
+		/*
+			Verifica com base no token se é um administrador, apenas administradores posuem email no token
+				logo a condição de parada é possuir um "@" no token.
+			Caso seja um Administrador e retornado o Nivel de Acesso 1,
+				Caso seja um Aluno e retornado o Nivel de Acesso 2.
+			*/
+
 		if (login.contains("@"))
 			return NivelAcesso.NIVEL_1;
 		else

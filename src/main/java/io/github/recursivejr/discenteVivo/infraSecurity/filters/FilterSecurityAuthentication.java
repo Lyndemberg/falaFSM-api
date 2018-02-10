@@ -12,6 +12,7 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
@@ -28,19 +29,24 @@ public class FilterSecurityAuthentication implements ContainerRequestFilter{
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-		
+		try {
 			if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer "))
 				throw new NotAuthorizedException("Necessário Informar Authorization Header Para Acessar Este Recurso.");
-			
+
 			String token = authorizationHeader.substring("Bearer".length()).trim();
 
 			Claims claims = new LoginController().validaToken(token);
 
 			if(claims==null)
-				throw new IOException("Token inválido");
+				throw new NotAuthorizedException("Token inválido");
 
 			modificarRequestContext(requestContext, claims.getIssuer());
+		} catch (NotAuthorizedException ex) {
+			ex.printStackTrace();
+			requestContext.abortWith(
+					Response.status(Response.Status.UNAUTHORIZED).build());
 		}
+	}
 
 	private void modificarRequestContext(ContainerRequestContext requestContext,String indentificador){
 
@@ -82,10 +88,7 @@ public class FilterSecurityAuthentication implements ContainerRequestFilter{
 		try {
 			new FilterSecurityAuthentication().filter(requestContext);
 
-			/*
-				Verifica com base no token se é um administrador, apenas administradores posuem email no token
-					logo a condição de parada é possuir um "@" no token
-			*/
+
 			if(!requestContext.getSecurityContext().getUserPrincipal().getName().contains("@"))
 				throw new IOException("Não é Administrador");
 
