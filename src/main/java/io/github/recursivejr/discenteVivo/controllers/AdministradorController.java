@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.*;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterDetect;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.*;
 import io.github.recursivejr.discenteVivo.resources.FotoManagement;
@@ -29,7 +29,7 @@ public class AdministradorController {
 	public Response cadastrarAluno(Aluno aluno, @Context ContainerRequestContext requestContext) {
 
 		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Caso token seja válido tenta salvar o aluno no BD
@@ -65,7 +65,7 @@ public class AdministradorController {
 	public Response atualizarAluno(Aluno aluno, @Context ContainerRequestContext requestContext) {
 
 		//Checa se e administrador
-		if(!FilterDetect.checkAdmin(requestContext))
+		if(!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Tenta atualizar o Aluno
@@ -100,7 +100,7 @@ public class AdministradorController {
 	public Response cadastrarAdministrador(Administrador admin,  @Context ContainerRequestContext requestContext) {
 
 		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		
 		//Caso token seja válido tenta salvar o administrador no BD
@@ -135,7 +135,7 @@ public class AdministradorController {
     public Response atualizarAdmin(Administrador admin, @Context ContainerRequestContext requestContext) {
 
 	    //Verifica pelo token se e um Admin
-        if (!FilterDetect.checkAdmin(requestContext))
+        if (!FilterSecurityAuthentication.checkAdmin(requestContext))
             return Response.status(Response.Status.UNAUTHORIZED).build();
 
         //Caso o token seja valido entao verifica se o objeto passado e valido
@@ -179,7 +179,7 @@ public class AdministradorController {
 	public Response cadastrarEnquete(Enquete enquete, @Context ContainerRequestContext requestContext) {
 
 		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Caso token seja válido tenta salvar a enquete no BD
@@ -189,7 +189,7 @@ public class AdministradorController {
 
 			//Seta o email do admin que está criando a Enquete com base no token
 			enquete.setEmailAdmin(
-					FilterDetect.getToken(requestContext));
+					FilterSecurityAuthentication.getToken(requestContext));
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			int idEnquete = enqueteDao.adicionar(enquete);
@@ -219,7 +219,7 @@ public class AdministradorController {
 	public Response adicionarOpcao(@PathParam("idEnquete") Integer idEnquete, List<Opcao> opcoes, @Context ContainerRequestContext requestContext) {
 
 		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Caso token seja válido tenta adicionar as novas opçoes para enquete no BD
@@ -271,7 +271,7 @@ public class AdministradorController {
     public Response getPerfil(@Context ContainerRequestContext requestContext) {
 
         //Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
-        if (!FilterDetect.checkAdmin(requestContext))
+        if (!FilterSecurityAuthentication.checkAdmin(requestContext))
             return Response.status(Response.Status.UNAUTHORIZED).build();
 
         //Caso token seja válido tenta recuperar o Perfil
@@ -280,7 +280,7 @@ public class AdministradorController {
             AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
 
             //Recupera o email do token
-            String email = FilterDetect.getToken(requestContext);
+            String email = FilterSecurityAuthentication.getToken(requestContext);
 
             //Retorna uma resposta com codigo 200 de OK e o Objeto Administrador com o Email do Token
 			Administrador admin = adminDao.buscar(email);
@@ -309,7 +309,7 @@ public class AdministradorController {
 		String stringFoto = null;
 
 		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Caso token seja válido tenta Converter a imagem em Base64
@@ -355,7 +355,7 @@ public class AdministradorController {
 								 @Context ContainerRequestContext requestContext) {
 
 		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Caso token seja válido tenta salvar a enquete no BD
@@ -365,7 +365,7 @@ public class AdministradorController {
 
 			//Seta o email do admin que está criando a Enquete com base no token
 			enquete.setEmailAdmin(
-					FilterDetect.getToken(requestContext));
+					FilterSecurityAuthentication.getToken(requestContext));
 
 			//Seta o Id da Enquete com o Id passado na Requisiçao Removendo a Necessidade
 				//da Enquete ja Estar preenchida com o Id
@@ -399,7 +399,7 @@ public class AdministradorController {
 								   @Context ContainerRequestContext requestContext) {
 
 		//Verifica se e admin, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 
@@ -437,7 +437,7 @@ public class AdministradorController {
 
 		//Checa o Token para verificar se ele e valido e se pertence a um admin
 			//caso retorne false entao Retorna ao Cliente 401 de Nao Autorizado
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Verifica se o Objeto Curso foi devidamente Preenchido pelo Cliente
@@ -478,7 +478,7 @@ public class AdministradorController {
 
 		//Verifica se o Token e Valido e Se o Token Pertence a um Admministrador
 			//Caso Nao Entao Retorna ao Cliente Nao_Autorizado
-		if (!FilterDetect.checkAdmin(requestContext))
+		if (!FilterSecurityAuthentication.checkAdmin(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Verifica se o Objeto Setor foi Devidamente Preenchido

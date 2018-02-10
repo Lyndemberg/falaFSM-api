@@ -2,7 +2,7 @@ package io.github.recursivejr.discenteVivo.controllers;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.SetorDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterDetect;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Setor;
 
@@ -27,7 +27,7 @@ public class SetorController {
 
 
         //Verifica o token, Se nao for um Admin e nao for um Aluno entao retorna Nao Autorizado
-        if(!FilterDetect.checkAdmin(requestContext) && !FilterDetect.checkAluno(requestContext))
+        if(!FilterSecurityAuthentication.checkAdmin(requestContext) && !FilterSecurityAuthentication.checkAluno(requestContext))
             return Response.status(Response.Status.UNAUTHORIZED).build();
 
         //Caso seja autorizado instancia setorDao como null

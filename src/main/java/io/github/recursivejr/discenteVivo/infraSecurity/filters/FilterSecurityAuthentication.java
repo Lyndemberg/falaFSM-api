@@ -22,7 +22,7 @@ import io.jsonwebtoken.Claims;
 @Security
 @Provider
 @Priority(Priorities.AUTHENTICATION)
-public class FilterDetect implements ContainerRequestFilter{
+public class FilterSecurityAuthentication implements ContainerRequestFilter{
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -80,7 +80,7 @@ public class FilterDetect implements ContainerRequestFilter{
 	public static boolean checkAdmin(ContainerRequestContext requestContext) {
 		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
 		try {
-			new FilterDetect().filter(requestContext);
+			new FilterSecurityAuthentication().filter(requestContext);
 
 			/*
 				Verifica com base no token se é um administrador, apenas administradores posuem email no token
@@ -102,7 +102,7 @@ public class FilterDetect implements ContainerRequestFilter{
 	public static boolean checkAluno(ContainerRequestContext requestContext) {
 		//Passa o Request pelo filtro de Token, se lançar a exeption entao o token não é valido
 		try {
-			new FilterDetect().filter(requestContext);
+			new FilterSecurityAuthentication().filter(requestContext);
 
 			/*
 				Verifica com base no token se é um aluno, apenas administradores posuem email no token

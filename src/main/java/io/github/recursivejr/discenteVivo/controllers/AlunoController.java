@@ -14,7 +14,7 @@ import io.github.recursivejr.discenteVivo.dao.Interface.ComentarioDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.postgres.RespostaDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterDetect;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.*;
 
@@ -29,7 +29,7 @@ public class AlunoController{
 			@Context ContainerRequestContext requestContext) {
 
 		//Verifica se e um Aluno, caso nao seja entao retorna nao autorizado para o Cliente
-		if (!FilterDetect.checkAluno(requestContext))
+		if (!FilterSecurityAuthentication.checkAluno(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		
 		//Caso token seja válido tenta salvar a nova resposta no BD
@@ -38,7 +38,7 @@ public class AlunoController{
 			RespostaDaoPostgres respostaDao = new RespostaDaoPostgres();
 
 			//Pega a matricula do aluno que esta respondendo a enquete pelo token de acesso
-			String matAluno = FilterDetect.getToken(requestContext);
+			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
 
 			//Verifica se o Aluno pode Comentar nesta Enquete
 			if(!checkEnquete(matAluno, idEnquete))
@@ -68,7 +68,7 @@ public class AlunoController{
 	public Response atualizarPerfil(Aluno aluno, @Context ContainerRequestContext requestContext) {
 
 		//Verifica se o token e valido para um aluno
-		if (!FilterDetect.checkAluno(requestContext))
+		if (!FilterSecurityAuthentication.checkAluno(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Caso seja token seja valido verifica se o Aluno foi totalmente Preenchido
@@ -77,7 +77,7 @@ public class AlunoController{
 				AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 
 				//Recebe a matricula pelo token
-				String matricula = FilterDetect.getToken(requestContext);
+				String matricula = FilterSecurityAuthentication.getToken(requestContext);
 
 				//Insere no Aluno a Matricula provida pelo Token
 				aluno.setMatricula(matricula);
@@ -109,7 +109,7 @@ public class AlunoController{
 	public Response getPerfil(@Context ContainerRequestContext requestContext) {
 
 		//Verifica se o token e valido para um aluno
-		if(!FilterDetect.checkAluno(requestContext))
+		if(!FilterSecurityAuthentication.checkAluno(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Caso seja entao recupera o perfil com base na matricula do token
@@ -118,7 +118,7 @@ public class AlunoController{
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
 
 			//Recupera a matricula do aluno pelo token
-			String matricula =  FilterDetect.getToken(requestContext);
+			String matricula =  FilterSecurityAuthentication.getToken(requestContext);
 
 			//Retorna Reposta com codigo 200 de OK contendo o Objeto Aluno
 			Aluno aluno = alunoDao.buscar(matricula);
@@ -141,7 +141,7 @@ public class AlunoController{
 									 @Context ContainerRequestContext requestContext) {
 
 		//Verifica se e um Aluno tentando enviar um comentario
-		if(!FilterDetect.checkAluno(requestContext))
+		if(!FilterSecurityAuthentication.checkAluno(requestContext))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		//Caso seja tenta enviar o Comentario
@@ -150,7 +150,7 @@ public class AlunoController{
 			ComentarioDaoInterface comentarioDao = new FabricaDaoPostgres().criarComentarioDao();
 
 			//Recupera a Matricula do Aluno com base no token
-			String matAluno =  FilterDetect.getToken(requestContext);
+			String matAluno =  FilterSecurityAuthentication.getToken(requestContext);
 
 			//Verifica se o Aluno pode Comentar nesta Enquete
 			if(!checkEnquete(matAluno, idEnquete))

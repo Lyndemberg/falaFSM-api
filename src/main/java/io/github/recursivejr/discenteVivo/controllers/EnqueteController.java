@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterDetect;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Enquete;
 import io.github.recursivejr.discenteVivo.resources.FotoManagement;
@@ -43,13 +43,13 @@ public class EnqueteController {
 		}
 
 		//Verifica se e um aluno, caso seja entao Recupera as Enquetes para este Aluno
-		if(FilterDetect.checkAluno(requestContext)) {
-			String matAluno = FilterDetect.getToken(requestContext);
+		if(FilterSecurityAuthentication.checkAluno(requestContext)) {
+			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
 
 			enquetes = enquetesDao.listar(matAluno);
 
 		//Caso nao seja Verifica se e um Admin, caso seja entao Recupera todas as Enquete
-		} else if (FilterDetect.checkAdmin(requestContext)) {
+		} else if (FilterSecurityAuthentication.checkAdmin(requestContext)) {
 			enquetes = enquetesDao.listar(null);
 
 		//Caso nao seja Nenhum retorna Nao Autorizado
@@ -82,13 +82,13 @@ public class EnqueteController {
 		}
 
 		//Verifica se e um aluno, caso seja entao Recupera a Enquete com tal ID para este Aluno
-		if(FilterDetect.checkAluno(requestContext)) {
-			String matAluno = FilterDetect.getToken(requestContext);
+		if(FilterSecurityAuthentication.checkAluno(requestContext)) {
+			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
 
 			enquete = enquetesDao.buscar(id, matAluno);
 
 		//Caso nao seja Verifica se e um Admin, caso seja entao Recupera a Enquete
-		} else if (FilterDetect.checkAdmin(requestContext)) {
+		} else if (FilterSecurityAuthentication.checkAdmin(requestContext)) {
 			enquete = enquetesDao.buscar(id, null);
 
 		//Caso nao seja Nenhum retorna Nao Autorizado
@@ -120,13 +120,13 @@ public class EnqueteController {
 		}
 
 		//Verifica se e um aluno, caso seja entao Recupera as Enquetes para este Aluno com base no Curso
-		if(FilterDetect.checkAluno(requestContext)) {
-			String matAluno = FilterDetect.getToken(requestContext);
+		if(FilterSecurityAuthentication.checkAluno(requestContext)) {
+			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
 
 			enquetes = enquetesDao.enquetesPorCurso(nome, matAluno);
 
 			//Caso nao seja Verifica se e um Admin, caso seja entao Recupera todas as Enquetes do Curso
-		} else if (FilterDetect.checkAdmin(requestContext)) {
+		} else if (FilterSecurityAuthentication.checkAdmin(requestContext)) {
 			enquetes = enquetesDao.enquetesPorCurso(nome, null);
 
 			//Caso nao seja Nenhum retorna Nao Autorizado
@@ -159,13 +159,13 @@ public class EnqueteController {
 		}
 
 		//Verifica se e um aluno, caso seja entao Recupera as Enquetes para este Aluno
-		if(FilterDetect.checkAluno(requestContext)) {
-			String matAluno = FilterDetect.getToken(requestContext);
+		if(FilterSecurityAuthentication.checkAluno(requestContext)) {
+			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
 
 			enquetes = enquetesDao.enquetesPorSetor(nome, matAluno);
 
 			//Caso nao seja Verifica se e um Admin, caso seja entao Recupera todas as Enquete
-		} else if (FilterDetect.checkAdmin(requestContext)) {
+		} else if (FilterSecurityAuthentication.checkAdmin(requestContext)) {
 			enquetes = enquetesDao.enquetesPorSetor(nome,null);
 
 			//Caso nao seja Nenhum retorna Nao Autorizado

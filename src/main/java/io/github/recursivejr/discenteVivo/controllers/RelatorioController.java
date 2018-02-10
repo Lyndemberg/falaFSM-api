@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterDetect;
+import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Relatorio;
 
@@ -29,7 +29,7 @@ public class RelatorioController {
         Relatorio relatorio = null;
 
         //Checa se e Administrador, se nao for retorna UNAUTHORIZED
-        if (!FilterDetect.checkAdmin(requestContext))
+        if (!FilterSecurityAuthentication.checkAdmin(requestContext))
             return Response.status(Response.Status.UNAUTHORIZED).build();
 
 
