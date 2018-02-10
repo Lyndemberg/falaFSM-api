@@ -18,6 +18,7 @@ import javax.ws.rs.ext.Provider;
 
 import io.github.recursivejr.discenteVivo.controllers.LoginController;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
+import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.jsonwebtoken.Claims;
 
 @Security
@@ -35,7 +36,7 @@ public class FilterSecurityAuthentication implements ContainerRequestFilter{
 
 			String token = authorizationHeader.substring("Bearer".length()).trim();
 
-			Claims claims = new LoginController().validaToken(token);
+			Claims claims = new TokenManagement().validaToken(token);
 
 			if(claims==null)
 				throw new NotAuthorizedException("Token inválido");

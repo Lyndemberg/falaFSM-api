@@ -13,6 +13,7 @@ import javax.xml.bind.DatatypeConverter;
 import io.github.recursivejr.discenteVivo.dao.Interface.AdministradorDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
+import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Aluno;
@@ -24,8 +25,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Path("login")
 public class LoginController {
 	
-	private final String SECRETKEY = "FSM#STUD3NT-V01C3@K3Y/CR1PT";  
-	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("loginAluno/{login}/{senha}/")
@@ -36,7 +35,7 @@ public class LoginController {
 			
 			Aluno aluno = alunoDao.login(login, senha);
 			
-			String token = gerarToken(aluno.getMatricula(), 1);
+			String token = new TokenManagement().gerarToken(aluno.getMatricula(), 1);
 
 			aluno.setSenha(token);
 
@@ -60,7 +59,7 @@ public class LoginController {
 			
 			Administrador admin = adminDao.login(login, senha);
 			
-			String token = gerarToken(admin.getEmail(), 1);
+			String token = new TokenManagement().gerarToken(admin.getEmail(), 1);
 
 			admin.setSenha(token);
 
@@ -73,45 +72,6 @@ public class LoginController {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}	
 	}
-	
-	private String gerarToken(String login, int limiteDias) {
-		//Gera algoritmo de criptografia em SHA512
-		try {
-			SignatureAlgorithm algorithm = SignatureAlgorithm.HS512;
-			
-			Date agora = new Date();
-			
-			Calendar expira = Calendar.getInstance();
-			expira.add(Calendar.DAY_OF_MONTH, limiteDias);
-			
-			byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRETKEY);
-			
-			SecretKeySpec key = new SecretKeySpec(apiKeySecretBytes, algorithm.getJcaName());
-
-			JwtBuilder construtor = Jwts.builder()
-				.setIssuedAt(agora)
-				.setIssuer(login)
-				.signWith(algorithm, key)
-				.setExpiration(expira.getTime());
-				return construtor.compact();	
-			
-			
-		} catch (IllegalArgumentException ex) {
-			ex.printStackTrace();
-			return null;
-		}		
-	}
-	
-	public Claims validaToken(String token) {
-		try {
-		   Claims claims = Jwts.parser()
-			     .setSigningKey(DatatypeConverter.parseBase64Binary(SECRETKEY))
-			     .parseClaimsJws(token).getBody();
-		   return claims;
-		} catch(Exception ex) {
-				throw ex;
-		}
-	}
 
 	public NivelAcesso buscarNivelPermissao(String login) {
 
@@ -119,7 +79,6 @@ public class LoginController {
 			Verifica com base no token se é um administrador, apenas administradores posuem email no token
 				logo a condição de parada é possuir um "@" no token.
 			Caso seja um Administrador e retornado o Nivel de Acesso 1,
-				Caso seja um Aluno e retornado o Nivel de Acesso 2.
 			*/
 
 		if (login.contains("@"))

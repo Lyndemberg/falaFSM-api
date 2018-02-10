@@ -40,7 +40,7 @@ public class FilterSecurityAuthorization implements ContainerRequestFilter {
 
         try {
 
-            String token = TokenManagement.getToken(requestContext);
+            String token = new TokenManagement().getToken(requestContext);
 
             if (nivelAcessoMetodo.isEmpty())
                 checarPermissoes(nivelAcessoClasse, token);
