@@ -16,7 +16,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
-import io.github.recursivejr.discenteVivo.controllers.LoginController;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.jsonwebtoken.Claims;
@@ -56,13 +55,7 @@ public class FilterSecurityAuthentication implements ContainerRequestFilter{
 		requestContext.setSecurityContext(new SecurityContext() {
 			 @Override
 			  public Principal getUserPrincipal() {
-			    return new Principal() {	
-			    	
-			      @Override
-			      public String getName() {
-			        return indentificador;
-			      }
-			    };
+			    return () -> indentificador;
 			  }
 
 			  @Override
@@ -124,10 +117,4 @@ public class FilterSecurityAuthentication implements ContainerRequestFilter{
 		}
 	}
 
-	public static String getToken(ContainerRequestContext requestContext) {
-		return requestContext
-				.getSecurityContext()
-					.getUserPrincipal()
-						.getName();
-	}
 }
