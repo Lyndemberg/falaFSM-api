@@ -13,25 +13,21 @@ import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
+import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.Relatorio;
 
 @Path("relatorio")
 public class RelatorioController {
 	
     @GET
-    @Security
+    @Security(NivelAcesso.NIVEL_1)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("gerarRelatorios/enquete/{param}/")
     //Variavel param pode ser a Id da Enquete ou o Nome da Enquete
-    public Response gerarRelatorios(@PathParam("param") String param, @Context ContainerRequestContext requestContext) {
+    public Response gerarRelatorios(@PathParam("param") String param) {
 
         //Cria um Relatorio contando nada
         Relatorio relatorio = null;
-
-        //Checa se e Administrador, se nao for retorna UNAUTHORIZED
-        if (!FilterSecurityAuthentication.checkAdmin(requestContext))
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-
 
         try {
             //Intancia um relatorioDaoPostgres usando a fabrica acessando somente os metodos definidos na Interface
