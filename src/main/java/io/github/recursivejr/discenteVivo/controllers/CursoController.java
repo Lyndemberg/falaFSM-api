@@ -2,15 +2,12 @@ package io.github.recursivejr.discenteVivo.controllers;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.CursoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Curso;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -23,13 +20,9 @@ public class CursoController {
     @Security
     @Produces(MediaType.APPLICATION_JSON)
     @Path("cursos/")
-    public Response getCursos(@Context ContainerRequestContext requestContext) {
+    public Response getCursos() {
 
-        //Verifica o token, Se nao for um Admin e nao for um Aluno entao retorna Nao Autorizado
-        if(!FilterSecurityAuthentication.checkAdmin(requestContext) && !FilterSecurityAuthentication.checkAluno(requestContext))
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-
-        //Caso seja autorizado instancia cursoDao como null
+        //Cria uma instancia cursoDao como null
         CursoDaoInterface cursoDao = null;
 
         //Tenta criar um cursodao, caso dispare uma Exception Entao retorna Erro do Servidor
