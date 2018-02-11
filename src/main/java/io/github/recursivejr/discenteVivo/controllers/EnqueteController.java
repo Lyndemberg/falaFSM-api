@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
+import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Enquete;
@@ -44,7 +45,7 @@ public class EnqueteController {
 
 		//Verifica se e um aluno, caso seja entao Recupera as Enquetes para este Aluno
 		if(FilterSecurityAuthentication.checkAluno(requestContext)) {
-			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
+			String matAluno = TokenManagement.getToken(requestContext);
 
 			enquetes = enquetesDao.listar(matAluno);
 
@@ -83,7 +84,7 @@ public class EnqueteController {
 
 		//Verifica se e um aluno, caso seja entao Recupera a Enquete com tal ID para este Aluno
 		if(FilterSecurityAuthentication.checkAluno(requestContext)) {
-			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
+			String matAluno = TokenManagement.getToken(requestContext);
 
 			enquete = enquetesDao.buscar(id, matAluno);
 
@@ -121,7 +122,7 @@ public class EnqueteController {
 
 		//Verifica se e um aluno, caso seja entao Recupera as Enquetes para este Aluno com base no Curso
 		if(FilterSecurityAuthentication.checkAluno(requestContext)) {
-			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
+			String matAluno = TokenManagement.getToken(requestContext);
 
 			enquetes = enquetesDao.enquetesPorCurso(nome, matAluno);
 
@@ -160,7 +161,7 @@ public class EnqueteController {
 
 		//Verifica se e um aluno, caso seja entao Recupera as Enquetes para este Aluno
 		if(FilterSecurityAuthentication.checkAluno(requestContext)) {
-			String matAluno = FilterSecurityAuthentication.getToken(requestContext);
+			String matAluno = TokenManagement.getToken(requestContext);
 
 			enquetes = enquetesDao.enquetesPorSetor(nome, matAluno);
 

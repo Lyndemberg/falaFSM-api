@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.*;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
+import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.filters.FilterSecurityAuthentication;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.*;
@@ -189,7 +190,7 @@ public class AdministradorController {
 
 			//Seta o email do admin que está criando a Enquete com base no token
 			enquete.setEmailAdmin(
-					FilterSecurityAuthentication.getToken(requestContext));
+					TokenManagement.getToken(requestContext));
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			int idEnquete = enqueteDao.adicionar(enquete);
@@ -280,7 +281,7 @@ public class AdministradorController {
             AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
 
             //Recupera o email do token
-            String email = FilterSecurityAuthentication.getToken(requestContext);
+            String email = TokenManagement.getToken(requestContext);
 
             //Retorna uma resposta com codigo 200 de OK e o Objeto Administrador com o Email do Token
 			Administrador admin = adminDao.buscar(email);
@@ -365,7 +366,7 @@ public class AdministradorController {
 
 			//Seta o email do admin que está criando a Enquete com base no token
 			enquete.setEmailAdmin(
-					FilterSecurityAuthentication.getToken(requestContext));
+					TokenManagement.getToken(requestContext));
 
 			//Seta o Id da Enquete com o Id passado na Requisiçao Removendo a Necessidade
 				//da Enquete ja Estar preenchida com o Id
