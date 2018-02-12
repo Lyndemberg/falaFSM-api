@@ -52,11 +52,11 @@ public class EnqueteController {
 		if(nivelAcesso == NivelAcesso.NIVEL_2) {
 			String matAluno = TokenManagement.getToken(securityContext);
 
-			enquetes = enquetesDao.listar(matAluno);
+			enquetes = enquetesDao.listarPorAluno(matAluno);
 
 		//Caso nao seja Verifica se e um Admin, caso seja entao Recupera todas as Enquete
 		} else if (nivelAcesso == NivelAcesso.NIVEL_1)
-			enquetes = enquetesDao.listar(null);
+			enquetes = enquetesDao.listar();
 
 		//Limpa Memoria
 		System.gc();

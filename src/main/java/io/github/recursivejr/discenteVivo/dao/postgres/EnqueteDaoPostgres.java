@@ -187,23 +187,25 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
     }
 
     @Override
-    public List<Enquete> listar(String matAluno) {
+    public List<Enquete> listar() {
+        //Retorna todas as Enquetes Salvas
 
-        //Se nao tiver matAluno entao nao e necessario filtrar por aluno
-        if (matAluno == null) {
-            //Se a matricula for null entao ele pega todos as Enquetes Salvas
-            String sql = "SELECT * FROM Enquete;";
-            return getAllEnquetes(sql);
-        } else {
-            //caso matAluno nao seja null entao filtra por aluno
-                //recebendo apenas as enquetes que nao tem nenhum curso pois sao para toda a universidade
-                    //e as enquetes do seu curso especifico
-            String sql = String.format("SELECT E.* FROM Enquete E NATURAL LEFT JOIN EnquetesCurso EC" +
-                    " WHERE EC.NomeCurso IS NULL OR EC.NomeCurso ILIKE" +
-                    " (SELECT NomeCurso FROM Aluno WHERE Matricula ILIKE '%s');", matAluno);
-            return getEnquetes(sql, matAluno);
-        }
+        String sql = "SELECT * FROM Enquete;";
+        return getAllEnquetes(sql);
     }
+
+    @Override
+    public List<Enquete> listarPorAluno(String matAluno) {
+        //caso matAluno nao seja null entao filtra por aluno
+        //recebendo apenas as enquetes que nao tem nenhum curso pois sao para toda a universidade
+        //e as enquetes do seu curso especifico
+
+        String sql = String.format("SELECT E.* FROM Enquete E NATURAL LEFT JOIN EnquetesCurso EC" +
+                " WHERE EC.NomeCurso IS NULL OR EC.NomeCurso ILIKE" +
+                " (SELECT NomeCurso FROM Aluno WHERE Matricula ILIKE '%s');", matAluno);
+        return getEnquetes(sql, matAluno);
+    }
+
 
     @Override
     public Enquete buscar(int idEnquete, String matAluno) {
@@ -440,6 +442,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 Enquete enquete = new Enquete();
                 enquete.setId(rs.getInt("idEnquete"));
                 enquete.setNome(rs.getString("nome"));
+                enquete.setFoto(rs.getString("Foto"));
                 enquete.setDescricao(rs.getString("descricao"));
                 enquete.setEmailAdmin(rs.getString("emailAdmin"));
 
