@@ -1,5 +1,6 @@
 package io.github.recursivejr.discenteVivo.models.abstrato;
 
+import io.github.recursivejr.discenteVivo.models.Comentario;
 import io.github.recursivejr.discenteVivo.models.Curso;
 import io.github.recursivejr.discenteVivo.models.Setor;
 
@@ -15,14 +16,13 @@ public abstract class Questionario {
     private String foto;
     private List<Curso> cursos;
     private List<Setor> setores;
+    private List<Comentario> comentarios;
 
     public Questionario() {
 
     }
 
-    public Questionario(int id, String emailAdmin, String nome, String descricao,
-                        String foto, List<Curso> cursos, List<Setor> setores) {
-
+    public Questionario(int id, String emailAdmin, String nome, String descricao, String foto, List<Curso> cursos, List<Setor> setores, List<Comentario> comentarios) {
         this.id = id;
         this.emailAdmin = emailAdmin;
         this.nome = nome;
@@ -30,6 +30,7 @@ public abstract class Questionario {
         this.foto = foto;
         this.cursos = cursos;
         this.setores = setores;
+        this.comentarios = comentarios;
     }
 
     public int getId() {
@@ -88,30 +89,38 @@ public abstract class Questionario {
         this.setores = setores;
     }
 
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
     @Override
     public boolean equals(Object o) {
 
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Questionario that = (Questionario) o;
-        return id == that.id &&
-                Objects.equals(emailAdmin, that.emailAdmin) &&
-                Objects.equals(nome, that.nome) &&
-                Objects.equals(descricao, that.descricao) &&
-                Objects.equals(foto, that.foto) &&
-                Objects.equals(cursos, that.cursos) &&
-                Objects.equals(setores, that.setores);
+        return getId() == that.getId() &&
+                Objects.equals(getEmailAdmin(), that.getEmailAdmin()) &&
+                Objects.equals(getNome(), that.getNome()) &&
+                Objects.equals(getDescricao(), that.getDescricao()) &&
+                Objects.equals(getFoto(), that.getFoto()) &&
+                Objects.equals(getCursos(), that.getCursos()) &&
+                Objects.equals(getSetores(), that.getSetores()) &&
+                Objects.equals(getComentarios(), that.getComentarios());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, emailAdmin, nome, descricao, foto, cursos, setores);
+        return Objects.hash(getId(), getEmailAdmin(), getNome(), getDescricao(), getFoto(), getCursos(), getSetores(), getComentarios());
     }
 
     @Override
     public String toString() {
-
         return "Questionario{" +
                 "id=" + id +
                 ", emailAdmin='" + emailAdmin + '\'' +
@@ -120,6 +129,7 @@ public abstract class Questionario {
                 ", foto='" + foto + '\'' +
                 ", cursos=" + cursos +
                 ", setores=" + setores +
+                ", comentarios=" + comentarios +
                 '}';
     }
 }

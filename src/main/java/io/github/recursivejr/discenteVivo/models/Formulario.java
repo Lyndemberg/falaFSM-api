@@ -7,42 +7,49 @@ import java.util.Objects;
 
 public class Formulario extends Questionario {
 
-    private List<Enquete> enquetes;
+    private List<Campo> campos;
+
+    public Formulario() {
+
+    }
 
     public Formulario(int id, String emailAdmin, String nome, String descricao, String foto,
-                      List<Curso> cursos, List<Setor> setores, List<Enquete> enquetes) {
+                      List<Curso> cursos, List<Setor> setores, List<Comentario> comentarios,
+                      List<Campo> campos) {
 
-        super(id, emailAdmin, nome, descricao, foto, cursos, setores);
-        this.enquetes = enquetes;
+        super(id, emailAdmin, nome, descricao, foto, cursos, setores, comentarios);
+        this.campos = campos;
     }
 
-    public List<Enquete> getEnquetes() {
-        return enquetes;
+    public List<Campo> getCampos() {
+        return campos;
     }
 
-    public void setEnquetes(List<Enquete> enquetes) {
-        this.enquetes = enquetes;
+    public void setCampos(List<Campo> campos) {
+        this.campos = campos;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (!(o instanceof Formulario)) return false;
         if (!super.equals(o)) return false;
         Formulario that = (Formulario) o;
-        return Objects.equals(getEnquetes(), that.getEnquetes());
+        return Objects.equals(getCampos(), that.getCampos());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), getEnquetes());
+        return Objects.hash(super.hashCode(), getCampos());
     }
 
     @Override
     public String toString() {
+
         return "Formulario{" +
-                "enquetes=" + enquetes +
+                "campos=" + campos +
                 '}';
     }
 }
