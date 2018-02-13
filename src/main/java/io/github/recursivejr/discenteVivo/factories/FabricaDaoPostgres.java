@@ -31,10 +31,16 @@ public class FabricaDaoPostgres implements FabricaDaoInterface {
 	}
 
 	 @Override
-    public ComentarioEnqueteDaoPostgres criarComentarioDao() throws SQLException, ClassNotFoundException {
+    public ComentarioEnqueteDaoPostgres criarComentarioEnqueteDao() throws SQLException, ClassNotFoundException {
         ComentarioEnqueteDaoPostgres comentarioDao = new ComentarioEnqueteDaoPostgres();
         return comentarioDao;
     }
+
+	@Override
+	public ComentarioFormularioDaoPostgres criarComentarioFormularioDao() throws SQLException, ClassNotFoundException {
+		ComentarioFormularioDaoPostgres comentarioDao = new ComentarioFormularioDaoPostgres();
+		return comentarioDao;
+	}
 
 	@Override
 	public SetorDaoPostgres criarSetorDao() throws SQLException, ClassNotFoundException {

@@ -10,7 +10,8 @@ public interface FabricaDaoInterface {
     public AdministradorDaoPostgres criarAdministradorDao() throws SQLException, ClassNotFoundException;
     public CursoDaoPostgres criarCursoDao() throws SQLException, ClassNotFoundException;
     public EnqueteDaoPostgres criarEnqueteDao() throws SQLException, ClassNotFoundException;
-    public ComentarioEnqueteDaoPostgres criarComentarioDao() throws SQLException, ClassNotFoundException;
+    public ComentarioEnqueteDaoPostgres criarComentarioEnqueteDao() throws SQLException, ClassNotFoundException;
+    public ComentarioFormularioDaoPostgres criarComentarioFormularioDao() throws SQLException, ClassNotFoundException;
     public SetorDaoPostgres criarSetorDao() throws SQLException, ClassNotFoundException;
     public RespostaEnqueteDaoPostgres criarRespostaEnqueteDao() throws ClassNotFoundException, SQLException;
     public RespostaCampoDaoPostgres criarRespostaCampoDao() throws ClassNotFoundException, SQLException;
