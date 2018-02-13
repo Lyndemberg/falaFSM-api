@@ -34,25 +34,17 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
             //Recupera o valor do Id deste Formulario no BD para ser usado nas proximas Querys
             idFormulario = buscarId(formulario.getNome());
 
-            //Cria um ArrayList de Campos e Verifica se Ha Campos que devem ser Salvos
-                //neste Formulario
-            List<Campo> campos = new ArrayList<>();
-
-            //Se nao for null entao ha Campos que devem ser referenciadas
+            //Verifica se Ha Campos que devem ser Salvos neste Formulario
+                //Se nao for null entao ha Campos que devem ser referenciadas
             if (formulario.getCampos() != null) {
-                //Recupera todos os Campos que serao salvas
-            	campos.addAll(formulario.getCampos());
 
-                sql = "INSERT INTO Campo(Nome, Descricao, Foto, idFormulario) VALUES (?,?,?,?); ";
-                stmt = getConexao().prepareStatement(sql);
+                //Cria um DaoPostgres para salvar os Campos
+                CampoDaoPostgres campoDao = new CampoDaoPostgres();
 
                 //Percorre todos os campos salvando eles no BD
-                for (Campo campo : campos) {
-                    stmt.setString(1, campo.getNome());
-                    stmt.setString(2, campo.getDescricao());
-                    stmt.setString(3, campo.getFoto());
-                    stmt.setInt(4, idFormulario);
-                    stmt.executeUpdate();
+                for (Campo campo : formulario.getCampos()) {
+                    campo.setIdFormulario(idFormulario);
+                    campoDao.adicionar(campo);
                 }
             }
 
@@ -97,7 +89,7 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
             }
             
             stmt.close();
-        } catch (SQLException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
         return idFormulario;

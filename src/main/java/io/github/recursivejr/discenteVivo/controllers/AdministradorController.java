@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.*;
+import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
@@ -183,8 +185,8 @@ public class AdministradorController {
 					TokenManagement.getToken(securityContext));
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
-			int idEnquete = enqueteDao.adicionar(enquete);
-			if(idEnquete == 0)
+			Integer idEnquete = enqueteDao.adicionar(enquete);
+			if(idEnquete == null)
 				throw new Exception("ERRO DE SQL");
 
 			//Se tudo certo retorna status 200 de OK com a Id da Enquete Salva
@@ -471,6 +473,34 @@ public class AdministradorController {
 			System.gc();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
+	}
+
+	@POST
+	@Security(NivelAcesso.NIVEL_1)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/formulario/cadastrarFormulario")
+	public Response cadastrarFormulario(Formulario formulario,
+										@Context SecurityContext securityContext) {
+
+		try {
+
+			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
+
+			Integer idFormulario = formularioDao.adicionar(formulario);
+
+			if (idFormulario == null)
+				return Response.status(Response.Status.BAD_REQUEST).build();
+
+			System.gc();
+			return Response.ok(idFormulario).build();
+
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
 	}
 
 }
