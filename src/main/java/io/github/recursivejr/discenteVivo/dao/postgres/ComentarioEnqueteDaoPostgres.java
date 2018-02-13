@@ -8,9 +8,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoInterface {
+public class ComentarioEnqueteDaoPostgres extends ElementoDao implements ComentarioDaoInterface {
 
-    public ComentarioDaoPostgres() throws SQLException, ClassNotFoundException {
+    public ComentarioEnqueteDaoPostgres() throws SQLException, ClassNotFoundException {
         super();
     }
     
@@ -22,7 +22,7 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
         	PreparedStatement stmt = getConexao().prepareStatement(sql);
 
         	stmt.setString(1, comentario.getMatriculaAluno());
-            stmt.setInt(2, comentario.getIdEnquete());
+            stmt.setInt(2, comentario.getIdFK());
             stmt.setString(3, comentario.getComentario());
             stmt.executeUpdate();
             
@@ -36,10 +36,13 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
 
     @Override
     public boolean remover(Comentario comentario) {
-    	String sql = "DELETE FROM ComentaEnquete WHERE MatriculaAluno ILIKE '" + comentario.getMatriculaAluno()
-    	+ "' AND idEnquete = '" + comentario.getIdEnquete() + "';";
+    	String sql = "DELETE FROM ComentaEnquete WHERE MatriculaAluno ILIKE '?' AND idEnquete = ?;";
     	try {
-            Statement stmt = getConexao().createStatement();
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
+
+            stmt.setString(1, comentario.getMatriculaAluno());
+            stmt.setInt(2, comentario.getIdFK());
+
             stmt.executeUpdate(sql);
 
             stmt.close();
@@ -58,7 +61,7 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
     }
 
     @Override
-    public List<Comentario> listarPorEnquete(int IdEnquete) {
+    public List<Comentario> listarPorChave(int IdEnquete) {
         String sql = "SELECT * FROM ComentaEnquete WHERE idEnquete = '" + IdEnquete + "';";
 
         return getComentarios(sql);
@@ -72,8 +75,8 @@ public class ComentarioDaoPostgres extends ElementoDao implements ComentarioDaoI
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()) {
                 Comentario comentario = new Comentario(
-                        rs.getString("MatriculaAluno"),
                         rs.getInt("idEnquete"),
+                        rs.getString("MatriculaAluno"),
                         rs.getString("Comentario")
                 );
 

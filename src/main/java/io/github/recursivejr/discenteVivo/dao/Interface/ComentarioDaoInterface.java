@@ -9,5 +9,5 @@ public interface ComentarioDaoInterface {
     public boolean adicionar(Comentario comentario);
     public boolean remover(Comentario comentario);
     public List<Comentario> listar();
-    public List<Comentario> listarPorEnquete(int IdEnquete);
+    public List<Comentario> listarPorChave(int idFK);
 }

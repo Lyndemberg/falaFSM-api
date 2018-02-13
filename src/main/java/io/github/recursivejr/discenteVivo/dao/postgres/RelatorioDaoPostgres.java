@@ -52,7 +52,7 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 			while (rs.next()) {
 				opcoes.add(rs.getString("Resposta"));
 				votos.add(rs.getInt("QuantidadeVotos"));
-				comentarios = new ComentarioDaoPostgres().listarPorEnquete(rs.getInt("idEnquete"));
+				comentarios = new ComentarioEnqueteDaoPostgres().listarPorEnquete(rs.getInt("idEnquete"));
 			}
 
 			relatorio = new Relatorio(
