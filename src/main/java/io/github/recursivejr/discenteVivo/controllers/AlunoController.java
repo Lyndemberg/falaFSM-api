@@ -25,9 +25,9 @@ public class AlunoController{
 	@POST
 	@Security(NivelAcesso.NIVEL_2)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("responder/{idEnquete}/{resposta}/")
-	public Response responderEnquete(@PathParam("idEnquete") int idEnquete,
-									 @PathParam("resposta") String resposta,
+    @Path("responder/enquete/")
+	public Response responderEnquete(@FormParam("idEnquete") int idEnquete,
+									 @FormParam("resposta") String resposta,
 									 @Context SecurityContext securityContext) {
 
 		try {
@@ -126,10 +126,10 @@ public class AlunoController{
 	@POST
 	@Security(NivelAcesso.NIVEL_2)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("comentar/{idEnquete}/{comentario}/")
-	public Response enviarComentario(@PathParam("idEnquete") int idEnquete,
-									 @PathParam("comentario") String comentario,
-									 @Context SecurityContext securityContext) {
+	@Path("comentar/enquete/")
+	public Response comentarEnquete(@FormParam("idEnquete") int idEnquete,
+									@FormParam("comentario") String comentario,
+									@Context SecurityContext securityContext) {
 
 		try {
 			//Cria um comentarioDao com base na Interface
