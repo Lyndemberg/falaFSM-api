@@ -346,8 +346,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 while (rsLista.next()) {
 
                     Comentario comentario = new Comentario(
-                            rsLista.getString("MatriculaAluno"),
                             rsLista.getInt("IdEnquete"),
+                            rsLista.getString("MatriculaAluno"),
                             rsLista.getString("Comentario")
                     );
 
@@ -454,8 +454,8 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 while (rsLista.next()) {
 
                     Comentario comentario = new Comentario(
-                            rsLista.getString("MatriculaAluno"),
                             rsLista.getInt("IdEnquete"),
+                            rsLista.getString("MatriculaAluno"),
                             rsLista.getString("Comentario")
                     );
 
