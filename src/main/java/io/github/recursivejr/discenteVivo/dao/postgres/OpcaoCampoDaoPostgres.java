@@ -1,5 +1,9 @@
 package io.github.recursivejr.discenteVivo.dao.postgres;
 
+import io.github.recursivejr.discenteVivo.dao.ElementoDao;
+import io.github.recursivejr.discenteVivo.dao.Interface.OpcaoDaoInterface;
+import io.github.recursivejr.discenteVivo.models.Opcao;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,25 +11,21 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.recursivejr.discenteVivo.dao.ElementoDao;
-import io.github.recursivejr.discenteVivo.dao.Interface.OpcaoDaoInterface;
-import io.github.recursivejr.discenteVivo.models.Opcao;
+public class OpcaoCampoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
 
-public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
-
-    public OpcaoDaoPostgres() throws SQLException, ClassNotFoundException {
+    public OpcaoCampoDaoPostgres() throws SQLException, ClassNotFoundException {
         super();
     }
     
     @Override
     public boolean adicionar(Opcao opcao) {
-    	String sql = "INSERT INTO Opcoes (Opcao) VALUES (?) WHERE IdEnquete = ?;";
+    	String sql = "INSERT INTO OpcoesCampo (IdCampo, Opcao) VALUES (?,?);";
         
         try {
         	PreparedStatement stmt = getConexao().prepareStatement(sql);
-        	
-            stmt.setString(1, opcao.getOpcao());
-            stmt.setInt(2, opcao.getIdFK());
+
+            stmt.setInt(1, opcao.getIdFK());
+            stmt.setString(2, opcao.getOpcao());
             stmt.executeUpdate();
             
             stmt.close();
@@ -38,8 +38,8 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
 
     @Override
     public boolean remover(Opcao opcao) {
-    	String sql = "DELETE FROM Opcoes WHERE Opcao ILIKE '" + opcao.getOpcao()
-    	+ "' AND idEnquete = '" + opcao.getIdFK() + "';";
+    	String sql = "DELETE FROM OpcoesCampo WHERE Opcao ILIKE '" + opcao.getOpcao()
+    	+ "' AND idCampo = '" + opcao.getIdFK() + "';";
     	try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
@@ -54,14 +54,14 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
 
     @Override
     public List<Opcao> listar() {
-        String sql = "SELECT * FROM Opcoes";
+        String sql = "SELECT * FROM OpcoesCampo";
 
         return getOpcoes(sql);
     }
 
     @Override
-    public List<Opcao> listarPorChave(int idEnquete) {
-        String sql = "SELECT * FROM Opcoes WHERE idEnquete = '" + idEnquete + "';";
+    public List<Opcao> listarPorChave(int idCampo) {
+        String sql = "SELECT * FROM Opcoes WHERE idCampo= '" + idCampo + "';";
 
         return getOpcoes(sql);
     }
@@ -74,7 +74,7 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
                 Opcao opcao = new Opcao();
-                opcao.setIdFK(rs.getInt("idEnquete"));
+                opcao.setIdFK(rs.getInt("idCampo"));
                 opcao.setOpcao(rs.getString("Opcao"));
 
                 opcoes.add(opcao);
