@@ -1,27 +1,30 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import java.util.Objects;
+
 public class Resposta {
 
-    private int idEnquete;
+	//idFK = id Foreing key, ou seja, o id da Tabela na qual se faz chave estrangeira
+    private int idFK;
     private String resposta;
     private String matAluno;
-    
-	public Resposta(int idEnquete, String resposta, String matAluno) {
-		this.idEnquete = idEnquete;
-		this.resposta = resposta;
-		this.matAluno = matAluno;
-	}
-    
+
 	public Resposta() {
 		
 	}
 
-	public int getIdEnquete() {
-		return idEnquete;
+	public Resposta(int idFK, String resposta, String matAluno) {
+		this.idFK = idFK;
+		this.resposta = resposta;
+		this.matAluno = matAluno;
 	}
 
-	public void setIdEnquete(int idEnquete) {
-		this.idEnquete = idEnquete;
+	public int getIdFK() {
+		return idFK;
+	}
+
+	public void setIdFK(int idFK) {
+		this.idFK = idFK;
 	}
 
 	public String getResposta() {
@@ -41,42 +44,27 @@ public class Resposta {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + idEnquete;
-		result = prime * result + ((matAluno == null) ? 0 : matAluno.hashCode());
-		result = prime * result + ((resposta == null) ? 0 : resposta.hashCode());
-		return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Resposta resposta1 = (Resposta) o;
+		return getIdFK() == resposta1.getIdFK() &&
+				Objects.equals(getResposta(), resposta1.getResposta()) &&
+				Objects.equals(getMatAluno(), resposta1.getMatAluno());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Resposta other = (Resposta) obj;
-		if (idEnquete != other.idEnquete)
-			return false;
-		if (matAluno == null) {
-			if (other.matAluno != null)
-				return false;
-		} else if (!matAluno.equals(other.matAluno))
-			return false;
-		if (resposta == null) {
-			if (other.resposta != null)
-				return false;
-		} else if (!resposta.equals(other.resposta))
-			return false;
-		return true;
+	public int hashCode() {
+
+		return Objects.hash(getIdFK(), getResposta(), getMatAluno());
 	}
 
 	@Override
 	public String toString() {
-		return "Resposta [idEnquete=" + idEnquete + ", resposta=" + resposta + ", matAluno=" + matAluno + "]";
+		return "Resposta{" +
+				"idFK=" + idFK +
+				", resposta='" + resposta + '\'' +
+				", matAluno='" + matAluno + '\'' +
+				'}';
 	}
-	   
 }

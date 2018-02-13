@@ -12,7 +12,7 @@ import javax.ws.rs.core.SecurityContext;
 import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.ComentarioDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.postgres.RespostaDaoPostgres;
+import io.github.recursivejr.discenteVivo.dao.postgres.RespostaEnqueteDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
@@ -32,7 +32,7 @@ public class AlunoController{
 
 		try {
 			//Cria um EnqueteDaoPostgres
-			RespostaDaoPostgres respostaDao = new RespostaDaoPostgres();
+			RespostaEnqueteDaoPostgres respostaDao = new RespostaEnqueteDaoPostgres();
 
 			//Pega a matricula do aluno que esta respondendo a enquete pelo token de acesso
 			String matAluno = TokenManagement.getToken(securityContext);

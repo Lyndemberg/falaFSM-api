@@ -11,9 +11,9 @@ import io.github.recursivejr.discenteVivo.dao.ElementoDao;
 import io.github.recursivejr.discenteVivo.dao.Interface.RespostaDaoInterface;
 import io.github.recursivejr.discenteVivo.models.Resposta;
 
-public class RespostaDaoPostgres extends ElementoDao implements RespostaDaoInterface {
+public class RespostaEnqueteDaoPostgres extends ElementoDao implements RespostaDaoInterface {
 
-    public RespostaDaoPostgres() throws SQLException, ClassNotFoundException {
+    public RespostaEnqueteDaoPostgres() throws SQLException, ClassNotFoundException {
         super();
     }
     
@@ -24,7 +24,7 @@ public class RespostaDaoPostgres extends ElementoDao implements RespostaDaoInter
         try {
         	PreparedStatement stmt = getConexao().prepareStatement(sql);
         	
-            stmt.setInt(1, resposta.getIdEnquete());
+            stmt.setInt(1, resposta.getIdFK());
             stmt.setString(2, resposta.getMatAluno());
             stmt.setString(3, resposta.getResposta());
             stmt.executeUpdate();
@@ -40,7 +40,7 @@ public class RespostaDaoPostgres extends ElementoDao implements RespostaDaoInter
     @Override
     public boolean remover(Resposta resposta) {
     	String sql = "DELETE FROM RespondeEnquete WHERE matriculaAluno ILIKE " + resposta.getMatAluno() 
-    	+ " AND idEnquete = " + resposta.getIdEnquete() + ";";
+    	+ " AND idEnquete = " + resposta.getIdFK() + ";";
     	try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
@@ -62,7 +62,7 @@ public class RespostaDaoPostgres extends ElementoDao implements RespostaDaoInter
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
                 Resposta resp = new Resposta();
-                resp.setIdEnquete(rs.getInt("idEnquete"));
+                resp.setIdFK(rs.getInt("idEnquete"));
                 resp.setMatAluno(rs.getString("matriculaAluno"));
                 resp.setResposta(rs.getString("Resposta"));
                 
@@ -85,7 +85,7 @@ public class RespostaDaoPostgres extends ElementoDao implements RespostaDaoInter
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 resp = new Resposta();
-                resp.setIdEnquete(rs.getInt("IdEnquete"));
+                resp.setIdFK(rs.getInt("IdEnquete"));
                 resp.setMatAluno(rs.getString("matriculaAluno"));
                 resp.setResposta(rs.getString("Resposta"));
             }

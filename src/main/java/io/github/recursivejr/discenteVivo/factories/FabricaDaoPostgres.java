@@ -43,8 +43,8 @@ public class FabricaDaoPostgres implements FabricaDaoInterface {
 	}
 
 	@Override
-	public RespostaDaoPostgres criarRespostaDao() throws ClassNotFoundException, SQLException {
-		RespostaDaoPostgres respDao = new RespostaDaoPostgres();
+	public RespostaEnqueteDaoPostgres criarRespostaDao() throws ClassNotFoundException, SQLException {
+		RespostaEnqueteDaoPostgres respDao = new RespostaEnqueteDaoPostgres();
 		return respDao;
 	}
 	
