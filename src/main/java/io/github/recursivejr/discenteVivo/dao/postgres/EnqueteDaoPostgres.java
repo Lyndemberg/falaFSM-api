@@ -42,7 +42,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 //Recupera todas as Opçoes que serao salvas
             	opcoes.addAll(enquete.getOpcoes());
 
-                sql = "INSERT INTO Opcoes (IDENQUETE, Opcao) VALUES (?,?);";
+                sql = "INSERT INTO OpcoesEnquete (IDENQUETE, Opcao) VALUES (?,?);";
                 stmt = getConexao().prepareStatement(sql);
 
                 //Perccore todas as opcoes salvando eles no BD
@@ -105,7 +105,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
         String sql = "DELETE FROM EnquetesSetor WHERE IdEnquete = ?;"
                 + "DELETE FROM EnquetesCurso WHERE IdEnquete = ?;"
                 + "DELETE FROM ComentaEnquete WHERE IdEnquete = ?;"
-                + "DELETE FROM Opcoes WHERE IdEnquete = ?;"
+                + "DELETE FROM OpcoesEnquete WHERE IdEnquete = ?;"
                 + "DELETE FROM RespondeEnquete WHERE IdEnquete = ?;"
                 + "DELETE FROM Enquete WHERE IdEnquete = ?;";
         try {
@@ -129,7 +129,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
     @Override
     public boolean atualizar(Enquete enquete) {
-        String sql = "DELETE FROM Opcoes WHERE IdEnquete = ?"
+        String sql = "DELETE FROM OpcoesEnquete WHERE IdEnquete = ?"
                 + "DELETE FROM EnquetesSetor WHERE IdEnquete = ?;"
                 + "DELETE FROM EnquetesCurso WHERE IdEnquete = ?;"
                 + "UPDATE Enquete SET Nome = ?, Descricao = ?, emailAdmin = ? WHERE IdEnquete = ?;";
@@ -165,7 +165,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 stmtSetor.executeUpdate(sql);
             }
 
-            sql = "INSERT INTO Opcoes(Opcao, IdEnquete) VALUES (?,?)";
+            sql = "INSERT INTO OpcoesEnquete(Opcao, IdEnquete) VALUES (?,?)";
             PreparedStatement stmtOpcoes = getConexao().prepareStatement(sql);
             for (Opcao opcao : enquete.getOpcoes()) {
                 stmtOpcoes.setString(1, opcao.getOpcao());
@@ -356,7 +356,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 enquete.setComentarios(comentarios);
 
                 //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
-                String sqlOpcoes = String.format("SELECT * FROM Opcoes WHERE IDEnquete = '%d';", enquete.getId());
+                String sqlOpcoes = String.format("SELECT * FROM OpcoesEnquete WHERE IDEnquete = '%d';", enquete.getId());
                 rsLista = internalStmt.executeQuery(sqlOpcoes);
                 while (rsLista.next()) {
 
@@ -464,7 +464,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
                 enquete.setComentarios(comentarios);
 
                 //Percorre todas as Opcoes e adiciona cada uma ao Arraylist desta enquete
-                String sqlOpcoes = "SELECT * FROM Opcoes WHERE IDEnquete = '" + enquete.getId() + "';";
+                String sqlOpcoes = "SELECT * FROM OpcoesEnquete WHERE IDEnquete = '" + enquete.getId() + "';";
                 rsLista = internalStmt.executeQuery(sqlOpcoes);
                 while (rsLista.next()) {
 
