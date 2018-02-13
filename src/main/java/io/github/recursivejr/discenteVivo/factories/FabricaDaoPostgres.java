@@ -77,5 +77,10 @@ public class FabricaDaoPostgres implements FabricaDaoInterface {
 		RelatorioDaoPostgres relatorioDao = new RelatorioDaoPostgres();
 		return relatorioDao;
 	}
-	
+
+	@Override
+	public FormularioDaoPostgres criarFormularioDao() throws ClassNotFoundException, SQLException {
+		FormularioDaoPostgres formularioDao = new FormularioDaoPostgres();
+		return formularioDao;
+	}
 }
