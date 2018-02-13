@@ -85,7 +85,7 @@ public class RespostaCampoDaoPostgres extends ElementoDao implements RespostaDao
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 resp = new Resposta();
-                resp.setIdFK(rs.getInt("idFK"));
+                resp.setIdFK(rs.getInt("idCampo"));
                 resp.setMatAluno(rs.getString("matriculaAluno"));
                 resp.setResposta(rs.getString("Resposta"));
             }
