@@ -18,14 +18,14 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
     }
     
     @Override
-    public boolean adicionar(int idEnquete, Opcao opcao) {
+    public boolean adicionar(Opcao opcao) {
     	String sql = "INSERT INTO Opcoes (Opcao) VALUES (?) WHERE IdEnquete = ?;";
         
         try {
         	PreparedStatement stmt = getConexao().prepareStatement(sql);
         	
             stmt.setString(1, opcao.getOpcao());
-            stmt.setInt(2, idEnquete);
+            stmt.setInt(2, opcao.getIdFK());
             stmt.executeUpdate();
             
             stmt.close();
@@ -39,7 +39,7 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
     @Override
     public boolean remover(Opcao opcao) {
     	String sql = "DELETE FROM Opcoes WHERE Opcao ILIKE '" + opcao.getOpcao()
-    	+ "' AND idEnquete = '" + opcao.getIdEnquete() + "';";
+    	+ "' AND idEnquete = '" + opcao.getIdFK() + "';";
     	try {
             Statement stmt = getConexao().createStatement();
             stmt.executeUpdate(sql);
@@ -60,7 +60,7 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
     }
 
     @Override
-    public List<Opcao> listarPorEnquete(int idEnquete) {
+    public List<Opcao> listarPorChave(int idEnquete) {
         String sql = "SELECT * FROM Opcoes WHERE idEnquete = '" + idEnquete + "';";
 
         return getOpcoes(sql);
@@ -74,7 +74,7 @@ public class OpcaoDaoPostgres extends ElementoDao implements OpcaoDaoInterface {
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
                 Opcao opcao = new Opcao();
-                opcao.setIdEnquete(rs.getInt("idEnquete"));
+                opcao.setIdFK(rs.getInt("idEnquete"));
                 opcao.setOpcao(rs.getString("Opcao"));
 
                 opcoes.add(opcao);
