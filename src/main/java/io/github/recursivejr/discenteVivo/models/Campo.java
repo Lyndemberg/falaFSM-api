@@ -11,6 +11,7 @@ public class Campo {
     private String nome;
     private String descricao;
     private String foto;
+    private int idFormulario;
     private List<Opcao> opcoes;
     private List<Resposta> respostas;
 
@@ -18,13 +19,14 @@ public class Campo {
 
     }
 
-    public Campo(int id, String nome, String descricao, String foto,
+    public Campo(int id, String nome, String descricao, String foto, int idFormulario,
                  List<Opcao> opcoes, List<Resposta> respostas) {
 
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.foto = foto;
+        this.idFormulario = idFormulario;
         this.opcoes = opcoes;
         this.respostas = respostas;
     }
@@ -61,6 +63,14 @@ public class Campo {
         this.foto = foto;
     }
 
+    public int getIdFormulario() {
+        return idFormulario;
+    }
+
+    public void setIdFormulario(int idFormulario) {
+        this.idFormulario = idFormulario;
+    }
+
     public List<Opcao> getOpcoes() {
         return opcoes;
     }
@@ -79,10 +89,12 @@ public class Campo {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Campo campo = (Campo) o;
         return getId() == campo.getId() &&
+                getIdFormulario() == campo.getIdFormulario() &&
                 Objects.equals(getNome(), campo.getNome()) &&
                 Objects.equals(getDescricao(), campo.getDescricao()) &&
                 Objects.equals(getFoto(), campo.getFoto()) &&
@@ -93,16 +105,18 @@ public class Campo {
     @Override
     public int hashCode() {
 
-        return Objects.hash(getId(), getNome(), getDescricao(), getFoto(), getOpcoes(), getRespostas());
+        return Objects.hash(getId(), getNome(), getDescricao(), getFoto(), getIdFormulario(), getOpcoes(), getRespostas());
     }
 
     @Override
     public String toString() {
+
         return "Campo{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", foto='" + foto + '\'' +
+                ", idFormulario=" + idFormulario +
                 ", opcoes=" + opcoes +
                 ", respostas=" + respostas +
                 '}';

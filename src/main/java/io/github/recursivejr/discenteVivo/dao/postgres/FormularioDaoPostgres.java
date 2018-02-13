@@ -354,6 +354,7 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
                             rs.getString("nome"),
                             rs.getString("descricao"),
                             rs.getString("foto"),
+                            rs.getInt("IdFormulario"),
                             null,
                             null
                     );
@@ -456,6 +457,7 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
                             rs.getString("nome"),
                             rs.getString("descricao"),
                             rs.getString("foto"),
+                            rs.getInt("IdFormulario"),
                             null,
                             null
                     );

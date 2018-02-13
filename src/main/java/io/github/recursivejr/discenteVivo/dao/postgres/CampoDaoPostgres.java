@@ -19,17 +19,18 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
     public Integer adicionar(Campo campo) {
         Integer idCampo = null;
 
-        String sql = "INSERT INTO Campo (Nome, Descricao, Foto) VALUES (?,?,?);";
+        String sql = "INSERT INTO Campo (Nome, Descricao, Foto, IdFormulario) VALUES (?,?,?,?);";
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, campo.getNome());
             stmt.setString(2, campo.getDescricao());
             stmt.setString(3, campo.getFoto());
+            stmt.setInt(4, campo.getIdFormulario());
 
             stmt.executeUpdate();
 
             //Recupera o valor do Id deste Campo no BD para ser usado nas proximas Querys
-            idCampo = buscarId(campo.getNome());
+            idCampo = buscarId(campo.getNome(), campo.getIdFormulario());
 
             //Cria um ArrayList de Opcoes e Verifica se Ha Opcoes que devem ser Salvas
                 //neste Campo
@@ -129,7 +130,6 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
         String sql = String.format("SELECT * FROM Campo WHERE IdCampo = '%d';", idCampo);
 
         return getAllCampos(sql).get(0);
-
     }
 
     @Override
@@ -174,8 +174,9 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
         return foto;
     }
 
-    private int buscarId(String nome) {
-        String sql = String.format("SELECT idCampo FROM Campo WHERE Nome ILIKE '%s';", nome);
+    private int buscarId(String nome, int idFormulario) {
+        String sql = String.format("SELECT idCampo FROM Campo WHERE Nome ILIKE '%s' " +
+                "AND IdFormulario = %d;", nome, idFormulario);
         int aux = -1;
 
         try {
@@ -207,6 +208,7 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
                 campo.setNome(rs.getString("nome"));
                 campo.setFoto(rs.getString("foto"));
                 campo.setDescricao(rs.getString("descricao"));
+                campo.setId(rs.getInt("idFormulario"));
 
                 try {
                     campo.setOpcoes(
@@ -243,6 +245,7 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
                 campo.setNome(rs.getString("nome"));
                 campo.setFoto(rs.getString("foto"));
                 campo.setDescricao(rs.getString("descricao"));
+                campo.setId(rs.getInt("idFormulario"));
 
                 try {
                     campo.setOpcoes(
