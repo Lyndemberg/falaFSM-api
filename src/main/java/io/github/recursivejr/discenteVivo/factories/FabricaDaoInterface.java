@@ -19,4 +19,5 @@ public interface FabricaDaoInterface {
     public OpcaoCampoDaoPostgres criarOpcaoCampoDao() throws ClassNotFoundException, SQLException;
     public RelatorioDaoPostgres criarRelatorioDao() throws ClassNotFoundException, SQLException;
     public FormularioDaoPostgres criarFormularioDao() throws ClassNotFoundException, SQLException;
+    public CampoDaoPostgres criarCampoDao() throws ClassNotFoundException, SQLException;
 }
