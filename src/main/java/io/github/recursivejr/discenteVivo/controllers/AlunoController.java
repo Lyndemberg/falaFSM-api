@@ -133,7 +133,8 @@ public class AlunoController{
 
 		try {
 			//Cria um comentarioDao com base na Interface
-			ComentarioDaoInterface comentarioDao = new FabricaDaoPostgres().criarComentarioDao();
+			ComentarioDaoInterface comentarioDao = new FabricaDaoPostgres()
+															.criarComentarioEnqueteDao();
 
 			//Recupera a Matricula do Aluno com base no token
 			String matAluno = TokenManagement.getToken(securityContext);
@@ -144,8 +145,8 @@ public class AlunoController{
 
 			//Cria um Objeto Comentario
 			Comentario objComentario = new Comentario(
-					matAluno,
 					idEnquete,
+					matAluno,
 					comentario
 			);
 

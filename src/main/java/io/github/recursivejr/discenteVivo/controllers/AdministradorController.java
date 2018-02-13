@@ -216,10 +216,10 @@ public class AdministradorController {
 
 		try {
 			//Cria uma opcaoDao
-			OpcaoDaoInterface opcaoDao = new FabricaDaoPostgres().criarOpcaoDao();
+			OpcaoDaoInterface opcaoDao = new FabricaDaoPostgres().criarOpcaoEnqueteDao();
 
 			//Recebe todas as opcoes ja salvas para esta enquete
-			List<Opcao> opcoesSalvas = opcaoDao.listarPorEnquete(idEnquete);
+			List<Opcao> opcoesSalvas = opcaoDao.listarPorChave(idEnquete);
 
 			//Remove das novas opcoes que seram adicionadas todas aquelas que ja estao na lista de
 			//opcoes ja salvas no banco para esta enquete
@@ -230,9 +230,11 @@ public class AdministradorController {
 				}
 			}
 
-			//Percorre todas as novas opcoes salvando-as
+			//Percorre todas as novas opcoes setando sua id de Foreing Key e salvando-as
 			for(int aux = 0; aux < opcoes.size(); aux++) {
-				if(!opcaoDao.adicionar(idEnquete, opcoes.get(aux)))
+				opcoes.get(aux).setIdFK(idEnquete);
+
+				if(!opcaoDao.adicionar(opcoes.get(aux)))
 					throw new Exception("ERRO DE SQL");
 			}
 
