@@ -196,8 +196,7 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
 
     @Override
     public List<Enquete> listarPorAluno(String matAluno) {
-        //caso matAluno nao seja null entao filtra por aluno
-        //recebendo apenas as enquetes que nao tem nenhum curso pois sao para toda a universidade
+        //Retorna apenas as enquetes que nao tem nenhum curso pois sao para toda a universidade
         //e as enquetes do seu curso especifico
 
         String sql = String.format("SELECT E.* FROM Enquete E NATURAL LEFT JOIN EnquetesCurso EC" +

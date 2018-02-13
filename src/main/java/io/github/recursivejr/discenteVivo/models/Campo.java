@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Campo {
-    private int id;
 
+    private int id;
     private String nome;
     private String descricao;
     private String foto;
