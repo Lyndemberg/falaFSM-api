@@ -2,6 +2,7 @@ package io.github.recursivejr.discenteVivo.dao.postgres;
 
 import io.github.recursivejr.discenteVivo.dao.ElementoDao;
 import io.github.recursivejr.discenteVivo.dao.Interface.CampoDaoInterface;
+import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.models.Campo;
 import io.github.recursivejr.discenteVivo.models.Opcao;
 
@@ -32,30 +33,25 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
             //Recupera o valor do Id deste Campo no BD para ser usado nas proximas Querys
             idCampo = buscarId(campo.getNome(), campo.getIdFormulario());
 
-            //Cria um ArrayList de Opcoes e Verifica se Ha Opcoes que devem ser Salvas
-                //neste Campo
-            List<Opcao> opcoes = new ArrayList<>();
-
-            //Se nao for null entao ha Opcoes que devem ser referenciadas
+            //Verifica se Ha Opcoes que devem ser Salvas neste Campo
+                //Se nao for null entao ha Opcoes que devem ser referenciadas
             if (campo.getOpcoes() != null) {
-                //Recupera todos os Campos que serao salvas
-            	opcoes.addAll(campo.getOpcoes());
 
-                sql = "INSERT INTO OpcoesCampo(IdCampo, Opcao) VALUES (?,?); ";
-                stmt = getConexao().prepareStatement(sql);
+                //Cria um OpcaoCampoDao para salvar as Opcoes
+                OpcaoCampoDaoPostgres opcaoDao = Fabrica.criarFabricaDaoPostgres().criarOpcaoCampoDao();
 
                 //Percorre todos as Opcoes salvando elas no BD
-                for (Opcao opcao : opcoes) {
-                    stmt.setInt(1, idCampo);
-                    stmt.setString(2, opcao.getOpcao());
-                    stmt.executeUpdate();
+                for (Opcao opcao : campo.getOpcoes()) {
+                    opcao.setIdFK(idCampo);
+                    opcaoDao.adicionar(opcao);
                 }
             }
 
             stmt.close();
-        } catch (SQLException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
+
         return idCampo;
     }
 

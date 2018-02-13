@@ -1,7 +1,9 @@
 package io.github.recursivejr.discenteVivo.dao.postgres;
 
 import io.github.recursivejr.discenteVivo.dao.ElementoDao;
+import io.github.recursivejr.discenteVivo.dao.Interface.CampoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.FormularioDaoInterface;
+import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.models.*;
 
 import java.sql.PreparedStatement;
@@ -38,8 +40,8 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
                 //Se nao for null entao ha Campos que devem ser referenciadas
             if (formulario.getCampos() != null) {
 
-                //Cria um DaoPostgres para salvar os Campos
-                CampoDaoPostgres campoDao = new CampoDaoPostgres();
+                //Cria um DaoInterface para salvar os Campos
+                CampoDaoInterface campoDao = Fabrica.criarFabricaDaoPostgres().criarCampoDao();
 
                 //Percorre todos os campos salvando eles no BD
                 for (Campo campo : formulario.getCampos()) {
