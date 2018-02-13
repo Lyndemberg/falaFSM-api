@@ -483,17 +483,24 @@ public class AdministradorController {
 										@Context SecurityContext securityContext) {
 
 		try {
-
+			//Cria Objeto FormularioDao
 			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
 
+			//Recebe o retorno do Metodo de Adicionar o Formulario
 			Integer idFormulario = formularioDao.adicionar(formulario);
 
+			//Caso o retorno seja null entao houve um problema e retorna-se BAD_REQUEST
 			if (idFormulario == null)
 				return Response.status(Response.Status.BAD_REQUEST).build();
 
+			//Caso tudo tenha ocorrido sem problemas entao Retorna Status 200 de OK
 			System.gc();
 			return Response.ok(idFormulario).build();
 
+		//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+		//Cria-se um Log
+		//Limpa a Memoria
+		//Retorna Erro do Servidor ao Cliente
 		} catch (SQLException | ClassNotFoundException ex) {
 			ex.printStackTrace();
 			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
