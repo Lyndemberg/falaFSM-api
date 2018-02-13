@@ -13,6 +13,7 @@ public interface FabricaDaoInterface {
     public ComentarioDaoPostgres criarComentarioDao() throws SQLException, ClassNotFoundException;
     public SetorDaoPostgres criarSetorDao() throws SQLException, ClassNotFoundException;
     public RespostaDaoPostgres criarRespostaDao() throws ClassNotFoundException, SQLException;    
-    public OpcaoEnqueteDaoPostgres criarOpcaoDao() throws ClassNotFoundException, SQLException;
+    public OpcaoEnqueteDaoPostgres criarOpcaoEnqueteDao() throws ClassNotFoundException, SQLException;
+    public OpcaoCampoDaoPostgres criarOpcaoCampoDao() throws ClassNotFoundException, SQLException;
     public RelatorioDaoPostgres criarRelatorioDao() throws ClassNotFoundException, SQLException;
 }

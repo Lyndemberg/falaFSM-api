@@ -49,8 +49,14 @@ public class FabricaDaoPostgres implements FabricaDaoInterface {
 	}
 	
 	@Override
-	public OpcaoEnqueteDaoPostgres criarOpcaoDao() throws ClassNotFoundException, SQLException {
+	public OpcaoEnqueteDaoPostgres criarOpcaoEnqueteDao() throws ClassNotFoundException, SQLException {
 		OpcaoEnqueteDaoPostgres opcaoDao = new OpcaoEnqueteDaoPostgres();
+		return opcaoDao;
+	}
+
+	@Override
+	public OpcaoCampoDaoPostgres criarOpcaoCampoDao() throws ClassNotFoundException, SQLException {
+		OpcaoCampoDaoPostgres opcaoDao = new OpcaoCampoDaoPostgres();
 		return opcaoDao;
 	}
 
