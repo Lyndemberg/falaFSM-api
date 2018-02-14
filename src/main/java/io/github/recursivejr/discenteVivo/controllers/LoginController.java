@@ -27,8 +27,9 @@ public class LoginController {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("loginAluno/{login}/{senha}/")
-	public Response loginAluno(@PathParam("login") String login, @PathParam("senha") String senha) {
+	@Path("loginAluno/")
+	public Response loginAluno(@FormParam("login") String login,
+							   @FormParam("senha") String senha) {
 		
 		try {
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
@@ -51,8 +52,9 @@ public class LoginController {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("loginAdmin/{login}/{senha}/")
-	public Response loginAdmin(@PathParam("login") String login, @PathParam("senha") String senha) {
+	@Path("loginAdmin/")
+	public Response loginAdmin(@FormParam("login") String login,
+							   @FormParam("senha") String senha) {
 		
 		try {
 			AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
