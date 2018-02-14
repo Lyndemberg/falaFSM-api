@@ -451,6 +451,100 @@ public class AdministradorController {
 
 	}
 
+	@PUT
+	@Security(NivelAcesso.NIVEL_1)
+	@Consumes("image/jpeg")
+	@Path("formulario/enviarFoto/{idFormulario}")
+	public Response setFotoFormulario(File foto,
+									  @PathParam("idFormulario") int idFormulario) {
+
+		//Cria uma StringFoto para receber a Foto em Base64 inicialmente null
+		String stringFoto= null;
+
+		//Tenta Converter a imagem em Base64
+		try {
+			stringFoto = FotoManagement.encodeFoto(foto);
+
+			//Caso de IOExcetion ao tentar Converter a Foto entao Retorna Bad Request
+				//Pois a foto enviada possui problemas
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
+		//Tenta Salvar a Imagem em Base64 no Banco de Dados
+		try {
+			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
+
+			//Se ao atualizar a Foto Retornar True entao Retorna Codigo 200
+			if (formularioDao.atualizarFoto(stringFoto, idFormulario)) {
+				System.gc();
+				return Response.ok().build();
+
+				//caso false entao Retorna BAD_REQUEST
+			} else
+				return Response.status(Response.Status.BAD_REQUEST).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@PUT
+	@Security(NivelAcesso.NIVEL_1)
+	@Consumes("image/jpeg")
+	@Path("formulario/campo/enviarFoto/{idCampo}")
+	public Response setFotoCampo(File foto,
+								 @PathParam("idCampo") int idCampo) {
+
+		//Cria uma StringFoto para receber a Foto em Base64 inicialmente null
+		String stringFoto= null;
+
+		//Tenta Converter a imagem em Base64
+		try {
+			stringFoto = FotoManagement.encodeFoto(foto);
+
+			//Caso de IOExcetion ao tentar Converter a Foto entao Retorna Bad Request
+			//Pois a foto enviada possui problemas
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
+		//Tenta Salvar a Imagem em Base64 no Banco de Dados
+		try {
+			CampoDaoInterface campoDao = Fabrica.criarFabricaDaoPostgres().criarCampoDao();
+
+			//Se ao atualizar a Foto Retornar True entao Retorna Codigo 200
+			if (campoDao.atualizarFoto(stringFoto, idCampo)) {
+				System.gc();
+				return Response.ok().build();
+
+				//caso false entao Retorna BAD_REQUEST
+			} else
+				return Response.status(Response.Status.BAD_REQUEST).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
 	//FIM DE CONTROLE DE FORMULARIO
 
 	//INICIO DE CONTROLE DE CURSO
