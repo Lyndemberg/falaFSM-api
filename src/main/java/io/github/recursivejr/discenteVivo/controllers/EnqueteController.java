@@ -104,6 +104,7 @@ public class EnqueteController {
 
 	@POST
 	@Security
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("enquetes/curso/")
 	public Response enquetesByCurso(@FormParam("nomeCurso") String nome,
@@ -143,6 +144,7 @@ public class EnqueteController {
 
 	@POST
 	@Security
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("enquetes/setor/")
 	public Response enquetesBySetor(@FormParam("nomeSetor") String nome,

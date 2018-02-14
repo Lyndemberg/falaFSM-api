@@ -26,7 +26,7 @@ public class AlunoController{
 
 	@POST
 	@Security(NivelAcesso.NIVEL_2)
-    @Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("responder/enquete/")
 	public Response responderEnquete(@FormParam("idEnquete") int idEnquete,
 									 @FormParam("resposta") String resposta,
@@ -162,7 +162,7 @@ public class AlunoController{
 
 	@POST
 	@Security(NivelAcesso.NIVEL_2)
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Path("comentar/enquete/")
 	public Response comentarEnquete(@FormParam("idEnquete") int idEnquete,
 									@FormParam("comentario") String comentario,

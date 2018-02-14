@@ -17,6 +17,7 @@ import io.github.recursivejr.discenteVivo.models.Aluno;
 public class LoginController {
 	
 	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("loginAluno/")
 	public Response loginAluno(@FormParam("login") String login,
@@ -40,8 +41,9 @@ public class LoginController {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 	}
-	
+
 	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("loginAdmin/")
 	public Response loginAdmin(@FormParam("login") String login,

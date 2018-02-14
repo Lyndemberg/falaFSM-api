@@ -1,9 +1,6 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -18,10 +15,11 @@ public class RelatorioController {
 	
     @GET
     @Security(NivelAcesso.NIVEL_1)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("gerarRelatorios/enquete/{param}/")
+    @Path("gerarRelatorios/enquete/")
     //Variavel param pode ser a Id da Enquete ou o Nome da Enquete
-    public Response gerarRelatorios(@PathParam("param") String param) {
+    public Response gerarRelatorios(@FormParam("query") String param) {
 
         //Cria um Relatorio contando nada
         Relatorio relatorio = null;

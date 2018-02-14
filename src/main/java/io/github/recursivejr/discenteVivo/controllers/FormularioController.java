@@ -106,6 +106,7 @@ public class FormularioController {
 
     @POST
     @Security({NivelAcesso.NIVEL_1, NivelAcesso.NIVEL_2})
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("formularios/curso/")
     public Response formulariosByCurso(@FormParam("nomeCurso") String nome,
@@ -146,6 +147,7 @@ public class FormularioController {
 
     @POST
     @Security({NivelAcesso.NIVEL_1, NivelAcesso.NIVEL_2})
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("formularios/setor/")
     public Response formulariosBySetor(@FormParam("nomeSetor") String nome,
