@@ -1,26 +1,17 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.logging.Logger;
 
-import javax.crypto.spec.SecretKeySpec;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.DatatypeConverter;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.AdministradorDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
-import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Aluno;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Path("login")
 public class LoginController {
