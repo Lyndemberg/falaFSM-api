@@ -24,6 +24,8 @@ import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 @Path("administrador")
 public class AdministradorController {
 
+	//INICIO DE CONTROLE DE ALUNOS
+
 	@POST
 	@Security(NivelAcesso.NIVEL_1)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -96,6 +98,10 @@ public class AdministradorController {
 		}
 	}
 
+	//FIM DE CONTROLE DE ALUNO
+
+	//INICIO DE CONTROLE DE ADMINISTRADOR
+
 	@POST
 	@Security(NivelAcesso.NIVEL_1)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -166,6 +172,40 @@ public class AdministradorController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
+
+	@GET
+	@Security(NivelAcesso.NIVEL_1)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("perfil/")
+	public Response getPerfil(@Context SecurityContext securityContext) {
+
+		try {
+			//Cria um AdminDao com base na interface
+			AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
+
+			//Recupera o email do token
+			String email = TokenManagement.getToken(securityContext);
+
+			//Retorna uma resposta com codigo 200 de OK e o Objeto Administrador com o Email do Token
+			Administrador admin = adminDao.buscar(email);
+			System.gc();
+			return Response.ok(admin).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			// Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+	}
+
+    //FIM DE CONTROLE DE ADMINISTRADOR
+
+	//INICIO DE CONTROLE DE ENQUETE
 
 	@POST
 	@Security(NivelAcesso.NIVEL_1)
@@ -255,36 +295,6 @@ public class AdministradorController {
 		}
 
 	}
-
-    @GET
-    @Security(NivelAcesso.NIVEL_1)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("perfil/")
-    public Response getPerfil(@Context SecurityContext securityContext) {
-
-        try {
-            //Cria um AdminDao com base na interface
-            AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
-
-            //Recupera o email do token
-            String email = TokenManagement.getToken(securityContext);
-
-            //Retorna uma resposta com codigo 200 de OK e o Objeto Administrador com o Email do Token
-			Administrador admin = adminDao.buscar(email);
-			System.gc();
-            return Response.ok(admin).build();
-
-        //Caso disparado uma Exception entao Mostro a Exception ao Terminal
-		// Cria-se um Log
-		//Limpa a Memoria
-		//Retorna Erro do Servidor ao Cliente
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
-			System.gc();
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-    }
 
     @PUT
 	@Security(NivelAcesso.NIVEL_1)
@@ -402,6 +412,49 @@ public class AdministradorController {
 		}
 	}
 
+	//FIM DE CONTROLE DE ENQUETE
+
+	//INICIO DE CONTROLE DE FORMULARIO
+
+	@POST
+	@Security(NivelAcesso.NIVEL_1)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/formulario/cadastrarFormulario")
+	public Response cadastrarFormulario(Formulario formulario,
+										@Context SecurityContext securityContext) {
+
+		try {
+			//Cria Objeto FormularioDao
+			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
+
+			//Recebe o retorno do Metodo de Adicionar o Formulario
+			Integer idFormulario = formularioDao.adicionar(formulario);
+
+			//Caso o retorno seja null entao houve um problema e retorna-se BAD_REQUEST
+			if (idFormulario == null)
+				return Response.status(Response.Status.BAD_REQUEST).build();
+
+			//Caso tudo tenha ocorrido sem problemas entao Retorna Status 200 de OK
+			System.gc();
+			return Response.ok(idFormulario).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
+
+	//FIM DE CONTROLE DE FORMULARIO
+
+	//INICIO DE CONTROLE DE CURSO
+
 	@POST
 	@Security(NivelAcesso.NIVEL_1)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -437,6 +490,10 @@ public class AdministradorController {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
+	//FIM DE CONTROLE DE CURSO
+
+	//INICIO DE CONTROLE DE SETOR
 
 	@POST
 	@Security(NivelAcesso.NIVEL_1)
@@ -474,39 +531,6 @@ public class AdministradorController {
 		}
 	}
 
-	@POST
-	@Security(NivelAcesso.NIVEL_1)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/formulario/cadastrarFormulario")
-	public Response cadastrarFormulario(Formulario formulario,
-										@Context SecurityContext securityContext) {
-
-		try {
-			//Cria Objeto FormularioDao
-			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
-
-			//Recebe o retorno do Metodo de Adicionar o Formulario
-			Integer idFormulario = formularioDao.adicionar(formulario);
-
-			//Caso o retorno seja null entao houve um problema e retorna-se BAD_REQUEST
-			if (idFormulario == null)
-				return Response.status(Response.Status.BAD_REQUEST).build();
-
-			//Caso tudo tenha ocorrido sem problemas entao Retorna Status 200 de OK
-			System.gc();
-			return Response.ok(idFormulario).build();
-
-		//Caso disparado uma Exception entao Mostro a Exception ao Terminal
-		//Cria-se um Log
-		//Limpa a Memoria
-		//Retorna Erro do Servidor ao Cliente
-		} catch (SQLException | ClassNotFoundException ex) {
-			ex.printStackTrace();
-			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
-			System.gc();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-
-	}
+	//FIM DE CONTROLE DE SETOR
 
 }
