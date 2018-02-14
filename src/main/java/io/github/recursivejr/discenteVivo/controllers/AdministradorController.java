@@ -365,9 +365,9 @@ public class AdministradorController {
 			if (!enqueteDao.atualizar(enquete))
 				throw new Exception("Erro de SQL");
 
-			//Se tudo certo retorna status 200 de OK com a Id da Enquete Salva
+			//Se tudo certo retorna status 200 de OK
 			System.gc();
-			return Response.ok(idEnquete).build();
+			return Response.status(Response.Status.OK).build();
 
 			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
 			//Cria-se um Log
@@ -396,9 +396,9 @@ public class AdministradorController {
 			if(!enqueteDao.remover(idEnquete))
 				throw new SQLException("ERRO DE SQL");
 
-			//Se tudo certo retorna status 200 de OK com a Id da Enquete Salva
+			//Se tudo certo retorna status 200 de OK
 			System.gc();
-			return Response.ok(idEnquete).build();
+			return Response.status(Response.Status.OK).build();
 
 			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
 			//Cria-se um Log
@@ -515,7 +515,7 @@ public class AdministradorController {
 			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
 
 			//Seta o Id do Formulario com o Id passado na Requisiçao Removendo a Necessidade
-			//o Formulario ja Estaja preenchido com o Id correto
+			//o Formulario ja Esteja preenchido com o Id correto
 			formulario.setId(idFormulario);
 
 			//Tenta Atualizar o Formulario, Caso Retorne False Entao houve um problema
@@ -523,9 +523,9 @@ public class AdministradorController {
 			if (!formularioDao.atualizar(formulario))
 				return Response.status(Response.Status.BAD_REQUEST).build();
 
-			//Se tudo certo retorna status 200 de OK com o Id do Formulario Salvo
+			//Se tudo certo retorna status 200 de OK
 			System.gc();
-			return Response.ok(idFormulario).build();
+			return Response.status(Response.Status.OK).build();
 
 			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
 			//Cria-se um Log
@@ -538,6 +538,36 @@ public class AdministradorController {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
+	}
+
+	@DELETE
+	@Security(NivelAcesso.NIVEL_1)
+	@Path("formulario/deletar/{idFormulario}")
+	public Response removerFormulario(@PathParam("idFormulario") int idFormulario) {
+
+		try {
+			//Cria um FormularioDao com base na interface
+			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
+
+			//Tenta Remover o Formulario, se Retornar False Entao ocorreu Algum Erro Entao
+			//Retorno BAD_REQUEST
+			if(!formularioDao.remover(idFormulario))
+				return Response.status(Response.Status.BAD_REQUEST).build();
+
+			//Se tudo certo retorna status 200 de OK
+			System.gc();
+			return Response.status(Response.Status.OK).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@PUT
