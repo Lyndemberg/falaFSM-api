@@ -666,6 +666,61 @@ public class AdministradorController {
 
 	//FIM DE CONTROLE DE FORMULARIO
 
+	//INICIO DE CONTROLE DE CAMPO
+
+	@POST
+	@Security(NivelAcesso.NIVEL_1)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("formulario/campo/adicionarOpcao/{idCampo}/")
+	public Response adicionarCampoOpcao(@PathParam("idCampo") Integer idCampo,
+										List<Opcao> opcoes) {
+
+		//Caso nao tenha sido Enviada as Opçoes entao retorna BAD_REQUEST
+		if (opcoes.isEmpty())
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		try {
+			//Cria uma opcaoDao para Campo
+			OpcaoDaoInterface opcaoDao = new FabricaDaoPostgres().criarOpcaoCampoDao();
+
+			//Recebe todas as opcoes ja salvas para este campo
+			List<Opcao> opcoesSalvas = opcaoDao.listarPorChave(idCampo);
+
+			//Remove das novas opcoes que seram adicionadas todas aquelas que ja estao na lista de
+				//opcoes salvas no banco para este Campo
+			for(int aux = 0; aux < opcoesSalvas.size(); aux++) {
+				if (opcoes.get(aux).getOpcao().equals(
+						opcoesSalvas.get(aux).getOpcao())) {
+					opcoes.remove(aux);
+				}
+			}
+
+			//Percorre todas as novas opcoes setando sua id de Foreing Key
+				//(No Caso id do Campo) e salvando-as
+			for(int aux = 0; aux < opcoes.size(); aux++) {
+				opcoes.get(aux).setIdFK(idCampo);
+
+				if(!opcaoDao.adicionar(opcoes.get(aux)))
+					return Response.status(Response.Status.BAD_REQUEST).build();
+			}
+
+			//Se tudo der certo retorna ao Cliente o Codigo 200 de OK
+			System.gc();
+			return Response.status(Response.Status.OK).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
+
 	//INICIO DE CONTROLE DE CURSO
 
 	@POST
