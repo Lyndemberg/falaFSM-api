@@ -9,10 +9,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.Interface.ComentarioDaoInterface;
-import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
+import io.github.recursivejr.discenteVivo.dao.Interface.*;
+import io.github.recursivejr.discenteVivo.dao.postgres.RespostaCampoDaoPostgres;
 import io.github.recursivejr.discenteVivo.dao.postgres.RespostaEnqueteDaoPostgres;
+import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
@@ -31,8 +31,8 @@ public class AlunoController{
 									 @Context SecurityContext securityContext) {
 
 		try {
-			//Cria um EnqueteDaoPostgres
-			RespostaEnqueteDaoPostgres respostaDao = new RespostaEnqueteDaoPostgres();
+			//Cria um RespostaDao para Enquete
+			RespostaDaoInterface respostaDao = Fabrica.criarFabricaDaoPostgres().criarRespostaEnqueteDao();
 
 			//Pega a matricula do aluno que esta respondendo a enquete pelo token de acesso
 			String matAluno = TokenManagement.getToken(securityContext);
@@ -41,10 +41,11 @@ public class AlunoController{
 			if(!checkEnquete(matAluno, idEnquete))
 				return Response.status(Response.Status.FORBIDDEN).build();
 
-			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
+			//Tenta salvar, se retornar false deu Algum problema logo retona BAD_REQUEST
+				//se deu true então salvou com sucesso
 			Resposta resp = new Resposta(idEnquete, resposta, matAluno);
 			if(respostaDao.adicionar(resp) == false)
-				throw new Exception("ERRO DE SQL");
+				return Response.status(Response.Status.BAD_REQUEST).build();
 
 			//Se tudo certo retorna status 200
 			System.gc();
@@ -54,8 +55,42 @@ public class AlunoController{
 			ex.printStackTrace();
 			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
+	}
+
+	@POST
+	@Security(NivelAcesso.NIVEL_2)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Path("responder/campo/")
+	public Response responderCampo(@FormParam("idCampo") int idCampo,
+								   @FormParam("resposta") String resposta,
+								   @Context SecurityContext securityContext) {
+
+		try {
+			//Cria um RespostaDao para Campos
+			RespostaDaoInterface respostaDao = Fabrica.criarFabricaDaoPostgres().criarRespostaCampoDao();
+
+			//Pega a matricula do aluno que esta respondendo o Campo pelo token de acesso
+			String matAluno = TokenManagement.getToken(securityContext);
+
+			//Tenta salvar, se retornar false deu Algum problema logo retona BAD_REQUEST
+				//se deu true então salvou com sucesso
+			Resposta resp = new Resposta(idCampo, resposta, matAluno);
+			if(respostaDao.adicionar(resp) == false)
+				return Response.status(Response.Status.BAD_REQUEST).build();
+
+			//Se tudo certo retorna status 200
+			System.gc();
+			return Response.status(Response.Status.OK).build();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
 	}
 
 	@PUT
