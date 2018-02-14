@@ -110,7 +110,7 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
             //Caso o objeto aluno nao tenha curso entao o mesmo nao sera salvo
                 //Pois refere-se ao metodo Atualizar e um aluno nao pode Atualizar seu Curso
             if (aluno.getCurso() != null)
-                stmt.setString(8, aluno.getCurso());
+                stmt.setString(5, aluno.getCurso());
 
             stmt.executeUpdate();
 
