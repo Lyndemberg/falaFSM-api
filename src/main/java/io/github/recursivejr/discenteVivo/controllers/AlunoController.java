@@ -10,14 +10,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.*;
-import io.github.recursivejr.discenteVivo.dao.postgres.RespostaCampoDaoPostgres;
-import io.github.recursivejr.discenteVivo.dao.postgres.RespostaEnqueteDaoPostgres;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
-import io.github.recursivejr.discenteVivo.models.*;
+import io.github.recursivejr.discenteVivo.models.Aluno;
+import io.github.recursivejr.discenteVivo.models.Resposta;
+import io.github.recursivejr.discenteVivo.models.Comentario;
+import io.github.recursivejr.discenteVivo.models.Enquete;
+import io.github.recursivejr.discenteVivo.models.Curso;
 
 @Path("aluno")
 public class AlunoController{
@@ -37,7 +39,7 @@ public class AlunoController{
 			//Pega a matricula do aluno que esta respondendo a enquete pelo token de acesso
 			String matAluno = TokenManagement.getToken(securityContext);
 
-			//Verifica se o Aluno pode Comentar nesta Enquete
+			//Verifica se o Aluno pode Responder esta Enquete
 			if(!checkEnquete(matAluno, idEnquete))
 				return Response.status(Response.Status.FORBIDDEN).build();
 
@@ -106,7 +108,7 @@ public class AlunoController{
 
 		//Se o Aluno foi preenchido corretamente entao Tenta Atualizar
 		try {
-			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+			AlunoDaoInterface alunoDao = Fabrica.criarFabricaDaoPostgres().criarAlunoDao();
 
 			//Recebe a matricula pelo token
 			String matricula = TokenManagement.getToken(securityContext);
@@ -114,9 +116,9 @@ public class AlunoController{
 			//Insere no Aluno a Matricula provida pelo Token
 			aluno.setMatricula(matricula);
 
-			//Se ao tentar salvar retornar false entao houve erro durante a execucao do SQL
+			//Se ao tentar salvar retornar false entao houve problema ao salvar retornado BAD_REQUEST
 			if(alunoDao.atualizar(aluno) == false)
-				throw new Exception("ERRO DE SQL");
+				return Response.status(Response.Status.BAD_REQUEST).build();
 
 			//Se tudo foi executado corretamente retorna codigo 200 de OK para o cliente
 			System.gc();
@@ -126,7 +128,7 @@ public class AlunoController{
 			ex.printStackTrace();
 			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 	}
@@ -140,13 +142,13 @@ public class AlunoController{
 		//Recupera o perfil com base na matricula do token
 		try {
 			//Cria Objeto AlunoDao com base na interface
-			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+			AlunoDaoInterface alunoDao = Fabrica.criarFabricaDaoPostgres().criarAlunoDao();
 
 			//Recupera a matricula do aluno pelo token
 			String matricula =  TokenManagement.getToken(securityContext);
+			Aluno aluno = alunoDao.buscar(matricula);
 
 			//Retorna Reposta com codigo 200 de OK contendo o Objeto Aluno
-			Aluno aluno = alunoDao.buscar(matricula);
 			System.gc();
             return Response.ok(aluno).build();
 
@@ -154,7 +156,7 @@ public class AlunoController{
             ex.printStackTrace();
             Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 	}
 
@@ -167,8 +169,8 @@ public class AlunoController{
 									@Context SecurityContext securityContext) {
 
 		try {
-			//Cria um comentarioDao com base na Interface
-			ComentarioDaoInterface comentarioDao = new FabricaDaoPostgres()
+			//Cria um comentarioDao de Enquete
+			ComentarioDaoInterface comentarioDao = Fabrica.criarFabricaDaoPostgres()
 															.criarComentarioEnqueteDao();
 
 			//Recupera a Matricula do Aluno com base no token
@@ -185,10 +187,9 @@ public class AlunoController{
 					comentario
 			);
 
-			//Tenta Salvar o Comentario
+			//Tenta Salvar o Comentario, Caso return false entao houve problema entao retorna BAD_REQUEST
 			if (!comentarioDao.adicionar(objComentario))
-				//Caso return false entao houve problema de SQL
-				throw new Exception("ERRO DE SQL");
+				return Response.status(Response.Status.BAD_REQUEST).build();
 
 			//Se o comentario for enviado com sucesso retorna Codigo 200 de OK
 			System.gc();
@@ -198,7 +199,7 @@ public class AlunoController{
 			ex.printStackTrace();
 			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 	}
