@@ -204,6 +204,46 @@ public class AlunoController{
 
 	}
 
+	@POST
+	@Security(NivelAcesso.NIVEL_2)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Path("comentar/formulario/")
+	public Response comentarFormulario(@FormParam("idFormulario") int idFormulario,
+									   @FormParam("comentario") String comentario,
+									   @Context SecurityContext securityContext) {
+
+		try {
+			//Cria um comentarioDao de Formulario
+			ComentarioDaoInterface comentarioDao = Fabrica.criarFabricaDaoPostgres()
+					.criarComentarioFormularioDao();
+
+			//Recupera a Matricula do Aluno com base no token
+			String matAluno = TokenManagement.getToken(securityContext);
+
+			//Cria um Objeto Comentario
+			Comentario objComentario = new Comentario(
+					idFormulario,
+					matAluno,
+					comentario
+			);
+
+			//Tenta Salvar o Comentario, Caso return false entao houve problema entao retorna BAD_REQUEST
+			if (!comentarioDao.adicionar(objComentario))
+				return Response.status(Response.Status.BAD_REQUEST).build();
+
+			//Se o comentario for enviado com sucesso retorna Codigo 200 de OK
+			System.gc();
+			return Response.status(Response.Status.OK).build();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AlunoController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
+
 	//Verifica se o Aluno esta Interagindo com uma Enquete que esta Associada a seu Curso
 	private boolean checkEnquete(String matAluno, int idEnquete) {
 		//Retorna True se aluno tem permissao para acessar esta enquete
