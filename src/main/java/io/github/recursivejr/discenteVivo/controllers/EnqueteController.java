@@ -106,7 +106,7 @@ public class EnqueteController {
 	@Security
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("enquetes/curso/")
-	public Response EnquetesByCurso(@FormParam("nomeCurso") String nome,
+	public Response enquetesByCurso(@FormParam("nomeCurso") String nome,
 									@Context SecurityContext securityContext) {
 
 		EnqueteDaoInterface enquetesDao = null;
@@ -145,7 +145,7 @@ public class EnqueteController {
 	@Security
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("enquetes/setor/")
-	public Response EnquetesBySetor(@FormParam("nomeSetor") String nome,
+	public Response enquetesBySetor(@FormParam("nomeSetor") String nome,
 									@Context SecurityContext securityContext) {
 
 		EnqueteDaoInterface enquetesDao = null;
