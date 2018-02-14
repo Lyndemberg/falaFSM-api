@@ -6,10 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -105,11 +102,11 @@ public class EnqueteController {
 		return Response.ok(enquete).build();
     }
 
-	@GET
+	@POST
 	@Security
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("enquetes/curso/{nomeCurso}/")
-	public Response EnquetesByCurso(@PathParam("nomeCurso") String nome,
+	@Path("enquetes/curso/")
+	public Response EnquetesByCurso(@FormParam("nomeCurso") String nome,
 									@Context SecurityContext securityContext) {
 
 		EnqueteDaoInterface enquetesDao = null;
@@ -144,11 +141,11 @@ public class EnqueteController {
 		return Response.ok(enquetes).build();
 	}
 
-	@GET
+	@POST
 	@Security
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("enquetes/setor/{nomeSetor}/")
-	public Response EnquetesBySetor(@PathParam("nomeSetor") String nome,
+	@Path("enquetes/setor/")
+	public Response EnquetesBySetor(@FormParam("nomeSetor") String nome,
 									@Context SecurityContext securityContext) {
 
 		EnqueteDaoInterface enquetesDao = null;
