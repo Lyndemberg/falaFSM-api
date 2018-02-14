@@ -170,10 +170,10 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
         return foto;
     }
 
-    private int buscarId(String nome, int idFormulario) {
+    private Integer buscarId(String nome, int idFormulario) {
         String sql = String.format("SELECT idCampo FROM Campo WHERE Nome ILIKE '%s' " +
                 "AND IdFormulario = %d;", nome, idFormulario);
-        int aux = -1;
+        Integer aux = null;
 
         try {
             Statement stmt = getConexao().createStatement();

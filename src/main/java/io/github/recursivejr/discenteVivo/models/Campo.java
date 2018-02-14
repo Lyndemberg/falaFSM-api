@@ -121,5 +121,23 @@ public class Campo {
                 ", respostas=" + respostas +
                 '}';
     }
+
+    //Este metodo funciona de forma Similar ao equal Comum porem desconsidera os atributos :
+        //* Id
+        //* IdFormulario
+        //* Foto
+        //* Repostas
+    //Sao desconsiderados estes atributos pois estao presentes apenas nos objetos ja salvos no BD,
+    //Caso queira comprar um elemento salvo no Banco de Dados com um Elemento Enviado pelo Cliente
+    //ou criado em tempo de Execuçao Utilize este metodo
+    public boolean simpleEquals(Object o) {
+
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Campo campo = (Campo) o;
+        return Objects.equals(getNome(), campo.getNome()) &&
+                Objects.equals(getDescricao(), campo.getDescricao()) &&
+                Objects.equals(getOpcoes(), campo.getOpcoes());
+    }
 }
 

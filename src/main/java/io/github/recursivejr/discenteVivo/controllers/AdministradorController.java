@@ -451,6 +451,95 @@ public class AdministradorController {
 
 	}
 
+	@POST
+	@Security(NivelAcesso.NIVEL_1)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("formulario/adicionarCampo/{idFormulario}/")
+	public Response adicionarCampo(@PathParam("idFormulario") Integer idFormulario,
+								   List<Campo> campos) {
+
+		//Caso nao tenha sido Enviado nenhum Campo entao retorna BAD_REQUEST
+		if (campos.isEmpty())
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		try {
+			//Cria uma campoDao
+			CampoDaoInterface campoDao = Fabrica.criarFabricaDaoPostgres().criarCampoDao();
+
+			//Recebe todas os campos ja salvas para neste Formulario
+			List<Campo> camposSalvos = campoDao.listarPorFormulario(idFormulario);
+
+			//Remove das novas opcoes que seram adicionadas todas aquelas que ja estao na lista de
+			//opcoes salvas no banco para este Formulario
+			for(int aux = 0; aux < camposSalvos.size(); aux++) {
+				if (campos.get(aux).simpleEquals(
+						camposSalvos.get(aux))) {
+					campos.remove(aux);
+				}
+			}
+
+			//Percorre todos os Campos restantes setando o id do Formulario e salvando-os
+			for(int aux = 0; aux < campos.size(); aux++) {
+				campos.get(aux).setIdFormulario(idFormulario);
+
+				if(campoDao.adicionar(campos.get(aux)) == null)
+					return Response.status(Response.Status.BAD_REQUEST).build();
+			}
+
+			//Se tudo der certo retorna ao Cliente o Codigo 200 de OK
+			System.gc();
+			return Response.status(Response.Status.OK).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
+
+	@PUT
+	@Security(NivelAcesso.NIVEL_1)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("formulario/atualizar/{idFormulario}")
+	public Response atualizarEnquete(Formulario formulario,
+									 @PathParam("idFormulario") int idFormulario) {
+
+		try {
+			//Cria um FormularioDao com base na interface
+			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
+
+			//Seta o Id do Formulario com o Id passado na Requisiçao Removendo a Necessidade
+			//o Formulario ja Estaja preenchido com o Id correto
+			formulario.setId(idFormulario);
+
+			//Tenta Atualizar o Formulario, Caso Retorne False Entao houve um problema
+				//Retornando BAD_REQUEST
+			if (!formularioDao.atualizar(formulario))
+				return Response.status(Response.Status.BAD_REQUEST).build();
+
+			//Se tudo certo retorna status 200 de OK com o Id do Formulario Salvo
+			System.gc();
+			return Response.ok(idFormulario).build();
+
+			//Caso disparado uma Exception entao Mostro a Exception ao Terminal
+			//Cria-se um Log
+			//Limpa a Memoria
+			//Retorna Erro do Servidor ao Cliente
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+			System.gc();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
+
 	@PUT
 	@Security(NivelAcesso.NIVEL_1)
 	@Consumes("image/jpeg")
