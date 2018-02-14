@@ -1,6 +1,7 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.SetorDaoInterface;
+import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.models.Setor;
@@ -27,7 +28,7 @@ public class SetorController {
 
         //Tenta criar um setor dao, caso dispare uma Exception Entao retorna Erro do Servidor
         try {
-            setorDao = new FabricaDaoPostgres().criarSetorDao();
+            setorDao = Fabrica.criarFabricaDaoPostgres().criarSetorDao();
         } catch (Exception ex) {
             ex.printStackTrace();
             Logger.getLogger("CursoController-log").info("Erro:" + ex.getStackTrace());
