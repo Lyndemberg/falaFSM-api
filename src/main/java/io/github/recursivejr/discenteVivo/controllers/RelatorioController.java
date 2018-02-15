@@ -13,7 +13,7 @@ import io.github.recursivejr.discenteVivo.models.Relatorio;
 @Path("relatorio")
 public class RelatorioController {
 	
-    @GET
+    @POST
     @Security(NivelAcesso.NIVEL_1)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
