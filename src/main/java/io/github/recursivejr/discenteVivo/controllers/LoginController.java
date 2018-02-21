@@ -25,8 +25,11 @@ public class LoginController {
 		
 		try {
 			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+			System.out.println("login : " + login);
+			System.out.println("senha : " + senha);
 			
 			Aluno aluno = alunoDao.login(login, senha);
+
 			
 			String token = new TokenManagement().gerarToken(aluno.getMatricula(), 1);
 

@@ -83,7 +83,10 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
 
     	stmt = getConexao().prepareStatement(sql);
 
-		stmt.setString(1, login);
+        System.out.println("login in dao : " + login);
+        System.out.println("senha in dao : " + senha);
+
+        stmt.setString(1, login);
 
 		ResultSet rs = stmt.executeQuery();
 			
