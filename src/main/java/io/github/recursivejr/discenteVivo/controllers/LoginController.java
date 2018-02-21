@@ -37,6 +37,7 @@ public class LoginController {
 
 		} catch(Exception ex) {
 			Logger.getLogger(ex.getMessage());
+			ex.printStackTrace();
 			System.gc();
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
