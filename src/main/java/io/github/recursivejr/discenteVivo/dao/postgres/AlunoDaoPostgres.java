@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.github.recursivejr.discenteVivo.dao.ElementoDao;
 import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
+import io.github.recursivejr.discenteVivo.exceptions.AutenticacaoException;
 import io.github.recursivejr.discenteVivo.models.Aluno;
 import io.github.recursivejr.discenteVivo.resources.Encryption;
 
@@ -74,7 +75,7 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
     }
 
     @Override
-    public Aluno login(String login, String senha) throws Exception {
+    public Aluno login(String login, String senha) throws AutenticacaoException, SQLException {
 
         Aluno aluno = null;
     	
@@ -91,12 +92,12 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
 		ResultSet rs = stmt.executeQuery();
 			
 		if(!rs.next())
-		    throw new Exception("Credenciais Inválidas");
+		    throw new AutenticacaoException("Credenciais Inválidas");
 
 		if(Encryption.checkPassword(senha,rs.getString("Senha")))
 		    aluno = buscar(rs.getString("matricula"));
 		else
-            throw new Exception("Credenciais Inválidas");
+            throw new AutenticacaoException("Credenciais Inválidas");
 
 		stmt.close();
 		return aluno;

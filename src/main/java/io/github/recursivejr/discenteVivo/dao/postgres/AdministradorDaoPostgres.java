@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.github.recursivejr.discenteVivo.dao.ElementoDao;
 import io.github.recursivejr.discenteVivo.dao.Interface.AdministradorDaoInterface;
+import io.github.recursivejr.discenteVivo.exceptions.AutenticacaoException;
 import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.resources.Encryption;
 
@@ -68,7 +69,7 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
     }
 
     @Override
-    public Administrador login(String login, String senha) throws Exception {
+    public Administrador login(String login, String senha) throws AutenticacaoException, SQLException {
 
         Administrador admin = null;
     	
@@ -81,13 +82,13 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
 		ResultSet rs = stmt.executeQuery();
 			
 		if(!rs.next())
-		    throw new Exception("Credenciais Inválidas");
+		    throw new AutenticacaoException("Credenciais Inválidas");
 
 
 		if(Encryption.checkPassword(senha, rs.getString("Senha")))
 		    admin = buscar(rs.getString("Email"));
         else
-            throw new Exception("Credenciais Inválidas");
+            throw new AutenticacaoException("Credenciais Inválidas");
 
         stmt.close();
 		return admin;
