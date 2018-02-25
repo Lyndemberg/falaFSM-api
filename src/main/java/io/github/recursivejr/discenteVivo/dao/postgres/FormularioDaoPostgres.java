@@ -289,7 +289,7 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
         return foto;
     }
 
-    private List<Formulario> getFormularios(String sql, String matAluno){
+    private List<Formulario> getFormularios(String sql, String matAluno) {
         List<Formulario> formularios= new ArrayList<>();
 
         try {
@@ -305,9 +305,7 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
                 Formulario formulario = new Formulario();
                 formulario.setId(rs.getInt("idFormulario"));
                 formulario.setNome(rs.getString("nome"));
-                formulario.setFoto(rs.getString("foto"));
                 formulario.setDescricao(rs.getString("descricao"));
-                formulario.setEmailAdmin(rs.getString("emailAdmin"));
 
                 Statement internalStmt = getConexao().createStatement();
 
@@ -326,29 +324,6 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
                     comentarios.add(comentario);
                 }
                 formulario.setComentarios(comentarios);
-
-                //Percorre todos os Campos e adiciona cada um ao Arraylist deste Formulario
-                String sqlOpcoes = String.format("SELECT * FROM Campo WHERE IdFormulario = '%d';",
-                        formulario.getId());
-
-                rsLista = internalStmt.executeQuery(sqlOpcoes);
-                while (rsLista.next()) {
-
-                    //NAO RETORNA AS OPCOES E RESPOSTAS POIS NAO CONCIDERO UTIL RETORNAR ESTES DADOS
-                        //NESSE METODO JA QUE NAO SAO NECESSARIOS PARA IDENTIFICAR UM CAMPO DO FORMULARIO
-                    Campo campo = new Campo(
-                            rsLista.getInt("idCampo"),
-                            rsLista.getString("nome"),
-                            rsLista.getString("descricao"),
-                            rsLista.getString("foto"),
-                            rsLista.getInt("IdFormulario"),
-                            null,
-                            null
-                    );
-
-                    campos.add(campo);
-                }
-                formulario.setCampos(campos);
 
                 //Percorre todos os Cursos Associados a este Formulario e adiciona-os
                     //ao ArrayList de Retorno
@@ -393,7 +368,7 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
         return formularios;
     }
 
-    private List<Formulario> getAllFormularios(String sql){
+    private List<Formulario> getAllFormularios(String sql) {
         List<Formulario> formularios = new ArrayList<>();
 
         try {
@@ -409,49 +384,10 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
                 Formulario formulario = new Formulario();
                 formulario.setId(rs.getInt("idFormulario"));
                 formulario.setNome(rs.getString("nome"));
-                formulario.setFoto(rs.getString("foto"));
                 formulario.setDescricao(rs.getString("descricao"));
-                formulario.setEmailAdmin(rs.getString("emailAdmin"));
 
                 Statement internalStmt = getConexao().createStatement();
-
-                //Percorre todos os comentarios e adiciona cada um ao Arraylist deste Formulario
-                String sqlComentarios = "SELECT * FROM ComentaFormulario WHERE idFormulario = " +
-                        "'" + formulario.getId() + "';";
-                ResultSet rsLista = internalStmt.executeQuery(sqlComentarios);
-                while (rsLista.next()) {
-
-                    Comentario comentario = new Comentario(
-                            rsLista.getInt("IdFormulario"),
-                            rsLista.getString("MatriculaAluno"),
-                            rsLista.getString("Comentario")
-                    );
-
-                    comentarios.add(comentario);
-                }
-                formulario.setComentarios(comentarios);
-
-                //Percorre todas os Campos e adiciona cada um ao Arraylist deste Formulario
-                String sqlOpcoes = "SELECT * FROM Campo WHERE idFormulario = '"
-                        + formulario.getId() + "';";
-                rsLista = internalStmt.executeQuery(sqlOpcoes);
-                while (rsLista.next()) {
-
-                    //NAO RETORNA AS OPCOES E RESPOSTAS POIS NAO CONCIDERO UTIL RETORNAR ESTES DADOS
-                    //NESSE METODO JA QUE NAO SAO NECESSARIOS PARA IDENTIFICAR UM CAMPO DO FORMULARIO
-                    Campo campo = new Campo(
-                            rsLista.getInt("idCampo"),
-                            rsLista.getString("nome"),
-                            rsLista.getString("descricao"),
-                            rsLista.getString("foto"),
-                            rsLista.getInt("IdFormulario"),
-                            null,
-                            null
-                    );
-
-                    campos.add(campo);
-                }
-                formulario.setCampos(campos);
+                ResultSet rsLista;
 
                 //Percorre todos os Cursos Associados a este Formulario e adiciona-os
                     //ao ArrayList de Retorno
