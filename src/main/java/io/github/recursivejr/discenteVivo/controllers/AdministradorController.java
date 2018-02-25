@@ -427,6 +427,11 @@ public class AdministradorController {
 			//Cria Objeto FormularioDao
 			FormularioDaoInterface formularioDao = Fabrica.criarFabricaDaoPostgres().criarFormularioDao();
 
+			//Recupera o Email do Admin e Setta ele no Formulario
+			formulario.setEmailAdmin(
+					TokenManagement.getToken(securityContext)
+			);
+
 			//Recebe o retorno do Metodo de Adicionar o Formulario
 			Integer idFormulario = formularioDao.adicionar(formulario);
 
