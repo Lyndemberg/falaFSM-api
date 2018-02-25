@@ -352,11 +352,11 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
                     //NAO RETORNA AS OPCOES E RESPOSTAS POIS NAO CONCIDERO UTIL RETORNAR ESTES DADOS
                         //NESSE METODO JA QUE NAO SAO NECESSARIOS PARA IDENTIFICAR UM CAMPO DO FORMULARIO
                     Campo campo = new Campo(
-                            rs.getInt("idCampo"),
-                            rs.getString("nome"),
-                            rs.getString("descricao"),
-                            rs.getString("foto"),
-                            rs.getInt("IdFormulario"),
+                            rsLista.getInt("idCampo"),
+                            rsLista.getString("nome"),
+                            rsLista.getString("descricao"),
+                            rsLista.getString("foto"),
+                            rsLista.getInt("IdFormulario"),
                             null,
                             null
                     );
@@ -455,11 +455,11 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
                     //NAO RETORNA AS OPCOES E RESPOSTAS POIS NAO CONCIDERO UTIL RETORNAR ESTES DADOS
                     //NESSE METODO JA QUE NAO SAO NECESSARIOS PARA IDENTIFICAR UM CAMPO DO FORMULARIO
                     Campo campo = new Campo(
-                            rs.getInt("idCampo"),
-                            rs.getString("nome"),
-                            rs.getString("descricao"),
-                            rs.getString("foto"),
-                            rs.getInt("IdFormulario"),
+                            rsLista.getInt("idCampo"),
+                            rsLista.getString("nome"),
+                            rsLista.getString("descricao"),
+                            rsLista.getString("foto"),
+                            rsLista.getInt("IdFormulario"),
                             null,
                             null
                     );
