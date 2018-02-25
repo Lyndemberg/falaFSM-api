@@ -23,18 +23,19 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
     public Integer adicionar(Formulario formulario) {
         Integer idFormulario = null;
 
-        String sql = "INSERT INTO Formulario (Nome, Descricao, EmailAdmin, Foto) VALUES (?,?,?,?);";
+        String sql = "INSERT INTO Formulario (Nome, Descricao, EmailAdmin) VALUES (?,?,?) " +
+                "RETURNING IdFormulario;";
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, formulario.getNome());
             stmt.setString(2, formulario.getDescricao());
             stmt.setString(3, formulario.getEmailAdmin());
-            stmt.setString(4, formulario.getFoto());
 
-            stmt.executeUpdate();
+            ResultSet rs = stmt.executeQuery();
 
             //Recupera o valor do Id deste Formulario no BD para ser usado nas proximas Querys
-            idFormulario = buscarId(formulario.getNome());
+            if (rs.next())
+                idFormulario = rs.getInt("IdFormulario");
 
             //Verifica se Ha Campos que devem ser Salvos neste Formulario
                 //Se nao for null entao ha Campos que devem ser referenciadas
@@ -286,22 +287,6 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
             e.printStackTrace();
         }
         return foto;
-    }
-
-    private int buscarId(String nome) {
-        String sql = String.format("SELECT idFormulario FROM Formulario WHERE nome ILIKE '%s';", nome);
-        int aux = -1;
-        try {
-            Statement stmt = getConexao().createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            if(rs.next()){
-                aux = rs.getInt("idFormulario");
-            }
-            stmt.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return aux;
     }
 
     private List<Formulario> getFormularios(String sql, String matAluno){
