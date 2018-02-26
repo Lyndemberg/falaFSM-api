@@ -61,7 +61,7 @@ public class OpcaoCampoDaoPostgres extends ElementoDao implements OpcaoDaoInterf
 
     @Override
     public List<Opcao> listarPorChave(int idCampo) {
-        String sql = "SELECT * FROM Opcoes WHERE idCampo= '" + idCampo + "';";
+        String sql = "SELECT * FROM OpcoesCampo WHERE idCampo= '" + idCampo + "';";
 
         return getOpcoes(sql);
     }
