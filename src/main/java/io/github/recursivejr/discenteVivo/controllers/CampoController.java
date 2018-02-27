@@ -169,7 +169,7 @@ public class CampoController {
 
     @GET
     @Produces("image/jpeg")
-    @Path("receberFoto/{idCampo}")
+    @Path("recuperarFoto/{idCampo}")
     public Response getImagem(@PathParam("idCampo") int idCampo) {
 
         String stringFoto = null;
