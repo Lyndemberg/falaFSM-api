@@ -204,7 +204,7 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
                 campo.setNome(rs.getString("nome"));
                 campo.setFoto(rs.getString("foto"));
                 campo.setDescricao(rs.getString("descricao"));
-                campo.setId(rs.getInt("idFormulario"));
+                campo.setIdFormulario(rs.getInt("idFormulario"));
 
                 try {
                     campo.setOpcoes(
@@ -241,7 +241,7 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
                 campo.setNome(rs.getString("nome"));
                 campo.setFoto(rs.getString("foto"));
                 campo.setDescricao(rs.getString("descricao"));
-                campo.setId(rs.getInt("idFormulario"));
+                campo.setIdFormulario(rs.getInt("idFormulario"));
 
                 try {
                     campo.setOpcoes(
