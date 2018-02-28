@@ -7,14 +7,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.*;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.AcessControll;
+import io.github.recursivejr.discenteVivo.infraSecurity.CacheController;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
@@ -25,10 +23,11 @@ import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 public class EnqueteController {
 
 	@GET
-	@Security
+	@Security({NivelAcesso.NIVEL_1, NivelAcesso.NIVEL_2})
 	@Produces(MediaType.APPLICATION_JSON)
     @Path("enquetes/")
-    public Response listarEnquetes(@Context SecurityContext securityContext) {
+    public Response listarEnquetes(@Context SecurityContext securityContext,
+								   @Context Request request) {
 
 		EnqueteDaoInterface enquetesDao = null;
 		List<Enquete> enquetes = null;
@@ -59,7 +58,17 @@ public class EnqueteController {
 		System.gc();
 
 		//Se tudo ocorreu corretamente entao retorna status 200 com OK
-		return Response.ok(enquetes).build();
+
+		EntityTag etag = new EntityTag(Integer.toString(enquetes.hashCode()));
+		Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+		if (builder == null) {
+			builder = Response.ok(enquetes);
+			builder.tag(etag);
+		}
+
+		builder.cacheControl(CacheController.getCacheControl());
+		return builder.build();
 
     }
 
@@ -68,7 +77,8 @@ public class EnqueteController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("enquete/{id}/")
     public Response getEnquete(@PathParam("id") int id,
-							   @Context SecurityContext securityContext) {
+							   @Context SecurityContext securityContext,
+							   @Context Request request) {
 
 		EnqueteDaoInterface enquetesDao = null;
 		Enquete enquete = null;
@@ -99,8 +109,19 @@ public class EnqueteController {
 		System.gc();
 
 		//Se tudo ocorreu corretamente entao retorna status 200 com OK
-		return Response.ok(enquete).build();
-    }
+
+		EntityTag etag = new EntityTag(Integer.toString(enquete.hashCode()));
+		Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+		if (builder == null) {
+			builder = Response.ok(enquete);
+			builder.tag(etag);
+		}
+
+		builder.cacheControl(CacheController.getCacheControl());
+		return builder.build();
+
+	}
 
 	@POST
 	@Security
