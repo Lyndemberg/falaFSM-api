@@ -152,7 +152,7 @@ CREATE INDEX Id_Formulario ON FORMULARIO(idFormulario);
 CREATE INDEX Id_Campo ON CAMPO(idCampo, idFormulario);
 CREATE INDEX Id_Enquete ON ENQUETE(idEnquete);
 CREATE INDEX Id_OpcaoEnquete_idEnquete_Opcao ON OPCOESENQUETE(idEnquete, Opcao);
-CREATE INDEX Id_OpcaoCampo_idCampo_Opcao ON OPCOESCAMPO(idCampo, Opcao) ;
+CREATE INDEX Id_OpcaoCampo_idCampo_Opcao ON OPCOESCAMPO(idCampo, Opcao);
 CREATE INDEX Nome_Curso ON CURSO(Nome);
 CREATE INDEX Nome_Setor ON SETOR(Nome);
 CREATE INDEX MatriculaAluno_ComentaEnquete ON COMENTAENQUETE(matriculaAluno, idEnquete);
