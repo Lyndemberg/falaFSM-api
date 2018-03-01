@@ -36,8 +36,7 @@ public class Setor {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		if (enquetes != null)
-			result = prime * result + ((enquetes == null) ? 0 : enquetes.hashCode());
+		result = prime * result + ((enquetes == null) ? 0 : enquetes.hashCode());
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
 		return result;
 	}
