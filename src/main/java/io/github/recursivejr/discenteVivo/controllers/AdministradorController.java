@@ -14,11 +14,15 @@ import javax.ws.rs.core.SecurityContext;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.*;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
-import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
-import io.github.recursivejr.discenteVivo.models.*;
+import io.github.recursivejr.discenteVivo.models.Aluno;
+import io.github.recursivejr.discenteVivo.models.Administrador;
+import io.github.recursivejr.discenteVivo.models.Enquete;
+import io.github.recursivejr.discenteVivo.models.Opcao;
+import io.github.recursivejr.discenteVivo.models.Curso;
+import io.github.recursivejr.discenteVivo.models.Setor;
 import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 
 @Path("administrador")
