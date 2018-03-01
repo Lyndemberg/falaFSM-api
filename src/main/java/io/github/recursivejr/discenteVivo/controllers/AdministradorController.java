@@ -39,7 +39,7 @@ public class AdministradorController {
 
 			//Como o aluno esta corretamente preenchido entao
 				//Cria um AlunoDaoPostgres para salvar no BD
-			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+			AlunoDaoInterface alunoDao = Fabrica.criarFabricaDaoPostgres().criarAlunoDao();
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			if(alunoDao.adicionar(aluno) == false)
@@ -76,7 +76,7 @@ public class AdministradorController {
 
 			//Caso o aluno tenha sido corretamente preenchido entao
 				//Cria um alunoDao com base na Interface
-			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+			AlunoDaoInterface alunoDao = Fabrica.criarFabricaDaoPostgres().criarAlunoDao();
 
 			//Tenta atualizar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			if(alunoDao.atualizar(aluno) == false)
@@ -115,7 +115,7 @@ public class AdministradorController {
 
 			//Caso o Administrador tenha sido preenchido corretamente entrao
 			//Cria um AdministradorDaoPostgres
-			AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
+			AdministradorDaoInterface adminDao = Fabrica.criarFabricaDaoPostgres().criarAdministradorDao();
 
 			//Tenta salvar, se retornar false deu SQL exeption, se deu true então salvou com sucesso
 			if(adminDao.adicionar(admin) == false)
@@ -151,7 +151,7 @@ public class AdministradorController {
 		//Caso tenha sido entrao
         try {
         	//Cria objeto AdminDao com base na interface
-            AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
+            AdministradorDaoInterface adminDao = Fabrica.criarFabricaDaoPostgres().criarAdministradorDao();
 
             //Tenta atualizar, caso retorne false deu SQL Exception, caso retorne true entao atualizou com sucesso
             if (!adminDao.atualizar(admin))
@@ -181,7 +181,7 @@ public class AdministradorController {
 
 		try {
 			//Cria um AdminDao com base na interface
-			AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
+			AdministradorDaoInterface adminDao = Fabrica.criarFabricaDaoPostgres().criarAdministradorDao();
 
 			//Recupera o email do token
 			String email = TokenManagement.getToken(securityContext);
@@ -217,7 +217,7 @@ public class AdministradorController {
 
 		try {
 			//Cria um EnqueteDao com base na interface
-			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+			EnqueteDaoInterface enqueteDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 
 			//Seta o email do admin que está criando a Enquete com base no token
 			enquete.setEmailAdmin(
@@ -257,7 +257,7 @@ public class AdministradorController {
 
 		try {
 			//Cria uma opcaoDao
-			OpcaoDaoInterface opcaoDao = new FabricaDaoPostgres().criarOpcaoEnqueteDao();
+			OpcaoDaoInterface opcaoDao = Fabrica.criarFabricaDaoPostgres().criarOpcaoEnqueteDao();
 
 			//Recebe todas as opcoes ja salvas para esta enquete
 			List<Opcao> opcoesSalvas = opcaoDao.listarPorChave(idEnquete);
@@ -318,7 +318,7 @@ public class AdministradorController {
 
 		//Tenta Salvar a Imagem em Base64 no Banco de Dados
 		try {
-			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+			EnqueteDaoInterface enqueteDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 
 			//Se ao atualizar a Foto Retornar True entao Retorna Codigo 200
 			if (enqueteDao.atualizarFoto(stringFoto, idEnquete)) {
@@ -351,7 +351,7 @@ public class AdministradorController {
 
 		try {
 			//Cria um EnqueteDao com base na interface
-			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+			EnqueteDaoInterface enqueteDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 
 			//Seta o email do admin que está criando a Enquete com base no token
 			enquete.setEmailAdmin(
@@ -389,7 +389,7 @@ public class AdministradorController {
 
 		try {
 			//Cria um EnqueteDao com base na interface
-			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+			EnqueteDaoInterface enqueteDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 
 			//Tenta Remover a Enquete, se o EnqueteDao Retornar False Entao ocorreu Algum Erro Entao
 				//Dispara uma SQLException
@@ -430,7 +430,7 @@ public class AdministradorController {
 		//Caso Tudo Esteja Valido Tenta Salvar O Curso
 		try {
 			//Cria um cursoDao com base na Interface
-			CursoDaoInterface cursoDao = new FabricaDaoPostgres().criarCursoDao();
+			CursoDaoInterface cursoDao = Fabrica.criarFabricaDaoPostgres().criarCursoDao();
 
 			//Se ao adicionar o Curso retornar True entao Retorna Codigo 200 de Ok para o Cliente
 			//Caso Retorne False entao Ocorreu erro de SQL logo disparo uma Exception
@@ -470,7 +470,7 @@ public class AdministradorController {
 		//Caso tudo Seja Validado entao Tenta Salvar o Setor
 		try {
 			//Cria um Objeto setorDao com base na Interface
-			SetorDaoInterface setorDao = new FabricaDaoPostgres().criarSetorDao();
+			SetorDaoInterface setorDao = Fabrica.criarFabricaDaoPostgres().criarSetorDao();
 
 			//Se ao adicionar o Setor retornar True entao Retorna Codigo 200 de Ok para o Cliente
 			//Caso Retorne False entao Ocorreu erro de SQL logo disparo uma Exception
