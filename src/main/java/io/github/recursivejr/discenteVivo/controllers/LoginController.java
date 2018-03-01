@@ -1,6 +1,5 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.ws.rs.*;
@@ -10,7 +9,7 @@ import javax.ws.rs.core.Response;
 import io.github.recursivejr.discenteVivo.dao.Interface.AdministradorDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.AlunoDaoInterface;
 import io.github.recursivejr.discenteVivo.exceptions.AutenticacaoException;
-import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
+import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.models.Administrador;
 import io.github.recursivejr.discenteVivo.models.Aluno;
@@ -31,7 +30,7 @@ public class LoginController {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 
 		try {
-			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+			AlunoDaoInterface alunoDao = Fabrica.criarFabricaDaoPostgres().criarAlunoDao();
 			
 			Aluno aluno = alunoDao.login(login, senha);
 			
@@ -43,8 +42,6 @@ public class LoginController {
 			return Response.ok(aluno).build();
 
 		} catch(AutenticacaoException ex) {
-			System.out.println("login : " + login);
-			System.out.println("senha : " + senha);
 			Logger.getLogger(ex.getMessage());
 			ex.printStackTrace();
 			System.gc();
@@ -70,7 +67,7 @@ public class LoginController {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		
 		try {
-			AdministradorDaoInterface adminDao = new FabricaDaoPostgres().criarAdministradorDao();
+			AdministradorDaoInterface adminDao = Fabrica.criarFabricaDaoPostgres().criarAdministradorDao();
 			
 			Administrador admin = adminDao.login(login, senha);
 			
@@ -82,8 +79,6 @@ public class LoginController {
 			return Response.ok(admin).build();
 
 		} catch(AutenticacaoException ex) {
-			System.out.println("login : " + login);
-			System.out.println("senha : " + senha);
 			Logger.getLogger(ex.getMessage());
 			ex.printStackTrace();
 			System.gc();
