@@ -121,7 +121,7 @@ public class CampoController {
     @PUT
     @Security(NivelAcesso.NIVEL_1)
     @Consumes("image/jpeg")
-    @Path("enviarFoto/{idCampo}")
+    @Path("foto/{idCampo}")
     public Response setFotoCampo(File foto,
                                  @PathParam("idCampo") int idCampo) {
 
@@ -168,8 +168,8 @@ public class CampoController {
 
     @GET
     @Produces("image/jpeg")
-    @Path("recuperarFoto/{idCampo}")
-    public Response getImagem(@PathParam("idCampo") int idCampo) {
+    @Path("foto/{idCampo}")
+    public Response getFotoCampo(@PathParam("idCampo") int idCampo) {
 
         String stringFoto = null;
 

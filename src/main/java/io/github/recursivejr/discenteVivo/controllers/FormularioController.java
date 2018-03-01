@@ -351,7 +351,7 @@ public class FormularioController {
     @PUT
     @Security(NivelAcesso.NIVEL_1)
     @Consumes("image/jpeg")
-    @Path("enviarFoto/{idFormulario}/")
+    @Path("foto/{idFormulario}/")
     public Response setFotoFormulario(File foto,
                                       @PathParam("idFormulario") int idFormulario) {
 
@@ -397,8 +397,8 @@ public class FormularioController {
 
     @GET
     @Produces("image/jpeg")
-    @Path("recuperarfoto/{idFormulario}/")
-    public Response getImagem(@PathParam("idFormulario") int idFormulario) {
+    @Path("foto/{idFormulario}/")
+    public Response getFotoFormulario(@PathParam("idFormulario") int idFormulario) {
 
         String foto = null;
 
