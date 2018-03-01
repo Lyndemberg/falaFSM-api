@@ -80,7 +80,7 @@ public class FormularioController {
             CampoDaoInterface campoDao = Fabrica.criarFabricaDaoPostgres().criarCampoDao();
 
             //Recebe todas os campos ja salvas para neste Formulario
-            List<Campo> camposSalvos = campoDao.listarPorFormulario(idFormulario);
+            List<Campo> camposSalvos = campoDao.listarPorFormulario(idFormulario, null);
 
             //Remove das novas opcoes que seram adicionadas todas aquelas que ja estao na lista de
             //opcoes salvas no banco para este Formulario
