@@ -215,7 +215,15 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
                     campo.setOpcoes(new ArrayList<>());
                 }
 
-                //Nao Acho Necessario Listar as Respostas do Aluno
+                //Retorna Apenas a Resposta do Aluno
+                try {
+                    campo.setRespostas(new ArrayList<>());
+                    campo.getRespostas().add(
+                            new RespostaCampoDaoPostgres().buscar(matAluno, rs.getInt("IdCampo"))
+                    );
+                } catch (SQLException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
 
                 campos.add(campo);
             }
