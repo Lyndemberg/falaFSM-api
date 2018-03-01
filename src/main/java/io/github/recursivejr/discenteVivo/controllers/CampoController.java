@@ -3,7 +3,6 @@ package io.github.recursivejr.discenteVivo.controllers;
 import io.github.recursivejr.discenteVivo.dao.Interface.CampoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.OpcaoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
-import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.Campo;
@@ -79,7 +78,7 @@ public class CampoController {
 
         try {
             //Cria uma opcaoDao para Campo
-            OpcaoDaoInterface opcaoDao = new FabricaDaoPostgres().criarOpcaoCampoDao();
+            OpcaoDaoInterface opcaoDao = Fabrica.criarFabricaDaoPostgres().criarOpcaoCampoDao();
 
             //Recebe todas as opcoes ja salvas para este campo
             List<Opcao> opcoesSalvas = opcaoDao.listarPorChave(idCampo);
