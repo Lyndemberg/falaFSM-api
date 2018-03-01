@@ -10,7 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.EnqueteDaoInterface;
-import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
+import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.infraSecurity.AcessControll;
 import io.github.recursivejr.discenteVivo.infraSecurity.CacheController;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
@@ -34,7 +34,7 @@ public class EnqueteController {
 
 		//Tenta criar um EnqueteDao
 		try {
-			enquetesDao = new FabricaDaoPostgres().criarEnqueteDao();
+			enquetesDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 		} catch (Exception ex) {
 			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -85,7 +85,7 @@ public class EnqueteController {
 
 		//Tenta criar um EnqueteDao
 		try {
-			enquetesDao = new FabricaDaoPostgres().criarEnqueteDao();
+			enquetesDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 		} catch (Exception ex) {
 			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -136,7 +136,7 @@ public class EnqueteController {
 
 		//Tenta criar um EnqueteDao
 		try {
-			enquetesDao = new FabricaDaoPostgres().criarEnqueteDao();
+			enquetesDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 		} catch (Exception ex) {
 			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -176,7 +176,7 @@ public class EnqueteController {
 
 		//Tenta criar um EnqueteDao
 		try {
-			enquetesDao = new FabricaDaoPostgres().criarEnqueteDao();
+			enquetesDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 		} catch (Exception ex) {
 			Logger.getLogger("EnqueteController-log").info("Erro:" + ex.getStackTrace());
 			System.gc();
@@ -213,7 +213,7 @@ public class EnqueteController {
 
 		//Tenta Criar uma enqueteDao
 		try {
-			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
+			EnqueteDaoInterface enqueteDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
 
 			//Recupera a foto da enquete do BD em Base64
 			stringFoto = enqueteDao.retornarFoto(idEnquete);
