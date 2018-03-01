@@ -69,8 +69,10 @@ public class Curso {
     public int hashCode() {
         int result = nome.hashCode();
         result = 31 * result + descricao.hashCode();
-        result = 31 * result + alunos.hashCode();
-        result = 31 * result + enquetes.hashCode();
+        if (alunos != null)
+            result = 31 * result + alunos.hashCode();
+        if (enquetes != null)
+            result = 31 * result + enquetes.hashCode();
         return result;
     }
 
