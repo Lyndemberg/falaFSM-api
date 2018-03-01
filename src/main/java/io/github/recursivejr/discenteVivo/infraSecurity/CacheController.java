@@ -8,7 +8,11 @@ public class CacheController {
         CacheControl cacheControl = new CacheControl();
 
         cacheControl.setPrivate(true);
+        cacheControl.setNoCache(false);
+        cacheControl.setNoStore(false);
+        cacheControl.setNoTransform(true);
         cacheControl.setMaxAge(300);
+        cacheControl.setSMaxAge(300);
 
         return cacheControl;
     }
