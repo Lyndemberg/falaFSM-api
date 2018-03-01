@@ -11,7 +11,6 @@ import javax.ws.rs.core.SecurityContext;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.*;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
-import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
@@ -250,8 +249,8 @@ public class AlunoController{
 		//Retorna False se aluno nao tem permissao para acessar esta enquete
 		try {
 
-			EnqueteDaoInterface enqueteDao = new FabricaDaoPostgres().criarEnqueteDao();
-			AlunoDaoInterface alunoDao = new FabricaDaoPostgres().criarAlunoDao();
+			EnqueteDaoInterface enqueteDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
+			AlunoDaoInterface alunoDao = Fabrica.criarFabricaDaoPostgres().criarAlunoDao();
 
 			Enquete enquete = enqueteDao.buscar(idEnquete, matAluno);
 			Aluno aluno = alunoDao.buscar(matAluno);
