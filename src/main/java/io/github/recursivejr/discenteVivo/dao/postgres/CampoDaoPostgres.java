@@ -111,12 +111,16 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
     }
 
     @Override
-    public List<Campo> listarPorFormulario(int idFormulario) {
+    public List<Campo> listarPorFormulario(int idFormulario, String matAluno) {
         //Retorna apenas os Campos que nao tem nenhum curso pois sao para toda a universidade
         //e os Formularios do seu curso especifico
 
         String sql = String.format("SELECT * From Campo WHERE IdFormulario = %d;", idFormulario);
-        return getAllCampos(sql);
+
+        if (matAluno == null)
+            return getAllCampos(sql);
+        else
+            return getCampos(sql, matAluno);
     }
 
 

@@ -3,18 +3,20 @@ package io.github.recursivejr.discenteVivo.controllers;
 import io.github.recursivejr.discenteVivo.dao.Interface.CampoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.OpcaoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
+import io.github.recursivejr.discenteVivo.infraSecurity.AcessControll;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
+import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.Campo;
 import io.github.recursivejr.discenteVivo.models.Opcao;
 import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -47,7 +49,8 @@ public class CampoController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("campos/{idFormulario}")
-    public Response getCamposByFormulario(@PathParam("idFormulario") int idFormulario) {
+    public Response getCamposByFormulario(@PathParam("idFormulario") int idFormulario,
+                                          @Context SecurityContext securityContext) {
 
         if (idFormulario <= 0)
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -55,7 +58,21 @@ public class CampoController {
         try {
             CampoDaoInterface campoDao = Fabrica.criarFabricaDaoPostgres().criarCampoDao();
 
-            List<Campo> campos = campoDao.listarPorFormulario(idFormulario);
+            List<Campo> campos = new ArrayList<>();
+
+            //Recupera o Nivel de Permissao do Usuario
+            NivelAcesso nivelAcesso = AcessControll.buscarNivelPermissao(
+                    TokenManagement.getToken(securityContext));
+
+            //Verifica se e um aluno, caso seja entao Recupera os Campos para este Aluno com as Respostas
+            if(nivelAcesso == NivelAcesso.NIVEL_2) {
+                String matAluno = TokenManagement.getToken(securityContext);
+
+                campos = campoDao.listarPorFormulario(idFormulario, matAluno);
+
+                //Caso nao seja Verifica se e um Admin, caso seja entao Recupera todas os Campos
+            } else if (nivelAcesso == NivelAcesso.NIVEL_1)
+                campos = campoDao.listarPorFormulario(idFormulario, null);
 
             return Response.ok(campos).build();
 
