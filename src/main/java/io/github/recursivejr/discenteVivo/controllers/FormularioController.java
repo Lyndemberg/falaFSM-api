@@ -4,6 +4,7 @@ import io.github.recursivejr.discenteVivo.dao.Interface.CampoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.FormularioDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.infraSecurity.AcessControll;
+import io.github.recursivejr.discenteVivo.infraSecurity.CacheController;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
@@ -12,10 +13,7 @@ import io.github.recursivejr.discenteVivo.models.Formulario;
 import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -189,7 +187,8 @@ public class FormularioController {
     @Security({NivelAcesso.NIVEL_1, NivelAcesso.NIVEL_2})
     @Produces(MediaType.APPLICATION_JSON)
     @Path("formularios/")
-    public Response listarFormularios(@Context SecurityContext securityContext) {
+    public Response listarFormularios(@Context SecurityContext securityContext,
+                                      @Context Request request) {
 
         //Cria uma Lista de formularios
         List<Formulario> formularios = new ArrayList<>();
@@ -215,7 +214,18 @@ public class FormularioController {
 
             //Caso Ocorra tudo normalmente Retorna Status 200 de OK
             System.gc();
-            return Response.ok(formularios).build();
+
+            EntityTag etag = new EntityTag(Integer.toString(formularios.hashCode()));
+            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+            if (builder == null) {
+                builder = Response.ok(formularios);
+                builder.tag(etag);
+            }
+
+            builder.cacheControl(CacheController.getCacheControl());
+            return builder.build();
+
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
             Logger.getLogger("FormularioController-log").info("Erro:" + ex.getStackTrace());
