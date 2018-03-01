@@ -13,13 +13,12 @@ import io.github.recursivejr.discenteVivo.models.Relatorio;
 @Path("relatorio")
 public class RelatorioController {
 	
-    @POST
+    @GET
     @Security(NivelAcesso.NIVEL_1)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("gerarRelatorios/enquete/")
+    @Path("gerarRelatorios/enquete/{param}")
     //Variavel param pode ser a Id da Enquete ou o Nome da Enquete
-    public Response gerarRelatorios(@FormParam("query") String param) {
+    public Response gerarRelatorios(@PathParam("param") String param) {
 
         //Cria um Relatorio contando nada
         Relatorio relatorio = null;
