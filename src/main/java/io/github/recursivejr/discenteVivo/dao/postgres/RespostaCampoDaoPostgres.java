@@ -39,11 +39,14 @@ public class RespostaCampoDaoPostgres extends ElementoDao implements RespostaDao
 
     @Override
     public boolean remover(Resposta resposta) {
-    	String sql = "DELETE FROM RespondeCampo WHERE matriculaAluno ILIKE " + resposta.getMatAluno()
-    	+ " AND idCampo = " + resposta.getIdFK() + ";";
+    	String sql = "DELETE FROM RespondeCampo WHERE matriculaAluno ILIKE ? AND idCampo = ?;";
     	try {
-            Statement stmt = getConexao().createStatement();
-            stmt.executeUpdate(sql);
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
+
+            stmt.setString(1, resposta.getMatAluno());
+            stmt.setInt(2, resposta.getIdFK());
+
+            stmt.executeUpdate();
 
             stmt.close();
         } catch (SQLException ex) {
@@ -60,8 +63,10 @@ public class RespostaCampoDaoPostgres extends ElementoDao implements RespostaDao
         try {
             Statement stmt = getConexao().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            while(rs.next()){
+
+            while(rs.next()) {
                 Resposta resp = new Resposta();
+
                 resp.setIdFK(rs.getInt("idCampo"));
                 resp.setMatAluno(rs.getString("matriculaAluno"));
                 resp.setResposta(rs.getString("Resposta"));
@@ -79,16 +84,18 @@ public class RespostaCampoDaoPostgres extends ElementoDao implements RespostaDao
     public Resposta buscar(String matAluno, int idFK) {
         String sql = "SELECT * FROM RespondeCampo WHERE matriculaAluno ILIKE ? AND IdCampo = ?;";
         Resposta resp = null;
+
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
 
             stmt.setString(1, matAluno);
             stmt.setInt(2, idFK);
 
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery();
 
-            if(rs.next()){
+            if(rs.next()) {
                 resp = new Resposta();
+
                 resp.setIdFK(rs.getInt("idCampo"));
                 resp.setMatAluno(rs.getString("matriculaAluno"));
                 resp.setResposta(rs.getString("Resposta"));
