@@ -1,10 +1,13 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 public class Opcao {
 
 	//idFK = id Foreing key, ou seja, o id da Tabela na qual se faz chave estrangeira
+	@JsonIgnore
 	private int idFK;
 	private String opcao;
 
