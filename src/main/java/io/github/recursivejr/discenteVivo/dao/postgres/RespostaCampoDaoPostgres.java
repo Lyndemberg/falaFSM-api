@@ -77,19 +77,26 @@ public class RespostaCampoDaoPostgres extends ElementoDao implements RespostaDao
 
     @Override
     public Resposta buscar(String matAluno, int idFK) {
-        String sql = "SELECT * FROM RespondeCampo WHERE matriculaAluno ILIKE " + matAluno
-        				+ " AND IdCampo = " + idFK+ ";";
+        String sql = "SELECT * FROM RespondeCampo WHERE matriculaAluno ILIKE ? AND IdCampo = ?;";
         Resposta resp = null;
         try {
-            Statement stmt = getConexao().createStatement();
+            PreparedStatement stmt = getConexao().prepareStatement(sql);
+
+            stmt.setString(1, matAluno);
+            stmt.setInt(2, idFK);
+
             ResultSet rs = stmt.executeQuery(sql);
+
             if(rs.next()){
                 resp = new Resposta();
                 resp.setIdFK(rs.getInt("idCampo"));
                 resp.setMatAluno(rs.getString("matriculaAluno"));
                 resp.setResposta(rs.getString("Resposta"));
             }
+
+            rs.close();
             stmt.close();
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
