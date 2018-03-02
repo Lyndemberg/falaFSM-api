@@ -1,5 +1,6 @@
 package io.github.recursivejr.discenteVivo.models.abstrato;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.recursivejr.discenteVivo.models.Comentario;
 import io.github.recursivejr.discenteVivo.models.Curso;
 import io.github.recursivejr.discenteVivo.models.Setor;
@@ -10,9 +11,11 @@ import java.util.Objects;
 public abstract class Questionario {
 
     private int id;
+    @JsonIgnore
     private String emailAdmin;
     private String nome;
     private String descricao;
+    @JsonIgnore
     private String foto;
     private List<Curso> cursos;
     private List<Setor> setores;
