@@ -1,5 +1,6 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.recursivejr.discenteVivo.models.abstrato.Questionario;
 
 import java.util.List;
@@ -10,7 +11,9 @@ public class Campo {
     private int id;
     private String nome;
     private String descricao;
+    @JsonIgnore
     private String foto;
+    @JsonIgnore
     private int idFormulario;
     private List<Opcao> opcoes;
     private List<Resposta> respostas;
