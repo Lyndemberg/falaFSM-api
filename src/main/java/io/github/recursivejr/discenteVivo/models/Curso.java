@@ -1,5 +1,7 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -7,7 +9,9 @@ public class Curso {
 
     private String nome;
     private String descricao;
+    @JsonIgnore
     private List<Aluno> alunos;
+    @JsonIgnore
     private List<Enquete> enquetes;
 
     public Curso(String nome, String descricao, List<Aluno> alunos, List<Enquete> enquetes) {
