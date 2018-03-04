@@ -189,9 +189,12 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
         //Retorna apenas os Formularios que nao tem nenhum curso pois sao para toda a universidade
         //e os Formularios do seu curso especifico
 
-        String sql = String.format("SELECT F.* FROM Formulario F NATURAL LEFT JOIN FormularioCurso FC" +
-                " WHERE FC.NomeCurso IS NULL OR FC.NomeCurso ILIKE" +
-                " (SELECT NomeCurso FROM Aluno WHERE Matricula ILIKE '%s');", matAluno);
+        String sql = String.format("SELECT F.* FROM Formulario AS F NATURAL LEFT JOIN FormularioCurso AS FC " +
+                "WHERE (FC.NomeCurso IS NULL OR FC.NomeCurso ILIKE " +
+                "(SELECT NomeCurso FROM Aluno WHERE Matricula ILIKE '%s')) AND " +
+                "('%s' NOT IN (SELECT DISTINCT(RC.MatriculaAluno) FROM Campo as C " +
+                "NATURAL LEFT JOIN RespondeCampo as RC WHERE C.idformulario = F.idformulario " +
+                "AND RC.MatriculaAluno ILIKE '%s'));", matAluno, matAluno, matAluno);
         return getFormularios(sql, matAluno);
     }
 
