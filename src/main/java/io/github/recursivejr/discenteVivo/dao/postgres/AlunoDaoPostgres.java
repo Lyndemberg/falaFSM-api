@@ -45,7 +45,7 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
 
     @Override
     public List<Aluno> listar() {
-        String sql = "SELECT * FROM Aluno";
+        String sql = "SELECT Matricula, Email, Nome, Login, NomeCurso FROM Aluno";
 
         return getAlunos(sql, null);
     }
@@ -55,7 +55,7 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
 
         //Testar se n da erro ao tentar buscar um aluno q nao existe
 
-        String sql = "SELECT * FROM Aluno WHERE Matricula ILIKE ?;";
+        String sql = "SELECT Matricula, Email, Nome, Login, NomeCurso FROM Aluno WHERE Matricula ILIKE ?;";
 
         List<Aluno> alunos = getAlunos(sql, matricula);
 
@@ -101,6 +101,7 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
     }
 
     private boolean setAluno(String sql, Aluno aluno) {
+
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, aluno.getEmail());
@@ -120,6 +121,7 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
             ex.printStackTrace();
             return false;
         }
+
         return true;
     }
 
@@ -139,16 +141,17 @@ public class AlunoDaoPostgres extends ElementoDao implements AlunoDaoInterface {
                 aluno.setEmail(rs.getString("email"));
                 aluno.setNome(rs.getString("nome"));
                 aluno.setLogin(rs.getString("login"));
-                aluno.setSenha(rs.getString("senha"));
 
                aluno.setCurso(rs.getString("NomeCurso"));
 
                 alunos.add(aluno);
             }
+
             stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+
         return alunos;
     }
 

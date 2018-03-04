@@ -43,14 +43,14 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
 
     @Override
     public List<Administrador> listar() {
-        String sql = "SELECT * FROM Administrador";
+        String sql = "SELECT Email, Nome, Login FROM Administrador";
 
         return getAdmins(sql, null);
     }
 
     @Override
     public Administrador buscar(String email) {
-        String sql = "SELECT * FROM Administrador WHERE email ILIKE ?;";
+        String sql = "SELECT Email, Nome, Login FROM Administrador WHERE email ILIKE ?;";
 
         List<Administrador> administradores = getAdmins(sql, email);
 
@@ -131,7 +131,6 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
                 administrador.setEmail(rs.getString("email"));
                 administrador.setNome(rs.getString("nome"));
                 administrador.setLogin(rs.getString("login"));
-                administrador.setSenha(rs.getString("senha"));
 
                 administradores.add(administrador);
             }
