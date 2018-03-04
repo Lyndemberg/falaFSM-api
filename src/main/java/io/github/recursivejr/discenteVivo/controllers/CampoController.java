@@ -190,6 +190,11 @@ public class CampoController {
 
         String stringFoto = null;
 
+        File foto = FotoManagement.verifyExistsFoto(FotoManagement.TIPO_CAMPO, idCampo);
+
+        if (foto != null)
+            return Response.ok(foto).build();;
+
         //Tenta Criar uma campoDao
         try {
             CampoDaoInterface campoDao = Fabrica.criarFabricaDaoPostgres().criarCampoDao();
@@ -213,7 +218,7 @@ public class CampoController {
 
         //Se nao for null entao decodifica o campo e retorna ele com o codigo 200
         try {
-            File foto = FotoManagement.decodeFoto(stringFoto);
+            foto = FotoManagement.decodeFoto(stringFoto, FotoManagement.TIPO_CAMPO, idCampo);
             return Response.ok(foto).build();
         } catch (IOException ex) {
             ex.printStackTrace();
