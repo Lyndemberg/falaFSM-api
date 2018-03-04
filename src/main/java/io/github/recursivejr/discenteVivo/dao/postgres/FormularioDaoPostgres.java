@@ -180,17 +180,18 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
     public List<Formulario> listar() {
         //Retorna todas os Formularios Salvas
 
-        String sql = "SELECT * FROM Formulario;";
+        String sql = "SELECT idFormulario, Nome, Descricao FROM Formulario;";
         return getAllFormularios(sql);
     }
 
     @Override
     public List<Formulario> listarPorAluno(String matAluno) {
         //Retorna apenas os Formularios que nao tem nenhum curso pois sao para toda a universidade
-        //e os Formularios do seu curso especifico
+        //e os Formularios do seu curso especifico, Além disso, Retorna apenas os Formularios Que ainda
+        //Nao Foram Respondidos Pelo Aluno
 
-        String sql = String.format("SELECT F.* FROM Formulario AS F NATURAL LEFT JOIN FormularioCurso AS FC " +
-                "WHERE (FC.NomeCurso IS NULL OR FC.NomeCurso ILIKE " +
+        String sql = String.format("SELECT F.idFormulario, F.nome. F.Descricao FROM Formulario AS F " +
+                "NATURAL LEFT JOIN FormularioCurso AS FC WHERE (FC.NomeCurso IS NULL OR FC.NomeCurso ILIKE " +
                 "(SELECT NomeCurso FROM Aluno WHERE Matricula ILIKE '%s')) AND " +
                 "('%s' NOT IN (SELECT DISTINCT(RC.MatriculaAluno) FROM Campo as C " +
                 "NATURAL LEFT JOIN RespondeCampo as RC WHERE C.idformulario = F.idformulario " +
@@ -204,7 +205,8 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
 
         //Testar se n da erro ao tentar buscar um Formulario q nao existe
 
-        String sql = String.format("SELECT * FROM Formulario WHERE idFormulario = '%d';", idFormulario);
+        String sql = String.format("SELECT idFormulario, Nome, Descricao FROM Formulario " +
+                "WHERE idFormulario = '%d';", idFormulario);
 
         List<Formulario> formularios = null;
 
@@ -226,8 +228,8 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
     @Override
     public List<Formulario> formulariosPorSetor(String nomeSetor, String matAluno) {
 
-        String sql = String.format("SELECT F.* FROM Formulario F NATURAL JOIN FormularioSetor FS " +
-                "WHERE FS.nomeSetor ILIKE '%s';", nomeSetor);
+        String sql = String.format("SELECT F.idFormulario, F.nome. F.Descricao FROM Formulario F " +
+                "NATURAL JOIN FormularioSetor FS WHERE FS.nomeSetor ILIKE '%s';", nomeSetor);
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
         if (matAluno == null)
@@ -240,8 +242,8 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
     @Override
     public List<Formulario> formulariosPorCurso(String nomeCurso, String matAluno) {
 
-        String sql = String.format("SELECT F.* FROM Formulario F NATURAL JOIN FormularioCurso FC " +
-                "WHERE FC.nomeCurso ILIKE '%s';", nomeCurso);
+        String sql = String.format("SELECT F.idFormulario, F.nome. F.Descricao FROM Formulario F " +
+                "NATURAL JOIN FormularioCurso FC WHERE FC.nomeCurso ILIKE '%s';", nomeCurso);
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
         if (matAluno == null)
@@ -301,26 +303,25 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
 
             while(rs.next()) {
                 List<Comentario> comentarios = new ArrayList<>();
-                List<Campo> campos = new ArrayList<>();
                 List<Curso> cursos = new ArrayList<>();
                 List<Setor> setores = new ArrayList<>();
 
                 Formulario formulario = new Formulario();
                 formulario.setId(rs.getInt("idFormulario"));
-                formulario.setNome(rs.getString("nome"));
-                formulario.setDescricao(rs.getString("descricao"));
+                formulario.setNome(rs.getString("Nome"));
+                formulario.setDescricao(rs.getString("Descricao"));
 
                 Statement internalStmt = getConexao().createStatement();
 
                 //Percorre todos os comentarios e recupera apenas o comentario deste aluno
-                String sqlComentarios = String.format("SELECT * FROM ComentaFormulario WHERE IdFormulario = " +
-                        "'%d' and MatriculaAluno ILIKE '%s';", formulario.getId(), matAluno);
+                String sqlComentarios = String.format("SELECT Comentario FROM ComentaFormulario WHERE " +
+                        "IdFormulario = '%d' AND MatriculaAluno ILIKE '%s';", formulario.getId(), matAluno);
                 ResultSet rsLista = internalStmt.executeQuery(sqlComentarios);
                 while (rsLista.next()) {
 
                     Comentario comentario = new Comentario(
-                            rsLista.getInt("IdFormulario"),
-                            rsLista.getString("MatriculaAluno"),
+                            formulario.getId(),
+                            matAluno,
                             rsLista.getString("Comentario")
                     );
 
@@ -379,15 +380,13 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()) {
-                List<Comentario> comentarios = new ArrayList<>();
-                List<Campo> campos = new ArrayList<>();
                 List<Curso> cursos = new ArrayList<>();
                 List<Setor> setores = new ArrayList<>();
 
                 Formulario formulario = new Formulario();
                 formulario.setId(rs.getInt("idFormulario"));
-                formulario.setNome(rs.getString("nome"));
-                formulario.setDescricao(rs.getString("descricao"));
+                formulario.setNome(rs.getString("Nome"));
+                formulario.setDescricao(rs.getString("Descricao"));
 
                 Statement internalStmt = getConexao().createStatement();
                 ResultSet rsLista;
