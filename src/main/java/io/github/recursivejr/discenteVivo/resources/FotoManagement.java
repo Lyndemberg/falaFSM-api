@@ -62,12 +62,9 @@ public class FotoManagement {
 
         //Se ja existe essa foto no disco retorna ela para evitar o processamento de decodificação
         //da foto em Base64 para a foto em Bytes
-        if (foto.exists()) {
-            System.out.println("Foto existe no Disco");
+        if (foto.exists())
             return foto;
-        }
 
-        System.out.println("Foto nao exite no disco");
         //Retorna a Null se a Foto nao Existe
         return null;
     }
