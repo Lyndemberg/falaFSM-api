@@ -20,18 +20,20 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
     public Integer adicionar(Campo campo) {
         Integer idCampo = null;
 
-        String sql = "INSERT INTO Campo (Nome, Descricao, Foto, IdFormulario) VALUES (?,?,?,?);";
+        String sql = "INSERT INTO Campo (Nome, Descricao, IdFormulario) VALUES (?,?,?) RETURNING idCampo;";
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
             stmt.setString(1, campo.getNome());
             stmt.setString(2, campo.getDescricao());
-            stmt.setString(3, campo.getFoto());
-            stmt.setInt(4, campo.getIdFormulario());
+            stmt.setInt(3, campo.getIdFormulario());
 
             stmt.executeUpdate();
 
             //Recupera o valor do Id deste Campo no BD para ser usado nas proximas Querys
-            idCampo = buscarId(campo.getNome(), campo.getIdFormulario());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next())
+                idCampo = rs.getInt("IdCampo");
 
             //Verifica se Ha Opcoes que devem ser Salvas neste Campo
                 //Se nao for null entao ha Opcoes que devem ser referenciadas
@@ -80,15 +82,14 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
     @Override
     public boolean atualizar(Campo campo) {
         //Atualiza Apenas os Dados do Campo
-        String sql = "UPDATE Campo SET Nome = ?, Descricao = ?, Foto = ? WHERE IdCampo = ?;";
+        String sql = "UPDATE Campo SET Nome = ?, Descricao = ? WHERE IdCampo = ?;";
 
         try {
             PreparedStatement stmt = getConexao().prepareStatement(sql);
 
             stmt.setString(1, campo.getNome());
             stmt.setString(2, campo.getDescricao());
-            stmt.setString(3, campo.getFoto());
-            stmt.setInt(4, campo.getId());
+            stmt.setInt(3, campo.getId());
 
             stmt.executeUpdate(sql);
 
@@ -106,7 +107,7 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
     public List<Campo> listar() {
         //Retorna todas os Campos Salvos
 
-        String sql = "SELECT * FROM Campo;";
+        String sql = "SELECT idCampo, Nome, Descricao FROM Campo;";
         return getAllCampos(sql);
     }
 
@@ -115,7 +116,8 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
         //Retorna apenas os Campos que nao tem nenhum curso pois sao para toda a universidade
         //e os Formularios do seu curso especifico
 
-        String sql = String.format("SELECT * From Campo WHERE IdFormulario = %d;", idFormulario);
+        String sql = String.format("SELECT idCampo, Nome, Descricao From Campo " +
+                "WHERE IdFormulario = %d;", idFormulario);
 
         if (matAluno == null)
             return getAllCampos(sql);
@@ -123,11 +125,10 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
             return getCampos(sql, matAluno);
     }
 
-
     @Override
     public Campo buscar(int idCampo) {
 
-        String sql = String.format("SELECT * FROM Campo WHERE IdCampo = '%d';", idCampo);
+        String sql = String.format("SELECT idCampo, Nome, Descricao FROM Campo WHERE IdCampo = '%d';", idCampo);
 
         return getAllCampos(sql).get(0);
     }
@@ -174,27 +175,6 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
         return foto;
     }
 
-    private Integer buscarId(String nome, int idFormulario) {
-        String sql = String.format("SELECT idCampo FROM Campo WHERE Nome ILIKE '%s' " +
-                "AND IdFormulario = %d;", nome, idFormulario);
-        Integer aux = null;
-
-        try {
-            Statement stmt = getConexao().createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-
-            if(rs.next()) {
-                aux = rs.getInt("idCampo");
-            }
-
-            stmt.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return aux;
-    }
-
     private List<Campo> getCampos(String sql, String matAluno){
         List<Campo> campos = new ArrayList<>();
 
@@ -206,14 +186,13 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
                 Campo campo = new Campo();
                 campo.setId(rs.getInt("idCampo"));
                 campo.setNome(rs.getString("nome"));
-                campo.setFoto(rs.getString("foto"));
                 campo.setDescricao(rs.getString("descricao"));
-                campo.setIdFormulario(rs.getInt("idFormulario"));
 
                 try {
                     campo.setOpcoes(
                             new OpcaoCampoDaoPostgres().listarPorChave(campo.getId())
                     );
+
                 } catch (SQLException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                     campo.setOpcoes(new ArrayList<>());
@@ -225,6 +204,7 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
                     campo.getRespostas().add(
                             new RespostaCampoDaoPostgres().buscar(matAluno, rs.getInt("IdCampo"))
                     );
+
                 } catch (SQLException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
@@ -251,14 +231,13 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
                 Campo campo = new Campo();
                 campo.setId(rs.getInt("idCampo"));
                 campo.setNome(rs.getString("nome"));
-                campo.setFoto(rs.getString("foto"));
                 campo.setDescricao(rs.getString("descricao"));
-                campo.setIdFormulario(rs.getInt("idFormulario"));
 
                 try {
                     campo.setOpcoes(
                             new OpcaoCampoDaoPostgres().listarPorChave(campo.getId())
                     );
+
                 } catch (SQLException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                     campo.setOpcoes(new ArrayList<>());
