@@ -11,6 +11,10 @@ import java.util.concurrent.TimeUnit;
 
 public class FotoManagement {
 
+    public static final String TIPO_ENQUETE = "enquete";
+    public static final String TIPO_FORMULARIO = "formulario";
+    public static final String TIPO_CAMPO = "campo";
+
     private static final String PATHNAME = "./FotosTemp/";
     private static Thread threadFotoManagement;
 
@@ -31,29 +35,43 @@ public class FotoManagement {
         return fotoBase64;
     }
 
-    public static File decodeFoto(String fotoBase64) throws IOException {
+    public static File decodeFoto(String fotoBase64, String tipo, int id) throws IOException {
 
-        //Cria objeto File de foto no endereço PATHNAME com o nome sendo um hashcode da foto em base64
-        File foto = new File(PATHNAME + fotoBase64.hashCode());
+        //Cria objeto File de foto no endereço PATHNAME com o nome sendo uma
+            //String contendo o Tipo do obj ao qual se quer a foto
+            //(Foto de um Formulario por exemplo) e o Id deste Obj
+        File foto = new File(PATHNAME + tipo + id);
 
-        //Se ja existe essa foto no disco retorna ela para evitar o processamento de decodificação
-            //da foto em Base64 para a foto em Bytes
-        if (foto.exists()){
-            System.out.println("Foto existe no Disco");
-            return foto;
-        }
-
-        System.out.println("Foto nao exite no disco");
         //Decodifica a foto de Base64 para Array de Bytes
         byte[] fotoBytes = Base64.getDecoder().decode(fotoBase64);
 
         //Escreve o Array de Bytes em um Arquivo
-        FileOutputStream fileOutputStream = new FileOutputStream(PATHNAME + fotoBase64.hashCode());
+        FileOutputStream fileOutputStream = new FileOutputStream(foto.getPath());
         fileOutputStream.write(fotoBytes);
 
         //Retorna a Foto
         return foto;
     }
+
+    public static File verifyExistsFoto(String tipo, int id) {
+
+        //Cria objeto File de foto no endereço PATHNAME com o nome sendo uma
+            //String contendo o Tipo do obj ao qual se quer a foto
+            //(Foto de um Formulario por exemplo) e o Id deste Obj
+        File foto = new File(PATHNAME + tipo + id);
+
+        //Se ja existe essa foto no disco retorna ela para evitar o processamento de decodificação
+        //da foto em Base64 para a foto em Bytes
+        if (foto.exists()) {
+            System.out.println("Foto existe no Disco");
+            return foto;
+        }
+
+        System.out.println("Foto nao exite no disco");
+        //Retorna a Null se a Foto nao Existe
+        return null;
+    }
+
 
     public static void startFotoManagement() {
 
