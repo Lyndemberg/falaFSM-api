@@ -64,17 +64,22 @@ public class FotoManagement {
                 executor.execute(new ThreadDiskManagement());
 
                 try {
-                    //Espera por 1 semana
-                    System.out.println("Vai esperar");
-                    TimeUnit.SECONDS.sleep(30);
-                    System.out.println("Esperou");
+                    //Espera por 1 semana (7 dias)
+                    TimeUnit.DAYS.sleep(7);
 
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
+                    executor.shutdown();
+                    return;
                 }
             }
         });
 
         threadFotoManagement.start();
+    }
+
+    public static void stopFotoManagement() {
+
+        threadFotoManagement.interrupt();
     }
 }
