@@ -410,7 +410,12 @@ public class FormularioController {
     @Path("foto/{idFormulario}/")
     public Response getFotoFormulario(@PathParam("idFormulario") int idFormulario) {
 
-        String foto = null;
+        String stringFoto = null;
+
+        File foto = FotoManagement.verifyExistsFoto(FotoManagement.TIPO_FORMULARIO, idFormulario);
+
+        if (foto != null)
+            return Response.ok(foto).build();
 
         try {
             //Cria objeto FormularioDao
@@ -418,7 +423,7 @@ public class FormularioController {
                     .criarFormularioDao();
 
             //Recupera a Foto do Banco de Dados em Base64
-            foto = formularioDao.retornarFoto(idFormulario);
+            stringFoto = formularioDao.retornarFoto(idFormulario);
 
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -432,13 +437,13 @@ public class FormularioController {
 
         //Se variavel StringFoto for nula entao este formulario nao possui Foto,
             //logo retorno Codigo 204 de OK mas No Content
-        if (foto == null)
+        if (stringFoto == null)
             return Response.status(Response.Status.NO_CONTENT).build();
 
         //Se nao for null entao decodifica a foto e retorna ela com o codigo 200
         try {
-            File image = FotoManagement.decodeFoto(foto);
-            return Response.ok(image).build();
+            foto = FotoManagement.decodeFoto(stringFoto, FotoManagement.TIPO_FORMULARIO, idFormulario);
+            return Response.ok(foto).build();
         } catch (IOException ex) {
             ex.printStackTrace();
             Logger.getLogger("FormularioController-log").info("Erro:" + ex.getStackTrace());
