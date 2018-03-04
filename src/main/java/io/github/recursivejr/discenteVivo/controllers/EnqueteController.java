@@ -211,6 +211,11 @@ public class EnqueteController {
 
 		String stringFoto = null;
 
+		File foto = FotoManagement.verifyExistsFoto(FotoManagement.TIPO_ENQUETE, idEnquete);
+
+		if (foto != null)
+			return Response.ok(foto).build();
+
 		//Tenta Criar uma enqueteDao
 		try {
 			EnqueteDaoInterface enqueteDao = Fabrica.criarFabricaDaoPostgres().criarEnqueteDao();
@@ -234,7 +239,7 @@ public class EnqueteController {
 
 		//Se nao for null entao decodifica a enquete e retorna ela com o codigo 200
 		try {
-			File foto = FotoManagement.decodeFoto(stringFoto);
+			foto = FotoManagement.decodeFoto(stringFoto, FotoManagement.TIPO_ENQUETE, idEnquete);
 			return Response.ok(foto).build();
 		} catch (IOException ex) {
 			ex.printStackTrace();

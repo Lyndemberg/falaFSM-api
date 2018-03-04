@@ -193,7 +193,7 @@ public class CampoController {
         File foto = FotoManagement.verifyExistsFoto(FotoManagement.TIPO_CAMPO, idCampo);
 
         if (foto != null)
-            return Response.ok(foto).build();;
+            return Response.ok(foto).build();
 
         //Tenta Criar uma campoDao
         try {
