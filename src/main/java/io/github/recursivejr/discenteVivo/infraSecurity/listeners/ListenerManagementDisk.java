@@ -9,7 +9,7 @@ public class ListenerManagementDisk implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        new FotoManagement().startFotoManagement();
+        FotoManagement.startFotoManagement();
     }
 
     @Override
