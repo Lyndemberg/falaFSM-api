@@ -153,7 +153,7 @@ public class CampoController {
             //Pois a foto enviada possui problemas
         } catch (IOException ex) {
             ex.printStackTrace();
-            Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+            Logger.getLogger("CampoController-log").info("Erro:" + ex.getStackTrace());
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -176,7 +176,7 @@ public class CampoController {
             //Retorna Erro do Servidor ao Cliente
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
-            Logger.getLogger("AdministradorController-log").info("Erro:" + ex.getStackTrace());
+            Logger.getLogger("CampoController-log").info("Erro:" + ex.getStackTrace());
             System.gc();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
