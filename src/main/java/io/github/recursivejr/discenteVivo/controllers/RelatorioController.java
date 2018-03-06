@@ -29,7 +29,7 @@ public class RelatorioController {
             RelatorioDaoInterface relatorioDao = Fabrica.criarFabricaDaoPostgres().criarRelatorioDao();
 
             //tenta gerar os relatorios com base no ID da idEnquete
-            relatorio = relatorioDao.gerarRelatorio(idEnquete);
+            relatorio = relatorioDao.gerarRelatorioEnquete(idEnquete);
 
         } catch (Exception ex) {
             ex.printStackTrace();

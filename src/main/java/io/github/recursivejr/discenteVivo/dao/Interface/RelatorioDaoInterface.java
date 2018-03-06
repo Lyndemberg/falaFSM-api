@@ -4,5 +4,6 @@ import io.github.recursivejr.discenteVivo.models.Relatorio;
 
 public interface RelatorioDaoInterface {
 
-	public Relatorio gerarRelatorio(int idEnquete);
+	public Relatorio gerarRelatorioEnquete(int idEnquete);
+	public Relatorio gerarRelatorioFormulario(int idFormulario);
 }

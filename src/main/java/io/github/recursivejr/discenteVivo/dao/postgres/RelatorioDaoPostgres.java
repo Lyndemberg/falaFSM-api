@@ -1,16 +1,16 @@
 package io.github.recursivejr.discenteVivo.dao.postgres;
 
+import io.github.recursivejr.discenteVivo.dao.ElementoDao;
+import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
+import io.github.recursivejr.discenteVivo.models.Comentario;
+import io.github.recursivejr.discenteVivo.models.Relatorio;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import io.github.recursivejr.discenteVivo.dao.ElementoDao;
-import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
-import io.github.recursivejr.discenteVivo.models.Comentario;
-import io.github.recursivejr.discenteVivo.models.Relatorio;
 
 public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInterface {
 
@@ -19,7 +19,7 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
     }
     
     @Override
-    public Relatorio gerarRelatorio(int idEnquete) {
+    public Relatorio gerarRelatorioEnquete(int idEnquete) {
 
 		String sql = String.format("SELECT resp.idEnquete AS idEnquete, resp.resposta AS Resposta," +
 				" count(*) AS QuantidadeVotos FROM RespondeEnquete resp" +
@@ -54,4 +54,9 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 		return relatorio;
     }
 
+	@Override
+	public Relatorio gerarRelatorioFormulario(int idFormulario) {
+    	//TODO
+		return null;
+	}
 }
