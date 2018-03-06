@@ -68,6 +68,9 @@ public class AlunoController{
 								   @FormParam("resposta") String resposta,
 								   @Context SecurityContext securityContext) {
 
+		if (idCampo <= 0 || resposta == null || resposta.isEmpty())
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
 		try {
 			//Cria um RespostaDao para Campos
 			RespostaDaoInterface respostaDao = Fabrica.criarFabricaDaoPostgres().criarRespostaCampoDao();
