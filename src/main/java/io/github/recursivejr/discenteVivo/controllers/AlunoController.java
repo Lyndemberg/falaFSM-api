@@ -173,6 +173,9 @@ public class AlunoController{
 									@FormParam("comentario") String comentario,
 									@Context SecurityContext securityContext) {
 
+		if (idEnquete <= 0 || comentario == null || comentario.isEmpty())
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
 		try {
 			//Cria um comentarioDao de Enquete
 			ComentarioDaoInterface comentarioDao = Fabrica.criarFabricaDaoPostgres()
