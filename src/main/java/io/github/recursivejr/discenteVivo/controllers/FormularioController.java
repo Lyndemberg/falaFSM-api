@@ -239,7 +239,8 @@ public class FormularioController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("formulario/{idFormulario}/")
     public Response getFormulario(@PathParam("idFormulario") int idFormulario,
-                                  @Context SecurityContext securityContext) {
+                                  @Context SecurityContext securityContext,
+                                  @Context Request request) {
 
         //Cria um formulario inicialmente null
         Formulario formulario = null;
@@ -265,7 +266,18 @@ public class FormularioController {
 
             //Caso Ocorra tudo normalmente Retorna Status 200 de OK
             System.gc();
-            return Response.ok(formulario).build();
+
+            EntityTag etag = new EntityTag(Integer.toString(formulario.hashCode()));
+            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+            if (builder == null) {
+                builder.status(Response.Status.OK);
+                builder.tag(etag);
+            }
+
+            builder.cacheControl(CacheController.getCacheControl());
+            return builder.build();
+
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
             Logger.getLogger("FormularioController-log").info("Erro:" + ex.getStackTrace());
@@ -281,7 +293,8 @@ public class FormularioController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("formularios/curso/")
     public Response formulariosByCurso(@FormParam("nomeCurso") String nome,
-                                       @Context SecurityContext securityContext) {
+                                       @Context SecurityContext securityContext,
+                                       @Context Request request) {
 
             //Cria uma Lista de formularios
             List<Formulario> formularios = new ArrayList<>();
@@ -307,7 +320,18 @@ public class FormularioController {
 
                 //Caso Ocorra tudo normalmente Retorna Status 200 de OK
                 System.gc();
-                return Response.ok(formularios).build();
+
+                EntityTag etag = new EntityTag(Integer.toString(formularios.hashCode()));
+                Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+                if (builder == null) {
+                    builder.status(Response.Status.OK).build();
+                    builder.tag(etag);
+                }
+
+                builder.cacheControl(CacheController.getCacheControl());
+                return builder.build();
+
             } catch (SQLException | ClassNotFoundException ex) {
                 ex.printStackTrace();
                 Logger.getLogger("FormularioController-log").info("Erro:" + ex.getStackTrace());
@@ -322,7 +346,8 @@ public class FormularioController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("formularios/setor/")
     public Response formulariosBySetor(@FormParam("nomeSetor") String nome,
-                                    @Context SecurityContext securityContext) {
+                                       @Context SecurityContext securityContext,
+                                       @Context Request request) {
 
         //Cria uma Lista de formularios
         List<Formulario> formularios = new ArrayList<>();
@@ -348,7 +373,18 @@ public class FormularioController {
 
             //Caso Ocorra tudo normalmente Retorna Status 200 de OK
             System.gc();
-            return Response.ok(formularios).build();
+
+            EntityTag etag = new EntityTag(Integer.toString(formularios.hashCode()));
+            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+            if (builder == null) {
+                builder.status(Response.Status.OK).build();
+                builder.tag(etag);
+            }
+
+            builder.cacheControl(CacheController.getCacheControl());
+            return builder.build();
+
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
             Logger.getLogger("FormularioController-log").info("Erro:" + ex.getStackTrace());
