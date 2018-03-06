@@ -43,7 +43,7 @@ public class CampoController {
             Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
 
             if (builder == null) {
-                builder.status(Response.Status.OK).build();
+                builder = Response.ok(campo);
                 builder.tag(etag);
             }
 
@@ -90,7 +90,7 @@ public class CampoController {
             Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
 
             if (builder == null) {
-                builder.status(Response.Status.OK).build();
+                builder = Response.ok(campos);
                 builder.tag(etag);
             }
 

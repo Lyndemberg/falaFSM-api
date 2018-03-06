@@ -271,7 +271,7 @@ public class FormularioController {
             Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
 
             if (builder == null) {
-                builder.status(Response.Status.OK);
+                builder = Response.ok(formulario);
                 builder.tag(etag);
             }
 
@@ -325,7 +325,7 @@ public class FormularioController {
                 Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
 
                 if (builder == null) {
-                    builder.status(Response.Status.OK).build();
+                    builder = Response.ok(formularios);
                     builder.tag(etag);
                 }
 
@@ -378,7 +378,7 @@ public class FormularioController {
             Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
 
             if (builder == null) {
-                builder.status(Response.Status.OK).build();
+                builder = Response.ok(formularios);
                 builder.tag(etag);
             }
 
