@@ -199,8 +199,10 @@ public class EnqueteDaoPostgres extends ElementoDao implements EnqueteDaoInterfa
         //e as enquetes do seu curso especifico
 
         String sql = String.format("SELECT E.idEnquete, E.Nome, E.Descricao FROM Enquete E " +
-                "NATURAL LEFT JOIN EnquetesCurso EC WHERE EC.NomeCurso IS NULL OR EC.NomeCurso ILIKE" +
-                " (SELECT NomeCurso FROM Aluno WHERE Matricula ILIKE '%s');", matAluno);
+                "NATURAL LEFT JOIN EnquetesCurso EC WHERE (EC.NomeCurso IS NULL OR EC.NomeCurso ILIKE" +
+                " (SELECT NomeCurso FROM Aluno WHERE Matricula ILIKE '%s')) AND " +
+                "('%s' NOT IN (SELECT DISTINCT(RE.MatriculaAluno) FROM RespondeEnquete as RE " +
+                "WHERE RE.IdEnquete = E.IdEnquete AND RE.MatriculaAluno ILIKE '%s'));", matAluno, matAluno, matAluno);
         return getEnquetes(sql, matAluno);
     }
 
