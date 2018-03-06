@@ -41,8 +41,11 @@ public class Formulario extends Questionario {
 
     @Override
     public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((campos == null) ? 0 : campos.hashCode());
 
-        return Objects.hash(super.hashCode(), getCampos());
+        return result;
     }
 
     @Override
