@@ -129,7 +129,8 @@ public class EnqueteController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("enquetes/curso/")
 	public Response enquetesByCurso(@FormParam("nomeCurso") String nome,
-									@Context SecurityContext securityContext) {
+									@Context SecurityContext securityContext,
+									@Context Request request) {
 
 		EnqueteDaoInterface enquetesDao = null;
 		List<Enquete> enquetes = null;
@@ -160,7 +161,16 @@ public class EnqueteController {
 		System.gc();
 
 		//Se tudo ocorreu corretamente entao retorna status 200 com OK
-		return Response.ok(enquetes).build();
+		EntityTag etag = new EntityTag(Integer.toString(enquetes.hashCode()));
+		Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+		if (builder == null) {
+			builder = Response.ok(enquetes);
+			builder.tag(etag);
+		}
+
+		builder.cacheControl(CacheController.getCacheControl());
+		return builder.build();
 	}
 
 	@POST
@@ -169,7 +179,8 @@ public class EnqueteController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("enquetes/setor/")
 	public Response enquetesBySetor(@FormParam("nomeSetor") String nome,
-									@Context SecurityContext securityContext) {
+									@Context SecurityContext securityContext,
+									@Context Request request) {
 
 		EnqueteDaoInterface enquetesDao = null;
 		List<Enquete> enquetes = null;
@@ -201,7 +212,16 @@ public class EnqueteController {
 		System.gc();
 
 		//Se tudo ocorreu corretamente entao retorna status 200 com OK
-		return Response.ok(enquetes).build();
+		EntityTag etag = new EntityTag(Integer.toString(enquetes.hashCode()));
+		Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+		if (builder == null) {
+			builder = Response.ok(enquetes);
+			builder.tag(etag);
+		}
+
+		builder.cacheControl(CacheController.getCacheControl());
+		return builder.build();
 	}
 
 	@GET
