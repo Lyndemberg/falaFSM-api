@@ -4,6 +4,7 @@ import io.github.recursivejr.discenteVivo.dao.Interface.CampoDaoInterface;
 import io.github.recursivejr.discenteVivo.dao.Interface.OpcaoDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.infraSecurity.AcessControll;
+import io.github.recursivejr.discenteVivo.infraSecurity.CacheController;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
@@ -27,7 +28,8 @@ public class CampoController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("campo/{idCampo}")
-    public Response getCampos(@PathParam("idCampo") int idCampo) {
+    public Response getCampos(@PathParam("idCampo") int idCampo,
+                              @Context Request request) {
 
         if (idCampo <= 0)
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -37,7 +39,16 @@ public class CampoController {
 
             Campo campo = campoDao.buscar(idCampo);
 
-            return Response.ok(campo).build();
+            EntityTag etag = new EntityTag(Integer.toString(campo.hashCode()));
+            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+            if (builder == null) {
+                builder.status(Response.Status.OK).build();
+                builder.tag(etag);
+            }
+
+            builder.cacheControl(CacheController.getCacheControl());
+            return builder.build();
 
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -50,7 +61,8 @@ public class CampoController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("campos/{idFormulario}")
     public Response getCamposByFormulario(@PathParam("idFormulario") int idFormulario,
-                                          @Context SecurityContext securityContext) {
+                                          @Context SecurityContext securityContext,
+                                          @Context Request request) {
 
         if (idFormulario <= 0)
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -74,7 +86,16 @@ public class CampoController {
             } else if (nivelAcesso == NivelAcesso.NIVEL_1)
                 campos = campoDao.listarPorFormulario(idFormulario, null);
 
-            return Response.ok(campos).build();
+            EntityTag etag = new EntityTag(Integer.toString(campos.hashCode()));
+            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+            if (builder == null) {
+                builder.status(Response.Status.OK).build();
+                builder.tag(etag);
+            }
+
+            builder.cacheControl(CacheController.getCacheControl());
+            return builder.build();
 
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
