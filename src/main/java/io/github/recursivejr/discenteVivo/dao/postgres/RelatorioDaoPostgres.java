@@ -17,16 +17,6 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
     public RelatorioDaoPostgres() throws SQLException, ClassNotFoundException {
         super();
     }
-
-	@Override
-    public Relatorio gerarRelatorio(String nomeEnquete) {
-
-		String sql = String.format("SELECT resp.idEnquete as idEnquete, resp.resposta AS Resposta, count(*) AS QuantidadeVotos" +
-				" FROM RespondeEnquete resp WHERE resp.idEnquete = (SELECT idEnquete FROM Enquete WHERE Nome ILIKE '%s')" +
-				" GROUP BY resp.idEnquete, resp.resposta;");
-
-		return getRelatorio(sql);
-	}
     
     @Override
     public Relatorio gerarRelatorio(int idEnquete) {
@@ -35,10 +25,6 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 				" count(*) AS QuantidadeVotos FROM RespondeEnquete resp" +
 				" WHERE resp.idEnquete = '%d' GROUP BY resp.idEnquete, resp.resposta;", idEnquete);
 
-    	return getRelatorio(sql);
-    }
-
-    private Relatorio getRelatorio(String sql) {
 		Relatorio relatorio = null;
 
 		List<String> opcoes = new ArrayList<>();
@@ -60,12 +46,12 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 					votos,
 					comentarios
 			);
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger(ex.getMessage());
 		}
 		return relatorio;
-	}
+    }
 
 }

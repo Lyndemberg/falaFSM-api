@@ -16,9 +16,9 @@ public class RelatorioController {
     @GET
     @Security(NivelAcesso.NIVEL_1)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("gerarRelatorios/enquete/{param}")
+    @Path("gerarRelatorios/enquete/{idEnquete}")
     //Variavel param pode ser a Id da Enquete ou o Nome da Enquete
-    public Response gerarRelatorios(@PathParam("param") String param,
+    public Response gerarRelatorios(@PathParam("idEnquete") int idEnquete,
                                     @Context Request request) {
 
         //Cria um Relatorio contando nada
@@ -28,15 +28,9 @@ public class RelatorioController {
             //Intancia um relatorioDaoPostgres usando a fabrica acessando somente os metodos definidos na Interface
             RelatorioDaoInterface relatorioDao = Fabrica.criarFabricaDaoPostgres().criarRelatorioDao();
 
-           try {
-               //tenta gerar os relatorios com base no ID, se ao converter o param de String para Integer retornar erro
-                    //entao o param contem letras e deve gerar os relatorios com base no nome
-               relatorio = relatorioDao.gerarRelatorio(Integer.parseInt(param));
-           } catch (NumberFormatException nFE) {
-                //caso tenha sido gerado uma Exception na conversao para Integer entao trata-se o param como o nome da enquete
-                    //e gera-se os relatorios com base nela
-                relatorio = relatorioDao.gerarRelatorio(param);
-           }
+            //tenta gerar os relatorios com base no ID da idEnquete
+            relatorio = relatorioDao.gerarRelatorio(idEnquete);
+
         } catch (Exception ex) {
             ex.printStackTrace();
             System.gc();
