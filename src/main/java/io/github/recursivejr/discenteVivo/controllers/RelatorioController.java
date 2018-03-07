@@ -46,7 +46,7 @@ public class RelatorioController {
         Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
 
         if (builder == null) {
-            builder.status(Response.Status.OK);
+            builder = Response.ok(relatorio);
             builder.tag(etag);
         }
 
@@ -88,7 +88,7 @@ public class RelatorioController {
         Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
 
         if (builder == null) {
-            builder.status(Response.Status.OK);
+            builder = Response.ok(relatorio);
             builder.tag(etag);
         }
 
