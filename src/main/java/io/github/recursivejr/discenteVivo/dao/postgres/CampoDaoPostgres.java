@@ -27,8 +27,6 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
             stmt.setString(2, campo.getDescricao());
             stmt.setInt(3, campo.getIdFormulario());
 
-            stmt.executeUpdate();
-
             //Recupera o valor do Id deste Campo no BD para ser usado nas proximas Querys
             ResultSet rs = stmt.executeQuery();
 
