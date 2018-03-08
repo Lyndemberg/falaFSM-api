@@ -214,17 +214,7 @@ public class FormularioController {
 
             //Caso Ocorra tudo normalmente Retorna Status 200 de OK
             System.gc();
-
-            EntityTag etag = new EntityTag(Integer.toString(formularios.hashCode()));
-            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-            if (builder == null) {
-                builder = Response.ok(formularios);
-                builder.tag(etag);
-            }
-
-            builder.cacheControl(CacheController.getCacheControl());
-            return builder.build();
+            return Response.ok(formularios).build();
 
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -266,17 +256,7 @@ public class FormularioController {
 
             //Caso Ocorra tudo normalmente Retorna Status 200 de OK
             System.gc();
-
-            EntityTag etag = new EntityTag(Integer.toString(formulario.hashCode()));
-            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-            if (builder == null) {
-                builder = Response.ok(formulario);
-                builder.tag(etag);
-            }
-
-            builder.cacheControl(CacheController.getCacheControl());
-            return builder.build();
+            return Response.ok(formulario).build();
 
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -320,17 +300,7 @@ public class FormularioController {
 
                 //Caso Ocorra tudo normalmente Retorna Status 200 de OK
                 System.gc();
-
-                EntityTag etag = new EntityTag(Integer.toString(formularios.hashCode()));
-                Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-                if (builder == null) {
-                    builder = Response.ok(formularios);
-                    builder.tag(etag);
-                }
-
-                builder.cacheControl(CacheController.getCacheControl());
-                return builder.build();
+                return Response.ok(formularios).build();
 
             } catch (SQLException | ClassNotFoundException ex) {
                 ex.printStackTrace();
@@ -373,17 +343,7 @@ public class FormularioController {
 
             //Caso Ocorra tudo normalmente Retorna Status 200 de OK
             System.gc();
-
-            EntityTag etag = new EntityTag(Integer.toString(formularios.hashCode()));
-            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-            if (builder == null) {
-                builder = Response.ok(formularios);
-                builder.tag(etag);
-            }
-
-            builder.cacheControl(CacheController.getCacheControl());
-            return builder.build();
+            return Response.ok(formularios).build();
 
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
