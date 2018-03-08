@@ -39,16 +39,8 @@ public class CampoController {
 
             Campo campo = campoDao.buscar(idCampo);
 
-            EntityTag etag = new EntityTag(Integer.toString(campo.hashCode()));
-            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-            if (builder == null) {
-                builder = Response.ok(campo);
-                builder.tag(etag);
-            }
-
-            builder.cacheControl(CacheController.getCacheControl());
-            return builder.build();
+            System.gc();
+            return Response.ok(campo).build();
 
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -86,16 +78,8 @@ public class CampoController {
             } else if (nivelAcesso == NivelAcesso.NIVEL_1)
                 campos = campoDao.listarPorFormulario(idFormulario, null);
 
-            EntityTag etag = new EntityTag(Integer.toString(campos.hashCode()));
-            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-            if (builder == null) {
-                builder = Response.ok(campos);
-                builder.tag(etag);
-            }
-
-            builder.cacheControl(CacheController.getCacheControl());
-            return builder.build();
+            System.gc();
+            return Response.ok(campos).build();
 
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
