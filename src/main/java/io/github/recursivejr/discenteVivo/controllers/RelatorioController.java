@@ -5,7 +5,6 @@ import javax.ws.rs.core.*;
 
 import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
-import io.github.recursivejr.discenteVivo.infraSecurity.CacheController;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.Relatorio;
