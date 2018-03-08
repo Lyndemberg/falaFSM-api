@@ -39,19 +39,10 @@ public class RelatorioController {
             Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        System.gc();
         //Sempre retorna relatorios sendo ele null ou preenchido
+        System.gc();
+        return Response.ok(relatorio).build();
 
-        EntityTag etag = new EntityTag(Integer.toString(relatorio.hashCode()));
-        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-        if (builder == null) {
-            builder = Response.ok(relatorio);
-            builder.tag(etag);
-        }
-
-        builder.cacheControl(CacheController.getCacheControl());
-        return builder.build();
     }
 
     @GET
@@ -81,19 +72,9 @@ public class RelatorioController {
             Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        System.gc();
         //Sempre retorna relatorios sendo ele null ou preenchido
-
-        EntityTag etag = new EntityTag(Integer.toString(relatorio.hashCode()));
-        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-        if (builder == null) {
-            builder = Response.ok(relatorio);
-            builder.tag(etag);
-        }
-
-        builder.cacheControl(CacheController.getCacheControl());
-        return builder.build();
+        System.gc();
+        return Response.ok(relatorio).build();
     }
 
 }
