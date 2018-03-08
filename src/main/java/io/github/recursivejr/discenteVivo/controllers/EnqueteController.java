@@ -58,17 +58,7 @@ public class EnqueteController {
 		System.gc();
 
 		//Se tudo ocorreu corretamente entao retorna status 200 com OK
-
-		EntityTag etag = new EntityTag(Integer.toString(enquetes.hashCode()));
-		Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-		if (builder == null) {
-			builder = Response.ok(enquetes);
-			builder.tag(etag);
-		}
-
-		builder.cacheControl(CacheController.getCacheControl());
-		return builder.build();
+		return Response.ok(enquetes).build();
 
     }
 
@@ -109,17 +99,7 @@ public class EnqueteController {
 		System.gc();
 
 		//Se tudo ocorreu corretamente entao retorna status 200 com OK
-
-		EntityTag etag = new EntityTag(Integer.toString(enquete.hashCode()));
-		Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-		if (builder == null) {
-			builder = Response.ok(enquete);
-			builder.tag(etag);
-		}
-
-		builder.cacheControl(CacheController.getCacheControl());
-		return builder.build();
+		return Response.ok(enquete).build();
 
 	}
 
@@ -161,16 +141,7 @@ public class EnqueteController {
 		System.gc();
 
 		//Se tudo ocorreu corretamente entao retorna status 200 com OK
-		EntityTag etag = new EntityTag(Integer.toString(enquetes.hashCode()));
-		Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-		if (builder == null) {
-			builder = Response.ok(enquetes);
-			builder.tag(etag);
-		}
-
-		builder.cacheControl(CacheController.getCacheControl());
-		return builder.build();
+		return Response.ok(enquetes).build();
 	}
 
 	@POST
@@ -212,16 +183,7 @@ public class EnqueteController {
 		System.gc();
 
 		//Se tudo ocorreu corretamente entao retorna status 200 com OK
-		EntityTag etag = new EntityTag(Integer.toString(enquetes.hashCode()));
-		Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
-
-		if (builder == null) {
-			builder = Response.ok(enquetes);
-			builder.tag(etag);
-		}
-
-		builder.cacheControl(CacheController.getCacheControl());
-		return builder.build();
+		return Response.ok(enquetes).build();
 	}
 
 	@GET
