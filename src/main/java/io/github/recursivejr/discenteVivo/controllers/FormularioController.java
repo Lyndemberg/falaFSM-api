@@ -66,12 +66,14 @@ public class FormularioController {
     @POST
     @Security(NivelAcesso.NIVEL_1)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("adicionarCampos/{idFormulario}/")
+    @Path("adicionarCampo/{idFormulario}/")
     public Response adicionarCampos(@PathParam("idFormulario") Integer idFormulario,
-                                    List<Campo> campos) {
+                                    Campo campo) {
 
         //Caso nao tenha sido Enviado nenhum Campo entao retorna BAD_REQUEST
-        if (campos.isEmpty())
+        if (campo == null || campo.getNome() == null || campo.getNome().isEmpty() ||
+                campo.getDescricao() == null || campo.getDescricao().isEmpty() ||
+                campo.getOpcoes() == null || campo.getOpcoes().isEmpty())
             return Response.status(Response.Status.BAD_REQUEST).build();
 
         try {
@@ -81,22 +83,17 @@ public class FormularioController {
             //Recebe todas os campos ja salvas para neste Formulario
             List<Campo> camposSalvos = campoDao.listarPorFormulario(idFormulario, null);
 
-            //Remove das novas opcoes que seram adicionadas todas aquelas que ja estao na lista de
-            //opcoes salvas no banco para este Formulario
-            for(int aux = 0; aux < camposSalvos.size(); aux++) {
-                if (campos.get(aux).simpleEquals(
-                        camposSalvos.get(aux))) {
-                    campos.remove(aux);
-                }
-            }
-
-            //Percorre todos os Campos restantes setando o id do Formulario e salvando-os
-            for(int aux = 0; aux < campos.size(); aux++) {
-                campos.get(aux).setIdFormulario(idFormulario);
-
-                if(campoDao.adicionar(campos.get(aux)) == null)
+            //Verifica se já existe esse campo salvo, se sim retorna BAD+REQUEST
+            for (Campo campoSalvo : camposSalvos) {
+                if (campo.simpleEquals(campoSalvo))
                     return Response.status(Response.Status.BAD_REQUEST).build();
             }
+
+            //Setando o id do Formulario no Campo
+                campo.setIdFormulario(idFormulario);
+
+                if(campoDao.adicionar(campo) == null)
+                    return Response.status(Response.Status.BAD_REQUEST).build();
 
             //Se tudo der certo retorna ao Cliente o Codigo 200 de OK
             System.gc();
