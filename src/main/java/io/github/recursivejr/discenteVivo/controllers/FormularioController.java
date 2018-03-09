@@ -66,6 +66,7 @@ public class FormularioController {
     @POST
     @Security(NivelAcesso.NIVEL_1)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("adicionarCampo/{idFormulario}/")
     public Response adicionarCampos(@PathParam("idFormulario") Integer idFormulario,
                                     Campo campo) {
@@ -90,14 +91,16 @@ public class FormularioController {
             }
 
             //Setando o id do Formulario no Campo
-                campo.setIdFormulario(idFormulario);
+            campo.setIdFormulario(idFormulario);
 
-                if(campoDao.adicionar(campo) == null)
+            Integer idCampo = campoDao.adicionar(campo);
+
+                if(idCampo == null)
                     return Response.status(Response.Status.BAD_REQUEST).build();
 
             //Se tudo der certo retorna ao Cliente o Codigo 200 de OK
             System.gc();
-            return Response.status(Response.Status.OK).build();
+            return Response.ok(idCampo.intValue()).build();
 
             //Caso disparado uma Exception entao Mostro a Exception ao Terminal
             //Cria-se um Log
