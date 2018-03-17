@@ -13,7 +13,6 @@ public class FotoManagement {
 
     public static final String TIPO_ENQUETE = "enquete";
     public static final String TIPO_FORMULARIO = "formulario";
-    public static final String TIPO_CAMPO = "campo";
 
     private static final String PATHNAME = "./FotosTemp/";
     private static Thread threadFotoManagement;
