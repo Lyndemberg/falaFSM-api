@@ -93,12 +93,18 @@ public class FormularioController {
             //Setando o id do Formulario no Campo
             campo.setIdFormulario(idFormulario);
 
+            //Adiciona o Campo no BD e armazena o Retorno (id do Campo) num obj
+                //Integer
             Integer idCampo = campoDao.adicionar(campo);
 
-                if(idCampo == null)
-                    return Response.status(Response.Status.BAD_REQUEST).build();
+            //Se o retorno for null Entao Houve Algum Problema ao Salvar, retorno
+                //BAD_REQUEST ao Cliente
+            if(idCampo == null)
+                return Response.status(Response.Status.BAD_REQUEST).build();
 
             //Se tudo der certo retorna ao Cliente o Codigo 200 de OK
+                //Converto o idCampo de obj Integer para INT e retorno ele
+                //ao cliente junto com a Resposta de OK
             System.gc();
             return Response.ok(idCampo.intValue()).build();
 
