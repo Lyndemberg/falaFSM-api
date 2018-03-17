@@ -9,12 +9,9 @@ import io.github.recursivejr.discenteVivo.infraSecurity.TokenManagement;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
 import io.github.recursivejr.discenteVivo.models.Campo;
 import io.github.recursivejr.discenteVivo.models.Opcao;
-import io.github.recursivejr.discenteVivo.resources.FotoManagement;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,96 +136,4 @@ public class CampoController {
 
     }
 
-    @PUT
-    @Security(NivelAcesso.NIVEL_1)
-    @Consumes("image/jpeg")
-    @Path("foto/{idCampo}")
-    public Response setFotoCampo(File foto,
-                                 @PathParam("idCampo") int idCampo) {
-
-        //Cria uma StringFoto para receber a Foto em Base64 inicialmente null
-        String stringFoto = null;
-
-        //Tenta Converter a imagem em Base64
-        try {
-            stringFoto = FotoManagement.encodeFoto(foto);
-
-            //Caso de IOExcetion ao tentar Converter a Foto entao Retorna Bad Request
-            //Pois a foto enviada possui problemas
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            Logger.getLogger("CampoController-log").info("Erro:" + ex.getStackTrace());
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        //Tenta Salvar a Imagem em Base64 no Banco de Dados
-        try {
-            CampoDaoInterface campoDao = Fabrica.criarFabricaDaoPostgres().criarCampoDao();
-
-            //Se ao atualizar a Foto Retornar True entao Retorna Codigo 200
-            if (campoDao.atualizarFoto(stringFoto, idCampo)) {
-                System.gc();
-                return Response.ok().build();
-
-                //caso false entao Retorna BAD_REQUEST
-            } else
-                return Response.status(Response.Status.BAD_REQUEST).build();
-
-            //Caso disparado uma Exception entao Mostro a Exception ao Terminal
-            //Cria-se um Log
-            //Limpa a Memoria
-            //Retorna Erro do Servidor ao Cliente
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-            Logger.getLogger("CampoController-log").info("Erro:" + ex.getStackTrace());
-            System.gc();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-
-    }
-
-    @GET
-    @Produces("image/jpeg")
-    @Path("foto/{idCampo}")
-    public Response getFotoCampo(@PathParam("idCampo") int idCampo) {
-
-        String stringFoto = null;
-
-        File foto = FotoManagement.verifyExistsFoto(FotoManagement.TIPO_CAMPO, idCampo);
-
-        if (foto != null)
-            return Response.ok(foto).build();
-
-        //Tenta Criar uma campoDao
-        try {
-            CampoDaoInterface campoDao = Fabrica.criarFabricaDaoPostgres().criarCampoDao();
-
-            //Recupera a foto do campo do BD em Base64
-            stringFoto = campoDao.retornarFoto(idCampo);
-
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-            Logger.getLogger("CampoController-log").info("Erro:" + ex.getStackTrace());
-            System.gc();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-
-        //Limpa objeto CampoDao
-        System.gc();
-
-        //Se variavel StringFoto for nula entao este campo nao possui Foto, logo retorno Codigo 204 de OK mas No Content
-        if (stringFoto == null)
-            return Response.status(Response.Status.NO_CONTENT).build();
-
-        //Se nao for null entao decodifica o campo e retorna ele com o codigo 200
-        try {
-            foto = FotoManagement.decodeFoto(stringFoto, FotoManagement.TIPO_CAMPO, idCampo);
-            return Response.ok(foto).build();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            Logger.getLogger("CampoController-log").info("Erro:" + ex.getStackTrace());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-
-    }
 }
