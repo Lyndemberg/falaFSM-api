@@ -12,6 +12,4 @@ public interface CampoDaoInterface {
     public Campo buscar(int idCampo);
     public List<Campo> listar();
     public List<Campo> listarPorFormulario(int idFormulario, String matAluno);
-    public boolean atualizarFoto(String foto, int idCampo);
-    public String retornarFoto(int idCampo);
 }

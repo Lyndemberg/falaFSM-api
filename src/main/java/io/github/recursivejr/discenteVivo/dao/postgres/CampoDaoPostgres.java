@@ -131,48 +131,6 @@ public class CampoDaoPostgres extends ElementoDao implements CampoDaoInterface {
         return getAllCampos(sql).get(0);
     }
 
-    @Override
-    public boolean atualizarFoto(String foto, int idCampo) {
-        String sql = "UPDATE Campo SET Foto = ? WHERE IdCampo = ?";
-
-        try {
-            PreparedStatement stmt = getConexao().prepareStatement(sql);
-            stmt.setString(1, foto);
-            stmt.setInt(2, idCampo);
-
-            stmt.executeUpdate();
-            stmt.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public String retornarFoto(int idCampo) {
-        String foto = null;
-        String sql = String.format("SELECT Foto FROM Campo WHERE idCampo = %d", idCampo);
-
-        try {
-            Statement stmt = getConexao().createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-
-            if(rs.next())
-                foto = rs.getString("Foto");
-
-            rs.close();
-            stmt.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return foto;
-    }
-
     private List<Campo> getCampos(String sql, String matAluno){
         List<Campo> campos = new ArrayList<>();
 
