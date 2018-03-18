@@ -2,19 +2,19 @@ package io.github.recursivejr.discenteVivo.models;
 
 import java.util.List;
 
-public class Relatorio {
+public class RelatorioEnquete {
 
 	private List<String> opcao;
 	private List<Integer> votos;
 	private List<Comentario> comentarios;
 
-	public Relatorio(List<String> opcao, List<Integer> votos, List<Comentario> comentarios) {
+	public RelatorioEnquete(List<String> opcao, List<Integer> votos, List<Comentario> comentarios) {
 		this.opcao = opcao;
 		this.votos = votos;
 		this.comentarios = comentarios;
 	}
 
-	public Relatorio() {
+	public RelatorioEnquete() {
 
 	}
 
@@ -47,7 +47,7 @@ public class Relatorio {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		Relatorio relatorio = (Relatorio) o;
+		RelatorioEnquete relatorio = (RelatorioEnquete) o;
 
 		if (!opcao.equals(relatorio.opcao)) return false;
 		if (!votos.equals(relatorio.votos)) return false;
@@ -64,7 +64,7 @@ public class Relatorio {
 
 	@Override
 	public String toString() {
-		return "Relatorio{" +
+		return "RelatorioEnquete{" +
 				"opcao=" + opcao +
 				", votos=" + votos +
 				", comentarios=" + comentarios +
