@@ -3,8 +3,11 @@ package io.github.recursivejr.discenteVivo.dao.postgres;
 import io.github.recursivejr.discenteVivo.dao.ElementoDao;
 import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
 import io.github.recursivejr.discenteVivo.models.Comentario;
-import io.github.recursivejr.discenteVivo.models.Relatorio;
+import io.github.recursivejr.discenteVivo.models.RelatorioCampo;
+import io.github.recursivejr.discenteVivo.models.RelatorioEnquete;
+import io.github.recursivejr.discenteVivo.models.RelatorioFormulario;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,13 +22,13 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
     }
     
     @Override
-    public Relatorio gerarRelatorioEnquete(int idEnquete) {
+    public RelatorioEnquete gerarRelatorioEnquete(int idEnquete) {
 
 		String sql = String.format("SELECT resp.idEnquete AS idEnquete, resp.resposta AS Resposta," +
 				" count(*) AS QuantidadeVotos FROM RespondeEnquete resp" +
 				" WHERE resp.idEnquete = '%d' GROUP BY resp.idEnquete, resp.resposta;", idEnquete);
 
-		Relatorio relatorio = null;
+		RelatorioEnquete relatorio = null;
 
 		List<String> opcoes = new ArrayList<>();
 		List<Integer> votos = new ArrayList<>();
@@ -41,7 +44,7 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 				comentarios = new ComentarioEnqueteDaoPostgres().listarPorChave(rs.getInt("idEnquete"));
 			}
 
-			relatorio = new Relatorio(
+			relatorio = new RelatorioEnquete(
 					opcoes,
 					votos,
 					comentarios
@@ -50,44 +53,66 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger(ex.getMessage());
+			return null;
 		}
+
 		return relatorio;
     }
 
 	@Override
-	public Relatorio gerarRelatorioFormulario(int idFormulario) {
+	public RelatorioFormulario gerarRelatorioFormulario(int idFormulario) {
 
-		String sql = String.format("SELECT Form.IdFormulario AS IdFormulario, RC.Resposta AS Resposta, " +
-				"count(*) as QuantidadeVotos FROM Formulario AS Form JOIN Campo AS Camp ON " +
-				"Form.idformulario = Camp.idformulario LEFT JOIN RespondeCampo AS RC ON Camp.idcampo = RC.idcampo " +
-				"WHERE Form.idFormulario = '%d' GROUP BY Form.IdFormulario, RC.Resposta;", idFormulario);
+		RelatorioFormulario relatorioFormulario = new RelatorioFormulario();
 
-		Relatorio relatorio = null;
-
-		List<String> opcoes = new ArrayList<>();
-		List<Integer> votos = new ArrayList<>();
-		List<Comentario> comentarios = new ArrayList<>();
+		String sql = String.format("SELECT Nome, IdCampo FROM Campo WHERE IdFormulario = ?;");
+    	List<RelatorioCampo> relatorios = new ArrayList<>();
 
 		try {
-			Statement stmt = getConexao().createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			PreparedStatement stmt = getConexao().prepareStatement(sql);
+			stmt.setInt(1, idFormulario);
+
+			ResultSet rs = stmt.executeQuery();
+
+			relatorioFormulario.setComentarios(
+					new ComentarioFormularioDaoPostgres().listarPorChave(rs.getInt("idFormulario"))
+			);
 
 			while (rs.next()) {
-				opcoes.add(rs.getString("Resposta"));
-				votos.add(rs.getInt("QuantidadeVotos"));
-				comentarios = new ComentarioFormularioDaoPostgres().listarPorChave(rs.getInt("idFormulario"));
-			}
 
-			relatorio = new Relatorio(
-					opcoes,
-					votos,
-					comentarios
-			);
+				List<String> opcoes = new ArrayList<>();
+				List<Integer> votos = new ArrayList<>();
+
+				String internalSQL = "SELECT RC.resposta, count(*) as QuantidadeVotos" +
+						"FROM OpcoesCampo AS OP JOIN RespondeCampo AS RC ON (OP.idcampo = RC.idcampo " +
+						"AND OP.Opcao ILIKE RC.Resposta) WHERE op.idcampo = ? GROUP BY RC.resposta;";
+
+				PreparedStatement internalSTMT = getConexao().prepareStatement(sql);
+				internalSTMT.setInt(1, rs.getInt("IdCampo"));
+
+				ResultSet internalRS = internalSTMT.executeQuery();
+
+				while (internalRS.next()) {
+					opcoes.add(rs.getString("Resposta"));
+					votos.add(rs.getInt("QuantidadeVotos"));
+				}
+
+				RelatorioCampo relatorioCampo = new RelatorioCampo(
+						rs.getString("Nome"),
+						opcoes,
+						votos
+				);
+
+				relatorios.add(relatorioCampo);
+			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Logger.getLogger(ex.getMessage());
+			return null;
 		}
-		return relatorio;
+
+		relatorioFormulario.setRelatorios(relatorios);
+		return relatorioFormulario;
 	}
 }
+

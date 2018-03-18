@@ -1,9 +1,10 @@
 package io.github.recursivejr.discenteVivo.dao.Interface;
 
-import io.github.recursivejr.discenteVivo.models.Relatorio;
+import io.github.recursivejr.discenteVivo.models.RelatorioEnquete;
+import io.github.recursivejr.discenteVivo.models.RelatorioFormulario;
 
 public interface RelatorioDaoInterface {
 
-	public Relatorio gerarRelatorioEnquete(int idEnquete);
-	public Relatorio gerarRelatorioFormulario(int idFormulario);
+	public RelatorioEnquete gerarRelatorioEnquete(int idEnquete);
+	public RelatorioFormulario gerarRelatorioFormulario(int idFormulario);
 }
