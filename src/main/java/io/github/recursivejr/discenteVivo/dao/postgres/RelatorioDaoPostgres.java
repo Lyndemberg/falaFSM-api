@@ -96,6 +96,21 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 					votos.add(internalRS.getInt("QuantidadeVotos"));
 				}
 
+				internalSQL = "SELECT OP.Opcao AS Resposta FROM OpcoesCampo AS OP WHERE OP.idcampo = ? " +
+						"AND OP.Opcao NOT IN (SELECT RC.Resposta FROM RespondeCampo AS RC " +
+						"WHERE RC.idcampo = ? GROUP BY RC.Resposta);";
+
+				internalSTMT = getConexao().prepareStatement(internalSQL);
+				internalSTMT.setInt(1, rs.getInt("IdCampo"));
+				internalSTMT.setInt(2, rs.getInt("IdCampo"));
+
+				internalRS = internalSTMT.executeQuery();
+
+				while (internalRS.next()) {
+					opcoes.add(internalRS.getString("Resposta"));
+					votos.add(0);
+				}
+
 				RelatorioCampo relatorioCampo = new RelatorioCampo(
 						rs.getString("Nome"),
 						opcoes,
