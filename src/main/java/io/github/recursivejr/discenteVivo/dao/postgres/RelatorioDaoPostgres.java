@@ -68,14 +68,14 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
     	List<RelatorioCampo> relatorios = new ArrayList<>();
 
 		try {
+			relatorioFormulario.setComentarios(
+					new ComentarioFormularioDaoPostgres().listarPorChave(idFormulario)
+			);
+
 			PreparedStatement stmt = getConexao().prepareStatement(sql);
 			stmt.setInt(1, idFormulario);
 
 			ResultSet rs = stmt.executeQuery();
-
-			relatorioFormulario.setComentarios(
-					new ComentarioFormularioDaoPostgres().listarPorChave(rs.getInt("idFormulario"))
-			);
 
 			while (rs.next()) {
 
