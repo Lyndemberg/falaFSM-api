@@ -7,7 +7,7 @@ import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
 import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
 import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
-import io.github.recursivejr.discenteVivo.models.Relatorio;
+import io.github.recursivejr.discenteVivo.models.RelatorioEnquete;
 
 @Path("relatorio")
 public class RelatorioController {
@@ -22,8 +22,8 @@ public class RelatorioController {
         if (idEnquete <= 0)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
-        //Cria um Relatorio contando nada
-        Relatorio relatorio = null;
+        //Cria um RelatorioEnquete contando nada
+        RelatorioEnquete relatorio = null;
 
         try {
             //Intancia um relatorioDaoPostgres usando a fabrica acessando somente os metodos definidos na Interface
@@ -55,8 +55,8 @@ public class RelatorioController {
         if (idFormulario <= 0)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
-        //Cria um Relatorio contando nada
-        Relatorio relatorio = null;
+        //Cria um RelatorioEnquete contando nada
+        RelatorioEnquete relatorio = null;
 
         try {
             //Intancia um relatorioDaoPostgres usando a fabrica acessando somente os metodos definidos na Interface
