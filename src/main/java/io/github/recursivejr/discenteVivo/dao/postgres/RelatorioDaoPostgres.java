@@ -82,11 +82,11 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 				List<String> opcoes = new ArrayList<>();
 				List<Integer> votos = new ArrayList<>();
 
-				String internalSQL = "SELECT RC.resposta, count(*) as QuantidadeVotos" +
+				String internalSQL = "SELECT RC.resposta, count(*) as QuantidadeVotos " +
 						"FROM OpcoesCampo AS OP JOIN RespondeCampo AS RC ON (OP.idcampo = RC.idcampo " +
 						"AND OP.Opcao ILIKE RC.Resposta) WHERE op.idcampo = ? GROUP BY RC.resposta;";
 
-				PreparedStatement internalSTMT = getConexao().prepareStatement(sql);
+				PreparedStatement internalSTMT = getConexao().prepareStatement(internalSQL);
 				internalSTMT.setInt(1, rs.getInt("IdCampo"));
 
 				ResultSet internalRS = internalSTMT.executeQuery();
