@@ -92,8 +92,8 @@ public class RelatorioDaoPostgres extends ElementoDao implements RelatorioDaoInt
 				ResultSet internalRS = internalSTMT.executeQuery();
 
 				while (internalRS.next()) {
-					opcoes.add(rs.getString("Resposta"));
-					votos.add(rs.getInt("QuantidadeVotos"));
+					opcoes.add(internalRS.getString("Resposta"));
+					votos.add(internalRS.getInt("QuantidadeVotos"));
 				}
 
 				RelatorioCampo relatorioCampo = new RelatorioCampo(
