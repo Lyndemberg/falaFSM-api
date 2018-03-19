@@ -104,7 +104,7 @@ public class AdministradorDaoPostgres extends ElementoDao implements Administrad
             stmt.setString(4, Encryption.encrypt(administrador.getSenha()));//Senha Criptografada pelo BCrypt
 
             if (sql.contains("ILIKE"))
-                stmt.setString(8, administrador.getEmail());
+                stmt.setString(5, administrador.getEmail());
 
             stmt.executeUpdate();
 
