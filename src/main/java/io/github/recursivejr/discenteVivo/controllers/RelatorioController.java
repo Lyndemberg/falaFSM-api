@@ -1,59 +1,79 @@
 package io.github.recursivejr.discenteVivo.controllers;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 
-import io.github.recursivejr.discenteVivo.dao.RelatorioDaoInterface;
-import io.github.recursivejr.discenteVivo.factories.FabricaDaoPostgres;
-import io.github.recursivejr.discenteVivo.infraSecurity.FilterDetect;
+import io.github.recursivejr.discenteVivo.dao.Interface.RelatorioDaoInterface;
+import io.github.recursivejr.discenteVivo.factories.Fabrica;
 import io.github.recursivejr.discenteVivo.infraSecurity.Security;
-import io.github.recursivejr.discenteVivo.models.Relatorio;
+import io.github.recursivejr.discenteVivo.infraSecurity.model.NivelAcesso;
+import io.github.recursivejr.discenteVivo.models.RelatorioEnquete;
+import io.github.recursivejr.discenteVivo.models.RelatorioFormulario;
 
 @Path("relatorio")
 public class RelatorioController {
 	
     @GET
-    @Security
+    @Security(NivelAcesso.NIVEL_1)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("gerarRelatorios/enquete/{param}/")
-    //Variavel param pode ser a Id da Enquete ou o Nome da Enquete
-    public Response gerarRelatorios(@PathParam("param") String param, @Context ContainerRequestContext requestContext) {
+    @Path("gerarRelatorios/enquete/{idEnquete}")
+    public Response gerarRelatoriosEnquete(@PathParam("idEnquete") int idEnquete,
+                                    @Context Request request) {
 
-        //Cria um Relatorio contando nada
-        Relatorio relatorio = null;
+        if (idEnquete <= 0)
+            return Response.status(Response.Status.BAD_REQUEST).build();
 
-        //Checa se e Administrador, se nao for retorna UNAUTHORIZED
-        if (!FilterDetect.checkAdmin(requestContext))
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-
+        //Cria um RelatorioEnquete contando nada
+        RelatorioEnquete relatorio = null;
 
         try {
             //Intancia um relatorioDaoPostgres usando a fabrica acessando somente os metodos definidos na Interface
-            RelatorioDaoInterface relatorioDao = new FabricaDaoPostgres().criarRelatorioDao();
+            RelatorioDaoInterface relatorioDao = Fabrica.criarFabricaDaoPostgres().criarRelatorioDao();
 
-           try {
-               //tenta gerar os relatorios com base no ID, se ao converter o param de String para Integer retornar erro
-                    //entao o param contem letras e deve gerar os relatorios com base no nome
-               relatorio = relatorioDao.gerarRelatorio(Integer.parseInt(param));
-           } catch (NumberFormatException nFE) {
-                //caso tenha sido gerado uma Exception na conversao para Integer entao trata-se o param como o nome da enquete
-                    //e gera-se os relatorios com base nela
-                relatorio = relatorioDao.gerarRelatorio(param);
-           }
+            //tenta gerar os relatorios com base no ID da idEnquete
+            relatorio = relatorioDao.gerarRelatorioEnquete(idEnquete);
+
         } catch (Exception ex) {
             ex.printStackTrace();
             System.gc();
             Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        System.gc();
         //Sempre retorna relatorios sendo ele null ou preenchido
+        System.gc();
+        return Response.ok(relatorio).build();
+
+    }
+
+    @GET
+    @Security(NivelAcesso.NIVEL_1)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("gerarRelatorios/formulario/{idFormulario}")
+    public Response gerarRelatoriosFormulario(@PathParam("idFormulario") int idFormulario,
+                                    @Context Request request) {
+
+
+        if (idFormulario <= 0)
+            return Response.status(Response.Status.BAD_REQUEST).build();
+
+        //Cria um RelatorioEnquete contando nada
+        RelatorioFormulario relatorio = null;
+
+        try {
+            //Intancia um relatorioDaoPostgres usando a fabrica acessando somente os metodos definidos na Interface
+            RelatorioDaoInterface relatorioDao = Fabrica.criarFabricaDaoPostgres().criarRelatorioDao();
+
+            //tenta gerar os relatorios com base no ID da idEnquete
+            relatorio = relatorioDao.gerarRelatorioFormulario(idFormulario);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.gc();
+            Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        //Sempre retorna relatorios sendo ele null ou preenchido
+        System.gc();
         return Response.ok(relatorio).build();
     }
 

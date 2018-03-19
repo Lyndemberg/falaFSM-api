@@ -1,25 +1,31 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Objects;
+
 public class Opcao {
 
-	private int idEnquete;
+	//idFK = id Foreing key, ou seja, o id da Tabela na qual se faz chave estrangeira
+	@JsonIgnore
+	private int idFK;
 	private String opcao;
-	
-	public Opcao(int idEnquete, String opcao) {
-		this.idEnquete = idEnquete;
+
+	public Opcao() {
+
+	}
+
+	public Opcao(int idFK, String opcao) {
+		this.idFK = idFK;
 		this.opcao = opcao;
 	}
-	
-	public Opcao() {
-		
+
+	public int getIdFK() {
+		return idFK;
 	}
 
-	public int getIdEnquete() {
-		return idEnquete;
-	}
-
-	public void setIdEnquete(int idEnquete) {
-		this.idEnquete = idEnquete;
+	public void setIdFK(int idFK) {
+		this.idFK = idFK;
 	}
 
 	public String getOpcao() {
@@ -31,36 +37,26 @@ public class Opcao {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + idEnquete;
-		result = prime * result + ((opcao == null) ? 0 : opcao.hashCode());
-		return result;
+	public boolean equals(Object o) {
+
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Opcao opcao1 = (Opcao) o;
+		return getIdFK() == opcao1.getIdFK() &&
+				Objects.equals(getOpcao(), opcao1.getOpcao());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Opcao other = (Opcao) obj;
-		if (idEnquete != other.idEnquete)
-			return false;
-		if (opcao == null) {
-			if (other.opcao != null)
-				return false;
-		} else if (!opcao.equals(other.opcao))
-			return false;
-		return true;
+	public int hashCode() {
+
+		return Objects.hash(getIdFK(), getOpcao());
 	}
 
 	@Override
 	public String toString() {
-		return "Opcao [idEnquete=" + idEnquete + ", opcao=" + opcao + "]";
+		return "Opcao{" +
+				"idFK=" + idFK +
+				", opcao='" + opcao + '\'' +
+				'}';
 	}
-
 }

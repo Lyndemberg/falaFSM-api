@@ -1,19 +1,33 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Objects;
+
 public class Comentario {
 
+    //idFK = id Foreing key, ou seja, o id da Tabela na qual se faz chave estrangeira
+    @JsonIgnore
+    private int idFK;
     private String matriculaAluno;
-    private int idEnquete;
     private String comentario;
-
-    public Comentario(String matriculaAluno, int idEnquete, String comentario) {
-        this.matriculaAluno = matriculaAluno;
-        this.idEnquete = idEnquete;
-        this.comentario = comentario;
-    }
 
     public Comentario() {
 
+    }
+
+    public Comentario(int idFK, String matriculaAluno, String comentario) {
+        this.idFK = idFK;
+        this.matriculaAluno = matriculaAluno;
+        this.comentario = comentario;
+    }
+
+    public int getIdFK() {
+        return idFK;
+    }
+
+    public void setIdFK(int idFK) {
+        this.idFK = idFK;
     }
 
     public String getMatriculaAluno() {
@@ -22,14 +36,6 @@ public class Comentario {
 
     public void setMatriculaAluno(String matriculaAluno) {
         this.matriculaAluno = matriculaAluno;
-    }
-
-    public int getIdEnquete() {
-        return idEnquete;
-    }
-
-    public void setIdEnquete(int idEnquete) {
-        this.idEnquete = idEnquete;
     }
 
     public String getComentario() {
@@ -41,31 +47,29 @@ public class Comentario {
     }
 
     @Override
-    public String toString() {
-        return "Comentario{" +
-                "matriculaAluno='" + matriculaAluno + '\'' +
-                ", idEnquete=" + idEnquete +
-                ", comentario='" + comentario + '\'' +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Comentario that = (Comentario) o;
-
-        if (idEnquete != that.idEnquete) return false;
-        if (!matriculaAluno.equals(that.matriculaAluno)) return false;
-        return comentario.equals(that.comentario);
+        return getIdFK() == that.getIdFK() &&
+                Objects.equals(getMatriculaAluno(), that.getMatriculaAluno()) &&
+                Objects.equals(getComentario(), that.getComentario());
     }
 
     @Override
     public int hashCode() {
-        int result = matriculaAluno.hashCode();
-        result = 31 * result + idEnquete;
-        result = 31 * result + comentario.hashCode();
-        return result;
+
+        return Objects.hash(getIdFK(), getMatriculaAluno(), getComentario());
+    }
+
+    @Override
+    public String toString() {
+
+        return "Comentario{" +
+                "idFK=" + idFK +
+                ", matriculaAluno='" + matriculaAluno + '\'' +
+                ", comentario='" + comentario + '\'' +
+                '}';
     }
 }

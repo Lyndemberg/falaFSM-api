@@ -1,10 +1,13 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 public class Setor {
 
     private String nome;
+    @JsonIgnore
     private List<Enquete> enquetes;
     
 	public Setor(String nome, List<Enquete> enquetes) {

@@ -1,84 +1,27 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import io.github.recursivejr.discenteVivo.models.abstrato.Questionario;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Enquete {
+public class Enquete extends Questionario {
 
-	private int id;
-	private String emailAdmin;
-    private String nome;
-    private String descricao;
-    private String foto;
-    private List<Comentario> comentarios;
     private List<Opcao> opcoes;
     private List<Resposta> respostas;
-    private List<Curso> cursos;
-    private List<Setor> setores;
-
-    public Enquete(int id, String emailAdmin, String nome, String descricao, String foto, List<Comentario> comentarios,
-                   List<Opcao> opcoes, List<Resposta> respostas, List<Curso> cursos, List<Setor> setores) {
-        this.id = id;
-        this.emailAdmin = emailAdmin;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.foto = foto;
-        this.comentarios = comentarios;
-        this.opcoes = opcoes;
-        this.respostas = respostas;
-        this.cursos = cursos;
-        this.setores = setores;
-    }
 
     public Enquete() {
 
     }
 
-    public int getId() {
-        return id;
-    }
+    public Enquete(int id, String emailAdmin, String nome, String descricao, String foto,
+                   List<Curso> cursos, List<Setor> setores, List<Comentario> comentarios,
+                   List<Opcao> opcoes, List<Resposta> respostas) {
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getEmailAdmin() {
-        return emailAdmin;
-    }
-
-    public void setEmailAdmin(String emailAdmin) {
-        this.emailAdmin = emailAdmin;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getFoto() {
-        return foto;
-    }
-
-    public void setFoto(String foto) {
-        this.foto = foto;
-    }
-
-    public List<Comentario> getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(List<Comentario> comentarios) {
-        this.comentarios = comentarios;
+        super(id, emailAdmin, nome, descricao, foto, cursos, setores, comentarios);
+        this.opcoes = opcoes;
+        this.respostas = respostas;
     }
 
     public List<Opcao> getOpcoes() {
@@ -97,69 +40,27 @@ public class Enquete {
         this.respostas = respostas;
     }
 
-    public List<Curso> getCursos() {
-        return cursos;
-    }
-
-    public void setCursos(List<Curso> cursos) {
-        this.cursos = cursos;
-    }
-
-    public List<Setor> getSetores() {
-        return setores;
-    }
-
-    public void setSetores(List<Setor> setores) {
-        this.setores = setores;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Enquete)) return false;
+        if (!super.equals(o)) return false;
         Enquete enquete = (Enquete) o;
-
-        if (id != enquete.id) return false;
-        if (!emailAdmin.equals(enquete.emailAdmin)) return false;
-        if (!nome.equals(enquete.nome)) return false;
-        if (!descricao.equals(enquete.descricao)) return false;
-        if (!foto.equals(enquete.foto)) return false;
-        if (!comentarios.equals(enquete.comentarios)) return false;
-        if (!opcoes.equals(enquete.opcoes)) return false;
-        if (!respostas.equals(enquete.respostas)) return false;
-        if (!cursos.equals(enquete.cursos)) return false;
-        return setores.equals(enquete.setores);
+        return Objects.equals(getOpcoes(), enquete.getOpcoes()) &&
+                Objects.equals(getRespostas(), enquete.getRespostas());
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + emailAdmin.hashCode();
-        result = 31 * result + nome.hashCode();
-        result = 31 * result + descricao.hashCode();
-        result = 31 * result + foto.hashCode();
-        result = 31 * result + comentarios.hashCode();
-        result = 31 * result + opcoes.hashCode();
-        result = 31 * result + respostas.hashCode();
-        result = 31 * result + cursos.hashCode();
-        result = 31 * result + setores.hashCode();
-        return result;
+
+        return Objects.hash(super.hashCode(), getOpcoes(), getRespostas());
     }
 
     @Override
     public String toString() {
         return "Enquete{" +
-                "id=" + id +
-                ", emailAdmin='" + emailAdmin + '\'' +
-                ", nome='" + nome + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", foto='" + foto + '\'' +
-                ", comentarios=" + comentarios +
-                ", opcoes=" + opcoes +
+                "opcoes=" + opcoes +
                 ", respostas=" + respostas +
-                ", cursos=" + cursos +
-                ", setores=" + setores +
                 '}';
     }
 }

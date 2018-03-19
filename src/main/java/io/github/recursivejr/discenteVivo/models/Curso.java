@@ -1,12 +1,17 @@
 package io.github.recursivejr.discenteVivo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
+import java.util.Objects;
 
 public class Curso {
 
     private String nome;
     private String descricao;
+    @JsonIgnore
     private List<Aluno> alunos;
+    @JsonIgnore
     private List<Enquete> enquetes;
 
     public Curso(String nome, String descricao, List<Aluno> alunos, List<Enquete> enquetes) {
@@ -54,28 +59,32 @@ public class Curso {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Curso curso = (Curso) o;
-
-        if (!nome.equals(curso.nome)) return false;
-        if (!descricao.equals(curso.descricao)) return false;
-        if (!alunos.equals(curso.alunos)) return false;
-        return enquetes.equals(curso.enquetes);
+        return Objects.equals(nome, curso.nome) &&
+                Objects.equals(descricao, curso.descricao) &&
+                Objects.equals(alunos, curso.alunos) &&
+                Objects.equals(enquetes, curso.enquetes);
     }
 
     @Override
     public int hashCode() {
-        int result = nome.hashCode();
-        result = 31 * result + descricao.hashCode();
-        result = 31 * result + alunos.hashCode();
-        result = 31 * result + enquetes.hashCode();
+
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((enquetes == null) ? 0 : enquetes.hashCode());
+        result = prime * result + ((alunos == null) ? 0 : alunos.hashCode());
+        result = prime * result + ((descricao == null) ? 0 : descricao.hashCode());
+        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+
         return result;
     }
 
     @Override
     public String toString() {
+
         return "Curso{" +
                 "nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
