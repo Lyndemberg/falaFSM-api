@@ -228,7 +228,7 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
     @Override
     public List<Formulario> formulariosPorSetor(String nomeSetor, String matAluno) {
 
-        String sql = String.format("SELECT F.idFormulario, F.nome. F.Descricao FROM Formulario F " +
+        String sql = String.format("SELECT F.idFormulario, F.nome, F.Descricao FROM Formulario F " +
                 "NATURAL JOIN FormularioSetor FS WHERE FS.nomeSetor ILIKE '%s';", nomeSetor);
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
@@ -242,7 +242,7 @@ public class FormularioDaoPostgres extends ElementoDao implements FormularioDaoI
     @Override
     public List<Formulario> formulariosPorCurso(String nomeCurso, String matAluno) {
 
-        String sql = String.format("SELECT F.idFormulario, F.nome. F.Descricao FROM Formulario F " +
+        String sql = String.format("SELECT F.idFormulario, F.nome, F.Descricao FROM Formulario F " +
                 "NATURAL JOIN FormularioCurso FC WHERE FC.nomeCurso ILIKE '%s';", nomeCurso);
 
         //Se nao tiver matAluno entao nao e necessario filtrar por aluno
