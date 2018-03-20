@@ -1,4 +1,9 @@
-﻿CREATE TABLE ADMINISTRADOR( 
+﻿/*
+	O NOME DO BANCO DEVE SER: 'falaFSM'
+	VIDE io.github.recursivejr.falaFSM.factories.Conexao
+ */
+
+CREATE TABLE ADMINISTRADOR(
 	Email VARCHAR(45),
 	Nome VARCHAR(45) NOT NULL,
 	Login VARCHAR(15) NOT NULL UNIQUE,

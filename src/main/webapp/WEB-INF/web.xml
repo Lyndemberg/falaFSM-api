@@ -6,7 +6,7 @@
 	 version="3.1">
 
     <listener>
-        <listener-class>io.github.recursivejr.discenteVivo.infraSecurity.listeners.ListenerManagementDisk</listener-class>
+        <listener-class>io.github.recursivejr.falaFSM.infraSecurity.listeners.ListenerManagementDisk</listener-class>
     </listener>
 
     <session-config>
